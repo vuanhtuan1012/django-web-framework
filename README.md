@@ -222,6 +222,8 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 - When working on a **single Django project**, developers tend to **use** `manage.py`.
 - However, if we need to switch between **multiple Django settings files**, use the **Django admin command** with Django settings module or the settings command line option.
 
+> `manage.py` is more convenient to use than `django-admin`. It runs inside the project folder. When using `django-admin`, you must set `--settings` variable to the required project's `settings.py` file.
+
 ### App structure
 
 - An app is **responsible for performing one single task** out of the many involved in the complete web application, represented by the Django project.
