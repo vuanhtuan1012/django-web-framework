@@ -3,35 +3,35 @@
 Comprehensive notes covering key concepts of the [Django Web Framework](https://www.coursera.org/learn/django-web-framework) course.
 
 - [Introduction to Django](#introduction-to-django)
-  - [HTML vs. HTML5](#html-vs-html5)
+  - [Hyper Text Markup Language (HTML) vs. HTML5](#hyper-text-markup-language-html-vs-html5)
     - [Definition](#definition)
     - [Key Differences](#key-differences)
   - [Vitual Environment](#vitual-environment)
   - [Django Project Structure](#django-project-structure)
-    - [DRY principle](#dry-principle)
+    - [Don't Repeat Yourself (DRY) Principle](#dont-repeat-yourself-dry-principle)
     - [What is a project?](#what-is-a-project)
     - [Project package](#project-package)
-    - [ORM Techinque](#orm-techinque)
-    - [WSGI](#wsgi)
-    - [ASGI](#asgi)
+    - [Object-Relational Mapping (ORM)](#object-relational-mapping-orm)
+    - [Web Server Gateway Interface (WSGI)](#web-server-gateway-interface-wsgi)
+    - [Asynchronous Server Gateway Interface (ASGI)](#asynchronous-server-gateway-interface-asgi)
     - [Synchronous vs. Asynchronous Web Apps](#synchronous-vs-asynchronous-web-apps)
     - [Concurrency vs. Parallelism](#concurrency-vs-parallelism)
   - [Django-admin vs. manage.py commands](#django-admin-vs-managepy-commands)
   - [App structure](#app-structure)
   - [Web Framework](#web-framework)
     - [Three-tier Architecture](#three-tier-architecture)
-    - [MVC Architecture](#mvc-architecture)
-    - [MVT Architecture](#mvt-architecture)
+    - [Model-View-Control (MVC) Architecture](#model-view-control-mvc-architecture)
+    - [Model-View-Template (MVT) Architecture](#model-view-template-mvt-architecture)
 - [View](#view)
   - [Generic Views](#generic-views)
-  - [HTTP](#http)
+  - [HyperText Transfer Protocol (HTTP)](#hypertext-transfer-protocol-http)
     - [HTTP Request](#http-request)
     - [HTTP Response](#http-response)
     - [HTTP Methods](#http-methods)
     - [HTTP Versions](#http-versions)
     - [HOL Blocking](#hol-blocking)
     - [HTTP Status Codes](#http-status-codes)
-    - [HTTPS](#https)
+    - [HTTP Secure (HTTPS)](#http-secure-https)
   - [Request and Response Objects](#request-and-response-objects)
     - [HttpRequest Object](#httprequest-object)
     - [HttpResponse Object](#httpresponse-object)
@@ -50,11 +50,27 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
   - [Error Handling](#error-handling)
   - [Class-based Views](#class-based-views)
   - [Method Resolution Order (MRO)](#method-resolution-order-mro)
+- [Models](#models)
+  - [Field Types](#field-types)
+  - [Model Relationships](#model-relationships)
+  - [Migrations](#migrations)
+  - [Django ORM (Object Relationship Mapping)](#django-orm-object-relationship-mapping)
+    - [Manager](#manager)
+    - [QuerySet](#queryset)
+    - [CRUD Operations](#crud-operations)
+  - [Common Problems](#common-problems)
+    - [N+1 Problem](#n1-problem)
+    - [Sequential Scan (Seq Scan) Problem](#sequential-scan-seq-scan-problem)
+    - [Fetching Too Many Columns](#fetching-too-many-columns)
+    - [Too many JOINs](#too-many-joins)
+  - [Form](#form)
+  - [Django Admin](#django-admin)
+  - [Database Options](#database-options)
 
 
 ## Introduction to Django
 
-### HTML vs. HTML5
+### Hyper Text Markup Language (HTML) vs. HTML5
 
 #### Definition
 
@@ -98,7 +114,7 @@ Python's virtual environment is set-up with the help of a built-in module named 
   - an **app should be feature targeted**, and it's best suited for one and only one thing.
 - In bref, **a Django web application is a project that contains many apps**.
 
-#### DRY principle
+#### Don't Repeat Yourself (DRY) Principle
 
 The DRY principle stands for **Don't Repeat Yourself**. It's a fundamental guideline in software development that says:
 
@@ -149,7 +165,7 @@ When a project is created, the inner folder with (the same project name) is a Py
 - `asgi.py` is used by the application servers following the ASGI standard to **serve asynchronous web applications**.
 - `wsgi.py` is the **entry point for** such **WSGI-compatible servers** to serve classical web application.
 
-#### ORM Techinque
+#### Object-Relational Mapping (ORM)
 
 **ORM** stands for **Object-Relational Mapping**. It's a programming techinque used to **interact with a relational database** (like PostgreSQL, MySQL, or SQLite) **using objects** in a programming language **instead of writing raw SQL queries**.
 
@@ -172,7 +188,7 @@ The ORM internally generates and run the SQL.
 - May **hide what queries are** actually being executed.
 - Complex queries **sometimes require raw SQL** anyway.
 
-#### WSGI
+#### Web Server Gateway Interface (WSGI)
 
 **WSGI** stands for **Web Server Gateway Interface**. It's a Python web standard (**specification**) that **defines how** Python **web applications communicate with web servers**.
 
@@ -185,7 +201,7 @@ A **WSGI server** is a program that *implements the WSGI specification* and *run
 - passing them to the Python application via the WSGI interface.
 - returning the responses to the client.
 
-#### ASGI
+#### Asynchronous Server Gateway Interface (ASGI)
 
 **ASGI** stands for **Asynchronous Server Gateway Interface**. It's also a Python web standard that defines how web servers comunicate with Python applications, similar to WSGI, but **designed for async use cases**.
 
@@ -308,7 +324,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - the **data tier** usually **consists of database servers** for storing and retrieving information.
   - the **application tier** is what **ties** together the other **two tiers**. It **gets data** from the presentation layer and **persists** it in the data tier.
 
-#### MVC Architecture
+#### Model-View-Control (MVC) Architecture
 
 - Most of the web frameworks implement the **MVC (Model-View-Control)** architecture.
 - The MVC design pattern separates the entire web application development process into three layers: Model, View, and Controller.
@@ -316,7 +332,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - The **Model** is responsible for **data definitions**, **processing logic** and **interaction** with the backend database.
   - The **View** is the **representation layer** of the application. It **takes care** of the **placement and formatting** of the result and **sends** it to the Controller, which in turn, redirects it to the client as the application's response.
 
-#### MVT Architecture
+#### Model-View-Template (MVT) Architecture
 
 - The Django framework adapts a **Model-View-Template (MVT)** approach, a slight variation of the MVC approach.
 - A Django application consists of four following components:
@@ -351,7 +367,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 - The `django.views.generic` module contains serveral view classes that provide the functionality required to perform tasks such as rendering a template, showing an instance, showing the list of instances and so on.
 - Some generic views are `TemplateView`, `CreateView`, `ListView`, `DetailView`, and `UpdateView`.
 
-### HTTP
+### HyperText Transfer Protocol (HTTP)
 
 - HTTP stands for **HyperText Transfer Protocol**.
 - HTTP is **a core operational protocol** of the world wide web. It **enables** a web browser to **comunicate** with a web server.
@@ -593,7 +609,7 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
   - **503 Service Unavailable:** server overloaded or down for maintaince.
   - **504 Gateway Timeout:** upstream server didn't respond in time.
 
-#### HTTPS
+#### HTTP Secure (HTTPS)
 
 - HTTPS stands for **HTTP Secure**.
 - Uses **SSL/TLS encryption**.
@@ -647,7 +663,7 @@ The `HttpResponse` object is **used to construct the response** sent back to the
 
 ### Understanding URLs
 
-URL stands for **Uniform Resource Locator**. It's simply an address where the files are stored. For example,
+URL stands for **Uniform Resource Locator**. It's simply an address where the files are stored. For example:
 - `https://www.littlelemon.com/customers/5`.
 - `https://www.littlelemon.com/menu/?year=2022`.
 
@@ -860,7 +876,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   def custom_400(request, exception):
     return render(request, "400.html", status=400)
   ```
-- **Inside views:** we can **return** a `HttpResponse` or **raise** an exception. For example,
+- **Inside views:** we can **return** a `HttpResponse` or **raise** an exception. For example:
   - returns a `HttpResponseNotFound`, which is a **subclass of** `HttpResponse` that specifically indicates a 404 error. It internally **sends** an error code `404`. Other **predefined subclasses** include `HttpResponseBadRequest` and `HttpResponseForbidden`.
   - **raises** a `Http404` exception, which is a class defined in the `django.core.exceptions` module. Some **important exception types** are: `ObjectDoesNotExist`, `EmptyResultSet`, and `FieldDoesNotExist`.
 
@@ -973,3 +989,410 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   - **Respect MRO** of parent classes.
   - **Avoid** inconsistency and conflicts.
   - Guarantee a **single, predictable** path (linear).
+
+
+## Models
+
+- A model is the **single definitive source** of information about the data. It **contains** the **essential fields** and **behaviors** of the data.
+
+  > *A model is a blueprint for a database table, written in Python.*
+- Each model is a Python class that **subclasses** `django.db.models.Model`. A **typical definition** of a model class is done **inside the app's `models.py` file**. For example:
+
+  ```python
+  from django.db import models
+
+
+  class User(models.Model):
+    first_name = models.CharField(max_length=30)
+    last_name = models.CharField(max_length=30)
+  ```
+- **`pk`** stands for **primary key**. It is a **symbolic pointer** to **whatever field** serves as the model's primary key. It is **not a real** model field, just a **built-in alias**. We can use `pk` in **any ORM operations**. For example:
+  ```python
+  User.objects.get(pk=2)
+  User.objects.filter(pk__in=[1, 2, 3])
+  ```
+- **`id` field:** when declaring a model,
+  - if **no field** is **explicitly defined** as the **primary key**, Django **automatically creates** an auto‑incrementing `id` field **to serve** as the primary key.
+  - if a **specific field is defined** as the primary key, Django **does not** add the default `id` field.
+- A model:
+  - represents **a single** database **table**.
+  - each **attribute** of the model represents a **database field**.
+  - each **instance** of the model **is a row**.
+  - provides model methods to **perform CRUD** (Create, Read, Update, and Delete) operations using [Django's ORM](#django-orm-object-relationship-mapping) (**Object-Relational Mapper**). For example:
+    - **C**reate
+
+      ```python
+      new_user = User(id=1, "John", "Jones")
+      new_user.save()
+      ```
+    - **R**ead
+
+      ```python
+      user = User.objects.get(id=1)
+      ```
+    - **U**pdate
+
+      ```python
+      user = User.objects.get(id=1)
+      user.last_name = "Smith"
+      user.save()
+      ```
+    - **D**elete
+
+      ```python
+      User.objects.filter(id=1).delete()
+      ```
+
+### Field Types
+
+The `django.models` module has many field types to choose from.
+
+- `CharField`: is the most used field type. It can hold string data of length specified by `max_length` parameter.
+- `TextField`: is similar to `CharField`, but for a longer string.
+- `IntegerField`: stores an integer between $-2^{31}$ to $2^{31}-1$ (2_147_483_647). This **limit comes from** Django mapping `IntegerField` to the database `INTEGER` / `INT` data type, which is limited to **32 bits**. Similar fields to store integers of varying lengths:
+  - `SmallIntegerField`: stores an integer between $-2^{15}$ to $2^{15}-1$ (32_767).
+  - `BigIntegerField`: stores an integer between $-2^{63}$ to $2^{63}-1$ (9.22e18).
+  - `PositiveIntegerField`: stores an integer between $0$ to $2^{31}-1$. In fact, it store **non-negative** values.
+  - `AutoField`: **only** used **for primary key** and auto-increment, stores an integer between $1$ to $2^{31}-1$.
+- `FloatField`: stores a floating-point number.
+- `DecimalField`: stores a number **with fixed digits** in the **fractional part**.
+- `DateTimeField`: stores the date and time as an object of Python's `datetime.datetime` class.
+- `DateField`: stores `datetime.date` value.
+- `EmailField`: is a `CharField` with an in-built `EmailValidator`.
+- `URLField`: is a `CharField` having in-built validation for URL.
+- `FileField`: used to save the **file uploaded** by the user **to** a **designated path** specified by the `upload_to` parameter.
+
+### Model Relationships
+
+- **Primary Key** is a **unique identifier** for each record in a database table, **ensuring** that no two rows have the same value.
+- **Foreign Key** is a **field** in one table that **uniquely identifies** a row of **another table**, establishing a **relationship between two table**.
+- The idea behind **designing related tables** is to **avoid data redundancy** unnecessary repetition of the same data in many rows and **ensure data integrity**.
+
+- Relational databases have a mechanism to **prevent** the **deletion of the primary key** if it is **being used** in the **related table** so that the data integrity is **intact**.
+- There are **three types of relationships** that exists:
+  - **One-to-One** relationship: **a record** in one model is **associated with exactly one record** in another model.
+
+      *For example*, a college can have only one principal.
+
+      ```python
+      from django.db import models
+
+
+      class College(models.Model):
+        name = models.CharField(max_length=50)
+        strength = models.IntegerField()
+        website = models.URLField()
+
+
+      class Principal(models.Model):
+        college_id = models.OneToOneField(College, on_delete=models.CASCADE)
+        qualification = models.CharField(max_length=50)
+        email = models.EmailField(max_length=50)
+      ```
+
+    **Note:** There are several **reasons to use a One‑to‑One** relationship instead of a single large table:
+    - **Separation of concerns:** different data has different responsibilities. That keeps models smaller, responsibilities clearer, and code easier to reason about.
+    - **Optional or rare data:** some data applies only to some users and are rarely accessed. Splitting avoids lots of `NULL` columns and keeps hot tables small and fast.
+    - **Different lifecycles:** sometimes data is created later or can be deleted independently.
+    - **Permissions and ownership:** some data should be accessible to different services and have different permissions. For instance, `User` table is accessible via auth service while `UserProfile` is accessible via profile service.
+    - **Database and performance reasons:** some data like `User` is queried constantly while some other like `UserProfile` is queried occasionally. Splitting avoids wide rows, cache misses, and unnecessary I/O.
+    - **Domain modeling (real-world meaning):** One-to-One represents a conceptual extension, not just more columns. For example, `Passport` - `Person`, `Engine` - `Car`, `MedicalRecord` - `Patient`, etc. They are separate concepts, even if tightly linked.
+  - **One-to-Many** relationship: **a single record** in one model can be **associated with multiple records** in another model.
+
+    *For example*, a teacher is qualified to teach a subject, but there can be more than one teacher in a college who teaches the same subject.
+
+    ```python
+    class Teacher(models.Model):
+      name = models.CharField(max_length=50)
+      email = models.EmailField(max_length=50)
+
+
+    class Subject(models.Model):
+      teacher = model.ForeignKey(Teacher, on_delete=models.CASCADE, related_name="subjects")
+      name = models.CharField(max_length=30)
+      credits = model.IntegerField()
+    ```
+  - **Many-to-Many** relationship: **multiple records** in one model are **associated with multiple records** in another model.
+
+    *For example*, more than one teacher can teach the same subject, and a single teacher can teach more than one subject.
+
+    ```python
+    class Teacher(models.Model):
+      name = models.CharField(max_length=50)
+      email = models.EmailField(max_length=50)
+
+
+    class Subject(models.Model):
+      teacher = model.ManyToManyField(Teacher)
+      name = models.CharField(max_length=30)
+      credits = model.IntegerField()
+    ```
+
+    **Note:** Relational databases do **not natively support** Many‑to‑Many relationships and therefore **require an intermediate table**. Django **generates this junction model automatically**, managing **referential integrity** as well as **admin and ORM integration**. This **simplifies** development and **prevents** accidental duplicates, although it **also reduces** the level of customization available.
+
+- `on_delete` option **sepcifies the behavior** in case the **associated object** in the primary model **is deleted**. The values are:
+  - **CASCADE:** deletes the object containing the `ForeignKey`. Deleting the reference object will also delete the referred objects.
+
+    *For example,* suppose that a vehicle belongs to a customer. **When the customer** is deleted, **all the vehicles** that reference the customer will **be automatically deleted**.
+  - **PROTECT:** is the opposite of **CASCADE**. It prevents deletion of a referenced object if it has an object referencing it in the database.
+
+    *For example,* if a customer has vehicles, it cannot be deleted. Django will raise the `ProtectedError` if the customer is forcefully deleted.
+  - **RESTRICT:** prevents deletion of the referenced object by raising `RestrictedError`, but it **allows deletion if** *all referencing objects are also being deleted* **in the same operation**.
+
+    This behavior is different from **PROTECT**, which prevents deletion whenever a related reference exists, even when that referenced record is being deleted too.
+
+    *For example,* with the code block below
+
+    ```python
+    # create a principal associated with the college with id 1
+    college = College.objects.get(pk=1)
+    pricipal = Principal.objects.create(
+      college=college, qualification="good", email="principal@college.com"
+    )
+    principal.save()
+
+    # delete both the college and the associated principal
+    college.delete()
+    principal.delete()
+    ```
+    - if the relationship between `College` and `Principal` is set to **PROTECT**, the deletion will be blocked and a `ProtectedError` will be raised.
+    - if the relationship between `College` and `Principal` is set **RESTRICT**, the deletion will be succeed because Django recognizes that the referenced object will be deleted as part of the same operation.
+  - **Note:** when `delete` methods are called, Django does **NOT delete rows immediately**. Instead, it **first plans** the entire delete, **then checks** whether it's legal, **then executes** it.
+    - Builds a delete graph.
+    - Checks constraints (`on_delete`).
+    - Executes deletes in a safe order.
+
+    Under **PROTECT** relationship, Django **aborts the deletion immediately** as soon as it detects a related object. It does not considers whether that the related object might also be deleted later, no delete graph analysis is performed.
+
+    Under **RESTRICT** relationship, Django **waits until the entire delete graph is known**, then it determines *whether any restricted objects would remain after the operation*. If so, it raises `RestrictedError`; if not, the deletion procceds.
+
+### Migrations
+
+- Migration is a **mechanism** that **translates** the model changes into database schema changes, allowing for **version control** of the database structure.
+- It **propagates** any changes in the model structure such as adding, modifying, or removing a field attribute of a model class to the **mapped table**.
+- Django's migration is a **version control system**. It has the following commands:
+  - `makemigrations` creates migration scripts that reflect changes made to models, which are then applied to the database.
+  - `migrate` applies the migration scripts to the database, creating or modifying tables as defined in the migration files.
+  - `sqlmigrate` shows the SQL query or queries executed when a certain migration script is run.
+  - `showmigrations` displays the status of migrations, indicating which have been applied and which are pending.
+- When migrating a model, Django **automatically names the table** as `[app_name]_[model_name]`, for instance, `myapp_college`, `myapp_principal`, etc. We can override this by assigning the desired name to `db_table` parameter of the `Meta` class, to be declared inside the model class, as shown below.
+
+```python
+from django.db import models
+
+
+  class College(models.Model):
+    name = models.CharField(max_length=50)
+    strength = models.IntegerField()
+    website = models.URLField()
+
+    class Meta:
+      db_table = "college_info"
+```
+
+### Django ORM (Object Relationship Mapping)
+
+[Object-Relational Mapping (ORM)](#object-relational-mapping-orm) is the ability to **create** a **SQL query using object-oriented programming language**. This **enables** a **quick turnaround time** in fast **production environments** that need constant updates.
+
+Django has its own ORM layer. Its migration mechanism **propagates** the **models** in **database tables**. We need to **construct** a `QuerySet` via a `Manager` of a **model class** to **retrieve objects** from our database.
+
+Each model is a Python class that subclasses `django.db.models.Model`. For example:
+```python
+from django.db import models
+
+
+class Menu(models.Model):
+  name = models.CharField(max_length=100)
+  cuisine = models.CharField(max_length=100)
+  price = models.IntegerField()
+```
+
+#### Manager
+
+- `Manager` is the **interface** through which **database queries are made** for a model.
+- Every Django model has **at least** one `Manager`.
+- The **default** manager is `objects`.
+- A `Manager` method **returns** `QuerySet` object(s).
+
+  For example:
+
+  ```python
+  class Menu(models.Model):
+    name = models.CharField(max_length=100)
+    cuisine = models.CharField(max_length=100)
+    price = models.IntegerField()
+
+  print(type(Menu.objects))  # django.db.models.manager.Manager
+  print(type(Menu.objects.all()))  # django.db.models.query.QuerySet
+  ```
+- **When to use** `Manager`s ?
+  - Queries related to the **entire table**.
+  - Default **filtering logic**.
+  - Entry point for **custom query** methods.
+
+#### QuerySet
+
+- A `QuerySet` is a **lazy collection of objects** retrieved from the database.
+- A `QuerySet`:
+  - **represents** a database query.
+  - can be **filtered, sliced, ordered**.
+  - is a **lazy evaluation** (not executed until needed).
+  - can be **chained**.
+  - **returns** model instances.
+
+  For example:
+  ```python
+  qs = Menu.objects.filter(name__icontains="pasta")
+  ```
+  No database hits yet! The query **executes only when:**
+  - **iterated** over
+  - **converted** to list
+  - **printed**
+  - **accessed** with the `len` function.
+
+  ```python
+  qs = Menu.objects.filter(name__icontains="pasta").order_by("name")
+  ```
+  These above query sets are **chained to one SQL query**, not many.
+
+- **Find the SQL query generated:** the`QuerySet`'s `query` attribute **returns** the **SQL query generated**.
+  ```python
+  qs = Menu.objects.filter(name__icontains="pasta").order_by("name").only("name", "price")
+  print(qs.query)
+
+  # SELECT "demoapp_menu"."id", "demoapp_menu"."name", "demoapp_menu"."price" FROM "demoapp_menu" WHERE "demoapp_menu"."name" LIKE %pasta% ESCAPE '\' ORDER BY "demoapp_menu"."name" ASC
+  ```
+
+- **In bef,**
+  - `Manager`: the **entry point** to datbase queries, lives on the model class.
+  - `QuerySet`: the **lazy, chainable representation** of a datbase query.
+
+#### CRUD Operations
+
+- **Create** a row in the table:
+  - create an object of the model class then use the `save` method to creates a row in the table. For example:
+
+    ```python
+    m = Menu(name="pho", cuisine="vietnam", price=12)
+    m.save()
+    ```
+  - use the `create` method of the `Manager`. This method will return an instance of the model class.
+
+    ```python
+    Menu.objects.create(name="pho", cuisine="vietnam", price=12)
+    ```
+- **Read** rows:
+  - fetch all objects by using the `all` method of the `Manager`. For example:
+
+    ```python
+    Menu.objects.all()
+    ```
+  - apply filters to the data fetched from the model by using `filter` method of the `Manager`.
+
+    ```python
+    Menu.objects.filter(name__startswith="p")
+    ```
+- **Update** a row: get the object of that row, assign a new value to the attribute and `save` the object. For example:
+
+    ```python
+    m = Menu.objects.get(pk=2)
+    m.cuisine = "chinese"
+    m.save()
+    ```
+- **Delete** a row: get the object of the corresponding row then call the `delete` method. For example:
+
+    ```python
+    m = Menu.objects.get(pk=4)
+    m.delete()
+    ```
+
+### Common Problems
+
+We use the `Author` and `Book` classes below to demonstrate the problems.
+
+```python
+from django.db import models
+
+
+class Author(models.Model):
+  name = models.CharField(max_length=100)
+
+
+class Book(models.Model):
+  author = models.ForeignKey(Author, on_delete=models.CASCADE)
+  title = models.CharField(max_length=100)
+  status = models.CharField(max_length=50)
+```
+
+#### N+1 Problem
+
+Refers to a problem where **one query** is used to fetch a list of objects, **followed by N additional** queries **to fetch** their **related data**. *For example:*
+
+```python
+books = Book.objects.all()
+
+for book in books:
+  print(book.author.name)
+```
+
+**To fix** the problem, we need to **use** `select_related` (for **One-to-One** or **One-to-Many** relationships) or `prefetch_related` (for **Many-to-Many** or reverse relationships). *For example:*
+
+```python
+books = Book.objects.select_related("author")
+
+for book in books:
+  print(book.author.name)
+```
+
+#### Sequential Scan (Seq Scan) Problem
+
+Occurs the database **reads every row** in a table, one by one, **to find** those that match the query. *For example:*
+
+```python
+Book.objects.filter(status="BORROWED")
+```
+
+**To fix** the problem, we can **add indexes** to the queried fields. *For example:*
+
+```python
+class Book(models.Model):
+  status = models.CharField(max_length=50, db_index=True)
+```
+
+#### Fetching Too Many Columns
+
+Is a **data-access performance problem** where the query **retrieves more** fields **than** the actual needs. *For example:*
+
+```python
+Book.objects.all()
+```
+
+**To fix** the problem, we can **use** the `only` method to **specify** the fields we need. *For example:*
+
+```python
+Book.objects.only("id", "status")
+```
+
+#### Too many JOINs
+
+Happens when a query **joins more tables than are actually needed**, making it slow, complex, and hard for the database optimizer to execute efficiently. For example:
+
+```python
+Book.objects.select_related("author__profile__country__continent")
+```
+
+**To fix** the problem, we should **join only** what we need, **fetch specific** fields rather than entire tables, or intentionally **split queries**. *For example:*
+
+```python
+# join only what we need
+Book.objects.select_related("author")
+
+# fetch specific fields
+Book.objects.only("id", "author__name")
+```
+
+### Form
+
+### Django Admin
+
+### Database Options
