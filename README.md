@@ -4,8 +4,6 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
 
 - [Introduction to Django](#introduction-to-django)
   - [Hyper Text Markup Language (HTML) vs. HTML5](#hyper-text-markup-language-html-vs-html5)
-    - [Definition](#definition)
-    - [Key Differences](#key-differences)
   - [Vitual Environment](#vitual-environment)
   - [Django Project Structure](#django-project-structure)
     - [Don't Repeat Yourself (DRY) Principle](#dont-repeat-yourself-dry-principle)
@@ -61,9 +59,13 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
   - [Common Problems](#common-problems)
     - [N+1 Problem](#n1-problem)
     - [Sequential Scan (Seq Scan) Problem](#sequential-scan-seq-scan-problem)
-    - [Fetching Too Many Columns](#fetching-too-many-columns)
-    - [Too many JOINs](#too-many-joins)
-  - [Form](#form)
+    - [Fetching Too Many Columns Problem](#fetching-too-many-columns-problem)
+    - [Too many JOINs Problem](#too-many-joins-problem)
+  - [Django Form](#django-form)
+    - [Form Fields](#form-fields)
+    - [Form Rendering](#form-rendering)
+    - [Reading From Contents](#reading-from-contents)
+    - [Cross-Site Request Forgery (CSRF) Attack](#cross-site-request-forgery-csrf-attack)
   - [Django Admin](#django-admin)
   - [Database Options](#database-options)
 
@@ -72,28 +74,24 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
 
 ### Hyper Text Markup Language (HTML) vs. HTML5
 
-#### Definition
-
 - **HTML** (Hyper Text Markup Language) is the **standard language for structuring** web pages.
 - **HTML5** is the **newest version** of HTML, adding modern features for today's web.
-
-#### Key Differences
-
-- HTML5 **introduced semantic tags** *such as* `<header>`, `<footer>`, `<nav>`, `<section>`, `<article>`, `<aside>`, so browsers and developers understand page structure better, improve code readability. Since these tags have **built-in meaning**, they tell the browser (and developers, screen renders, search engines) **what the content represents**.
-  - `<header>` $\rightarrow$ top of a page or section.
-  - `<nav>` $\rightarrow$ navigation menu.
-  - `<article>` $\rightarrow$ self-contained content (blog post, news article, post).
-  - `<section>` $\rightarrow$ logical grouping of related content.
-  - `<aside>` $\rightarrow$ sidebar or related info.
-  - `<footer>` $\rightarrow$ bottom of a page or section.
-- HTML **uses mostly** `<div>` for layout. It has **no meaning** by default.
-  - is just a **generic container**.
-  - used mainly for grouping elements for styling or scripting.
-  - does not describe the purpose of its content.
-- HTML5 **supports multimedia** without plugins like Flash.
-- HTML5 adds `<canvas>` for **drawing graphics** and animations and improves SVG support.
-- HTML5 introduces **new form inputs**, *such as* `email`, `date`, `number`, `range`, `color` and **new attributes** *such as* `placeholder`, `required`, `pattern`, `autofocus`.
-- HTML5 **adds client-side storage** like `localStorage`, `sessionStorage`, `IndexedDB`, application cache / service workers while HTML had only cookies.
+- **Key differences:**
+  - HTML5 **introduced semantic tags** *such as* `<header>`, `<footer>`, `<nav>`, `<section>`, `<article>`, `<aside>`, so browsers and developers understand page structure better, improve code readability. Since these tags have **built-in meaning,** they tell the browser (and developers, screen renders, search engines) **what the content represents.**
+    - `<header>` $\rightarrow$ top of a page or section.
+    - `<nav>` $\rightarrow$ navigation menu.
+    - `<article>` $\rightarrow$ self-contained content (blog post, news article, post).
+    - `<section>` $\rightarrow$ logical grouping of related content.
+    - `<aside>` $\rightarrow$ sidebar or related info.
+    - `<footer>` $\rightarrow$ bottom of a page or section.
+  - HTML **uses mostly** `<div>` for layout. It has **no meaning** by default.
+    - is just a **generic container.**
+    - used mainly for grouping elements for styling or scripting.
+    - does not describe the purpose of its content.
+  - HTML5 **supports multimedia** without plugins like Flash.
+  - HTML5 adds `<canvas>` for **drawing graphics** and animations and improves SVG support.
+  - HTML5 introduces **new form inputs,** *such as* `email`, `date`, `number`, `range`, `color` and **new attributes** *such as* `placeholder`, `required`, `pattern`, `autofocus`.
+  - HTML5 **adds client-side storage** like `localStorage`, `sessionStorage`, `IndexedDB`, application cache / service workers while HTML had only cookies.
 
 ### Vitual Environment
 
@@ -106,21 +104,21 @@ Python's virtual environment is set-up with the help of a built-in module named 
 ### Django Project Structure
 
 - In Django,
-  - **a project** represents the **entire web application**.
-  - **an app** is a **sub-module of a project**.
+  - **a project** represents the **entire web application.**
+  - **an app** is a **sub-module of a project.**
 - An **app** is typically used to implement functionality for some specific purpose.
-  - **apps can be self-contained**, meaning they do not rely on other apps to function.
-  - **apps can be used or reused** in may different projects. This leads nicely to the **[DRY principle](#dont-repeat-yourself-dry-principle)**.
-  - an **app should be feature targeted**, and it's best suited for one and only one thing.
-- In bref, **a Django web application is a project that contains many apps**.
+  - **apps can be self-contained,** meaning they do not rely on other apps to function.
+  - **apps can be used or reused** in may different projects. This leads nicely to the **[DRY principle](#dont-repeat-yourself-dry-principle).**
+  - an **app should be feature targeted,** and it's best suited for one and only one thing.
+- In bref, **a Django web application is a project that contains many apps.**
 
 #### Don't Repeat Yourself (DRY) Principle
 
-The DRY principle stands for **Don't Repeat Yourself**. It's a fundamental guideline in software development that says:
+The DRY principle stands for **Don't Repeat Yourself.** It's a fundamental guideline in software development that says:
 
-> Every piece of knowledge should have a **single**, **unambiguous**, **authoritative** representation within a system.
+> Every piece of knowledge should have a **single, unambiguous, authoritative** representation within a system.
 
-In simple terms, it **prevents duplicating code, logic, or data**.
+In simple terms, it **prevents duplicating code, logic, or data.**
 
 - The DRY principle leads to less maintenance, fewer bugs, and better readability.
 - The DRY principle applies to coding and refactoring, database schema design, API design, infrastructure/configuration, and documentation.
@@ -128,19 +126,19 @@ In simple terms, it **prevents duplicating code, logic, or data**.
 #### What is a project?
 
 - A Django project **is a Python package containing** the database configuration used by various sub-modules (apps) and other Django-specific settings.
-- The `startproject` command of Django-admin is used to **create a new Django project**. It creates the folder of the given name (is called *project directory*), inside which there is another folder of the same name (is called *project package*) and the script `manage.py`.
+- The `startproject` command of Django-admin is used to **create a new Django project.** It creates the folder of the given name (is called *project directory*), inside which there is another folder of the same name (is called *project package*) and the script `manage.py`.
 
   ```cmd
   > django-admin startproject <project_name>
   ```
-  - **Project directory** is created when we create a Django project. It contains `manage.py` and *project package folder*.
+  - **Project directory** is created when we create a Django project. It contains `manage.py` and *project package folder.*
   - **Project package** contains a `settings.py` file and other files.
-- The `manage.py` script **has the same role as** the `django-admin` utility. It can perform everything that the `django-admin` utility does. However, using `manage.py` is **more straightforward**, especially if we are required to work on a single project.
+- The `manage.py` script **has the same role as** the `django-admin` utility. It can perform everything that the `django-admin` utility does. However, using `manage.py` is **more straightforward,** especially if we are required to work on a single project.
 - The `startapp` command is used to create a new app. An app is also represented by a folder of a specific file system.
   ```cmd
   > python manage.py startapp <app_name>
   ```
-- Django manages the database operations with the **[ORM technique](#object-relational-mapping-orm)**.
+- Django manages the database operations with the **[ORM technique](#object-relational-mapping-orm).**
 - [Migration](#migrations) refers to **generating a database table whose** structure matches the data model declared in the app.
   ```cmd
   > python manage.py makemigration
@@ -161,15 +159,15 @@ When a project is created, the inner folder with (the same project name) is a Py
 > *For a folder to be recognized by Python as a package, it must have a file `__init__.py`.*
 
 - `settings.py` contains **configuration settings** for the Django project, including the `INSTALLED_APPS` list where newly created apps must be added.
-- `urls.py` defines the **URL patterns** for both the project and the app, **routing requests** to the appropriate view functions. Every time the client **browser requests a URL**, the Django server looks to **match its pattern** and **routes the application to the mapped view**.
-- `asgi.py` is used by the application servers following the [ASGI](#asynchronous-server-gateway-interface-asgi) standard to **serve asynchronous web applications**.
+- `urls.py` defines the **URL patterns** for both the project and the app, **routing requests** to the appropriate view functions. Every time the client **browser requests a URL,** the Django server looks to **match its pattern** and **routes the application to the mapped view.**
+- `asgi.py` is used by the application servers following the [ASGI](#asynchronous-server-gateway-interface-asgi) standard to **serve asynchronous web applications.**
 - `wsgi.py` is the **entry point for** such **[WSGI](#web-server-gateway-interface-wsgi)-compatible servers** to serve classical web application.
 
 #### Object-Relational Mapping (ORM)
 
-**ORM** stands for **Object-Relational Mapping**. It's a programming techinque used to **interact with a relational database** (like PostgreSQL, MySQL, or SQLite) **using objects** in a programming language **instead of writing raw SQL queries**.
+**ORM** stands for **Object-Relational Mapping.** It's a programming techinque used to **interact with a relational database** (like PostgreSQL, MySQL, or SQLite) **using objects** in a programming language **instead of writing raw SQL queries.**
 
-ORM **automatically maps**:
+ORM **automatically maps:**
 - Database tables $\rightarrow$ Classes.
 - Rows $\rightarrow$ Objects.
 - Columns $\rightarrow$ Object attributes.
@@ -190,26 +188,26 @@ The ORM internally generates and run the SQL.
 
 #### Web Server Gateway Interface (WSGI)
 
-**WSGI** stands for **Web Server Gateway Interface**. It's a Python web standard (**specification**) that **defines how** Python **web applications communicate with web servers**.
+**WSGI** stands for **Web Server Gateway Interface.** It's a Python web standard (**specification**) that **defines how** Python **web applications communicate with web servers.**
 
-**Before WSGI**, *every framework and server had its own protocol*, nothing was compatible. WSGI unified everything. It **allows any WSGI-compatible framework** (*Flask, Django <=2.1, Pyramid*) to **run on any WSGI-compatible server** (*Gunicorn, uWSGI, mod_wsgi*).
+**Before WSGI,** *every framework and server had its own protocol,* nothing was compatible. WSGI unified everything. It **allows any WSGI-compatible framework** (*Flask, Django <=2.1, Pyramid*) to **run on any WSGI-compatible server** (*Gunicorn, uWSGI, mod_wsgi*).
 
 WSGI is **synchronous** and **designed for traditional** HTTP request/response cycles: no async, no WebSockets, no long-lived connections.
 
-A **WSGI server** is a program that *implements the WSGI specification* and *runs a Python WSGI application*. It handles:
+A **WSGI server** is a program that *implements the WSGI specification* and *runs a Python WSGI application.* It handles:
 - receiving HTTP requests from clients.
 - passing them to the Python application via the WSGI interface.
 - returning the responses to the client.
 
 #### Asynchronous Server Gateway Interface (ASGI)
 
-**ASGI** stands for **Asynchronous Server Gateway Interface**. It's also a Python web standard that defines how web servers comunicate with Python applications, similar to WSGI, but **designed for async use cases**.
+**ASGI** stands for **Asynchronous Server Gateway Interface.** It's also a Python web standard that defines how web servers comunicate with Python applications, similar to WSGI, but **designed for async use cases.**
 
-**Mordern apps need** WebSockets, long-runing connections, non-blocking async I/O, [concurrency](#concurrency-vs-parallelism) without threads, so ASGI was created to **support both synchronous and asynchronous Python code**, including real-time features.
+**Mordern apps need** WebSockets, long-runing connections, non-blocking async I/O, [concurrency](#concurrency-vs-parallelism) without threads, so ASGI was created to **support both synchronous and asynchronous Python code,** including real-time features.
 
-**ASGI is a specification**, not code. It **defines a common interface** between ASGI servers (*e.g.,* Uvicorn) and ASGI applications (*e.g.,* FastAPI, Django 3+).
+**ASGI is a specification,** not code. It **defines a common interface** between ASGI servers (*e.g.,* Uvicorn) and ASGI applications (*e.g.,* FastAPI, Django 3+).
 
-An **ASGI server** is a program that *implements the ASGI specification* and *runs ASGI-compatible Python app*.
+An **ASGI server** is a program that *implements the ASGI specification* and *runs ASGI-compatible Python app.*
 
 **ASGI is** the **modern Python web standard** for async apps.
 - It **supports both** synchronous and asynchronous code.
@@ -218,25 +216,25 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 #### Synchronous vs. Asynchronous Web Apps
 
 - A **synchronous** web app **handles one request at a time** per worker, following a simple *request $\rightarrow$ process $\rightarrow$ response* pattern. Its characteristics:
-  - **Blocking I/O**: while a request is being processed, the worker can't handle another.
-  - **Thread/process based concurrency**: to handle more users, it needs to add more worker processes or threads.
-  - **Straightforward code**: no `async`/`await`.
+  - **Blocking I/O:** while a request is being processed, the worker can't handle another.
+  - **Thread/process based concurrency:** to handle more users, it needs to add more worker processes or threads.
+  - **Straightforward code:** no `async`/`await`.
   - Great for CPU-bound or simple I/O-bound actions.
-- An **asynchronous** web app **handles requests using an event loop**, allowing a single worker to server thousands of connections without blocking. Its characteristics:
-  - **Non-blocking I/O**: tasks pause with `await` while waiting *such as* Database I/O, HTTP calls, File system I/O, WebSockets.
+- An **asynchronous** web app **handles requests using an event loop,** allowing a single worker to server thousands of connections without blocking. Its characteristics:
+  - **Non-blocking I/O:** tasks pause with `await` while waiting *such as* Database I/O, HTTP calls, File system I/O, WebSockets.
   - **Concurrency through** `async`/`await`, not threads.
   - **Ideal for high-scale** or real-time applications.
-- Async **shines when** we have **lots of waiting**, not lots of computing.
+- Async **shines when** we have **lots of waiting,** not lots of computing.
 
 #### Concurrency vs. Parallelism
 
 - **Simple definition:**
   - **Concurrency** = doing many things **seemingly** at the same time.
-    - Tasks **overlap in time**.
+    - Tasks **overlap in time.**
     - A single worker switches between tasks.
     - Like multitasking.
   - **Parallelism** = doing many things **exactly** at the same time.
-    - Tasks run **at the same instant**.
+    - Tasks run **at the same instant.**
     - Requires multiple CPU cores, multiple workers.
 - **Technical definition:**
   - **Concurrency:** multiple tasks make progress **during overlapping time periods.**
@@ -256,15 +254,15 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 
 ### Django-admin vs. `manage.py` commands
 
-- Both can be used to **perform the same tasks**, but there are **some subtle differences**, and the choice of usage will depend on how we want to work on project.
-- `django-admin` is Django's **command line utility** for administrative tasks. This utility is present **in the scripts folder** of the Django **environment directory**. Django admin utility is executed from inside the terminal.
+- Both can be used to **perform the same tasks,** but there are **some subtle differences,** and the choice of usage will depend on how we want to work on project.
+- `django-admin` is Django's **command line utility** for administrative tasks. This utility is present **in the scripts folder** of the Django **environment directory.** Django admin utility is executed from inside the terminal.
 
   *It can also be launched via the call of module* `python -m django`.
 
-- `manage.py` is a script that is the **local version** of Django admin and is located **inside the project folder**. It **sets** the Django settings module environment variable so that it **points to** our project `settings.py` file.
-- `manage.py` is a file that **is automatically created** each time we create a Django project, it is **specific to** the virtual environment **of the project**.
-- When working on a **single Django project**, developers tend to **use** `manage.py`.
-- However, if we need to switch between **multiple Django settings files**, use the **Django admin command** with Django settings module or the settings command line option.
+- `manage.py` is a script that is the **local version** of Django admin and is located **inside the project folder.** It **sets** the Django settings module environment variable so that it **points to** our project `settings.py` file.
+- `manage.py` is a file that **is automatically created** each time we create a Django project, it is **specific to** the virtual environment **of the project.**
+- When working on a **single Django project,** developers tend to **use** `manage.py`.
+- However, if we need to switch between **multiple Django settings files,** use the **Django admin command** with Django settings module or the settings command line option.
 
 > `manage.py` is more convenient to use than `django-admin`. It runs inside the project folder. When using `django-admin`, you must set `--settings` variable to the required project's `settings.py` file.
 
@@ -322,28 +320,28 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 - Three-tier architecture is a modular based approach to client-server architecture that splits the application into three logical parts:
   - the **presentation tier** is the **layer the users primarily interact with** through user interfaces from their desktop, laptop, or mobile devices. It's **commonly built with a UI framework** or library *such as* React, and it **communicates** with other tiers **by sending results through** the application interface.
   - the **data tier** usually **consists of database servers** for storing and retrieving information.
-  - the **application tier** is what **ties** together the other **two tiers**. It **gets data** from the presentation layer and **persists** it in the data tier.
+  - the **application tier** is what **ties** together the other **two tiers.** It **gets data** from the presentation layer and **persists** it in the data tier.
 
 #### Model-View-Control (MVC) Architecture
 
 - Most of the web frameworks implement the **MVC (Model-View-Control)** architecture.
 - The MVC design pattern separates the entire web application development process into three layers: Model, View, and Controller.
   - The **Controller** intercepts the user requests. It **coordinates** with the View and Model layers to **send the appropriate response** back to the client.
-  - The **Model** is responsible for **data definitions**, **processing logic** and **interaction** with the backend database.
+  - The **Model** is responsible for **data definitions, processing logic** and **interaction** with the backend database.
   - The **View** is the **representation layer** of the application. It **takes care** of the **placement and formatting** of the result and **sends** it to the Controller, which in turn, redirects it to the client as the application's response.
 
 #### Model-View-Template (MVT) Architecture
 
 - The Django framework adapts a **Model-View-Template (MVT)** approach, a slight variation of the MVC approach.
 - A Django application consists of four following components:
-  - **URL Dispatcher** is the **entry point** that decides which part of the application handles the request. The `urls.py` module acts as the dispatcher. It **defines** the **URL patterns**. Each URL pattern is **mapped with a view function**.
+  - **URL Dispatcher** is the **entry point** that decides which part of the application handles the request. The `urls.py` module acts as the dispatcher. It **defines** the **URL patterns.** Each URL pattern is **mapped with a view function.**
 
     When the server receives a request in the client URL, the dispatcher matches its pattern with the patterns available in the `urls.py` module.
 
     It then routes the flow of the application toward its associated view.
   - The **View** function **reads** the path, query, and body parameters **included in** the client's request. It **uses** the client's and the model's data and **renders** its response using a template.
 
-    *If required*, it uses this data to interact with the models to perform CRUD operations.
+    *If required,* it uses this data to interact with the models to perform CRUD operations.
 
     > Django's View layer performs the **role of Controller** in MVC architecture.
   - A **Model** is a Python class. An app may have one or more model classes, conventionally put in the `models.py` file.
@@ -369,14 +367,14 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 
 ### HyperText Transfer Protocol (HTTP)
 
-- HTTP stands for **HyperText Transfer Protocol**.
+- HTTP stands for **HyperText Transfer Protocol.**
 - HTTP is **a core operational protocol** of the world wide web. It **enables** a web browser to **comunicate** with a web server.
 - HTTP is a **request-response** based protocol. It works with a **client -> request -> server -> response** cycle.
   - A client (web browser) sends the **HTTP request** to a server.
   - The web server sends the **HTTP response** back to the browser.
-- HTTP is **used for almost all communication on the web**, including: loading web pages, APIs and webservices, file transfers, form submissions, and so on.
-- It's a **stateless protocol**.
-  - Each HTTP **request is independent**.
+- HTTP is **used for almost all communication on the web,** including: loading web pages, APIs and webservices, file transfers, form submissions, and so on.
+- It's a **stateless protocol.**
+  - Each HTTP **request is independent.**
   - Servers do **not remember past requests** unless cookies or sessions are used.
 
 #### HTTP Request
@@ -390,9 +388,9 @@ An example of a HTTP request:
   ```
 
 A HTTP request **consists of:**
-- a **[method](#http-methods)**, *e.g.,* `GET`
+- a **[method](#http-methods),** *e.g.,* `GET`
 - a **path** (*resource location*), *e.g.,* `/`
-- a **[version](#http-versions)**, *e.g.,* `HTTP/1.1`
+- a **[version](#http-versions),** *e.g.,* `HTTP/1.1`
 - **headers** *contain additional information* about the request and the client that is making the request. Headers can contain information **such as** the server name, the server port, the request method type, and the content type. **The content** of the header can **depend on** the specific client and server. *For example:*
 
   ```text
@@ -426,8 +424,8 @@ A HTTP request **consists of:**
   </html>
   ```
 
-- **[HTTP status code](#http-status-codes)**, *e.g.,* `200`, contained **within the header indicate** if the HTTP request successfully completed. The code values are in the range of 100-599 and are grouped by purpose.
-- The **status message**, *e.g.,* `OK`, is a text representation of the status code.
+- **[HTTP status code](#http-status-codes),** *e.g.,* `200`, contained **within the header indicate** if the HTTP request successfully completed. The code values are in the range of 100-599 and are grouped by purpose.
+- The **status message,** *e.g.,* `OK`, is a text representation of the status code.
 
 #### HTTP Methods
 
@@ -435,8 +433,8 @@ A HTTP request **consists of:**
 - The primary or the **most commonly used** HTTP methods are: `GET`, `POST`, `PUT`, `PATCH`, and `DELETE`.
 - `GET` method:
   - is used to **retrieve information** from the given server.
-  - is **safe**. It does *not change* server data.
-  - is **idempotent**. The *same request* yields the *same result*.
+  - is **safe.** It does *not change* server data.
+  - is **idempotent.** The *same request* yields the *same result.*
   - data is **sent in the URL** (*query string*).
   - should **not be used** for **sensitive** data.
 
@@ -447,8 +445,8 @@ A HTTP request **consists of:**
     ```
 - `POST` method:
   - is used to **create new data** on the server.
-  - is **NOT idempotent**. Sending a same request twice may create duplicates.
-  - data is **sent** in the **body**.
+  - is **NOT idempotent.** Sending a same request twice may create duplicates.
+  - data is **sent** in the **body.**
   - is **used for** new submissions, uploads, form data.
 
   *For example:* the following request **creates** a new user.
@@ -461,9 +459,9 @@ A HTTP request **consists of:**
     ```
 - `PUT` method:
   - is used to **fully update** an existing resource.
-  - is **idempotent**. The *same request* yields the *same result*.
+  - is **idempotent.** The *same request* yields the *same result.*
   - **replaces** the **entire resource unless** implemented otherwise.
-  - must include the **full updated data**. If *any field is missing*, it may be overwritten or remove.
+  - must include the **full updated data.** If *any field is missing,* it may be overwritten or remove.
 
   *For example:* the following request **replaces** user with id `5` with the provided data.
 
@@ -476,7 +474,7 @@ A HTTP request **consists of:**
     ```
 - `PATCH` method:
   - is used to **partially update** the resource. It tells the server to *update only* the provided fields.
-  - is **idempotent**. The *same request* yields the *same result*.
+  - is **idempotent.** The *same request* yields the *same result.*
 
   *For example:* the following request **updates only** the `age` of the user with id `5`.
 
@@ -487,8 +485,8 @@ A HTTP request **consists of:**
     }
     ```
 - `DELETE` method:
-  - is used to **remove a resource**.
-  - is **idempotent**. Deleting the *same item repeatedly* gives the *same result*.
+  - is used to **remove a resource.**
+  - is **idempotent.** Deleting the *same item repeatedly* gives the *same result.*
   - **removes data** from the server.
 
   *For example:* the following request **deletes** the user with id `5`.
@@ -497,7 +495,7 @@ A HTTP request **consists of:**
     DELTE /users/5
   ```
 
-> **Note** that HTTP methods are **only conventions**, not enforcement. The developer's **code determines** whether the operation is actually **idempotent**.
+> **Note** that HTTP methods are **only conventions,** not enforcement. The developer's **code determines** whether the operation is actually **idempotent.**
 
 #### HTTP Versions
 
@@ -506,10 +504,10 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
 - `HTTP/1.1`
   - **text-based** protocol. It means **messages** are written in **human-readable** plain text.
   - **one request** per TCP connection (unless using `keep-alive`).
-  - if one request is **delayed**, others are blocked due to **[HOL](#hol-blocking)** (*Head-of-Line*) **blocking**. Browsers open many parallel TCP connections to compensate.
+  - if one request is **delayed,** others are blocked due to **[HOL](#hol-blocking)** (*Head-of-Line*) **blocking.** Browsers open many parallel TCP connections to compensate.
   - **pros:**
     - simple, widely supported.
-    - **works everywhere**, even on very old systems.
+    - **works everywhere,** even on very old systems.
   - **cons:**
     - **significant latency** with many small resources (*e.g.,* 100+ assets per page).
     - inefficient for modern web workloads.
@@ -520,7 +518,7 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
   - stream prioritization.
   - **faster** than HTTP/1.1 **when** network quality is good.
   - **still suffers** from TCP-level [HOL blocking](#hol-blocking):
-    - if packets are lost, the **entire connection stalls**.
+    - if packets are lost, the **entire connection stalls.**
     - **multiplexing doesn't help** because they share one TCP connection.
   - **pros:**
     - low latency.
@@ -530,15 +528,15 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
     - performance **drops significantly** on mobile or unstable networks.
 - `HTTP/3`
   - **binary framing** layer.
-  - runs over **QUIC**, which is built on **UDP** instead of TCP.
+  - runs over **QUIC,** which is built on **UDP** instead of TCP.
   - **QUIC** includes:
     - built-in **TLS 1.3** encryption.
     - stream-level flow control.
-    - **connection migration**. Keep connection **alive when IP changes**, helpful for mobile.
-  - no TCP HOL blocking $\rightarrow$ **stream are independent**.
+    - **connection migration.** Keep connection **alive when IP changes,** helpful for mobile.
+  - no TCP HOL blocking $\rightarrow$ **stream are independent.**
   - **faster connection setup:**
     - no separate TCP + TLS handshake.
-    - often **0-RTT** (zero round-trip time) **startup**.
+    - often **0-RTT** (zero round-trip time) **startup.**
   - handles packet loss gracefully.
   - **pros:**
     - **best** for modern mobile networks.
@@ -546,59 +544,59 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
     - **robust when switching** networks, *e.g.,* Wi-Fi $\rightarrow$ mobile data.
   - **cons:**
     - **still rolling out** globally.
-    - firewalls and enterprise networks sometimes **block UDP**.
+    - firewalls and enterprise networks sometimes **block UDP.**
 
 #### HOL Blocking
 
-- HOL blocking stands for **Head-Of-Line Blocking**.
+- HOL blocking stands for **Head-Of-Line Blocking.**
 - It is **a performance problem** that occurs in network protocols when **one slow** or lost packet **blocks all the packets behind** it, even if those later packets could otherwise have been processed.
 - In `HTTP/1.1`
-  - each TCP connection handles **one request at a time**.
-  - if **one request is slow**, every request behind it in that connection **waits**.
+  - each TCP connection handles **one request at a time.**
+  - if **one request is slow,** every request behind it in that connection **waits.**
   - browsers open many parallel connections to reduce this problem.
 - In `HTTP/2`
-  - **supports multiplexing**, multiple streams on one connection.
-  - **still uses TCP**, which has packet-level HOL blocking:
-    - if **one TCP packet is lost**, TCP must wait and retransmit it.
+  - **supports multiplexing,** multiple streams on one connection.
+  - **still uses TCP,** which has packet-level HOL blocking:
+    - if **one TCP packet is lost,** TCP must wait and retransmit it.
     - **all HTTP/2 streams** on that connection **pause until** the packet is recovered.
 - In `HTTP/3`
   - **No** TCP HOL blocking.
-  - uses **QUIC, built on UDP**, handles **streams independently**.
-  - if **one packet is lost**:
-    - only the **affected streams waits**.
+  - uses **QUIC, built on UDP,** handles **streams independently.**
+  - if **one packet is lost:**
+    - only the **affected streams waits.**
     - all **other streams continue** normally.
 - HOL blocking **makes website slower** because:
-  - a **single lost** packet **affects all streams**, requests behind it.
+  - a **single lost** packet **affects all streams,** requests behind it.
   - **high-latency** or mobile networks suffer more.
   - **performance degrades** for real-time or resource-heavy website.
 - **TCP has HOL blocking** because:
-  - TCP **enforces strict, in-order delivery**.
+  - TCP **enforces strict, in-order delivery.**
   - **treats the connection as one** continuous byte stream.
   - if one packet is lost $\rightarrow$ whole connection halts.
-- **QUIC solves** TCP's connection-wide **HOL blocking problem**:
-  - built-on UDP $\rightarrow$ QUIC **controls** ordering + reliability **itself**.
+- **QUIC solves** TCP's connection-wide **HOL blocking problem:**
+  - built-on UDP $\rightarrow$ QUIC **controls** ordering + reliability **itself.**
   - multiple **independent streams** inside one connection.
   - packet loss **affects only** the stream involved.
 
 #### HTTP Status Codes
 
 - HTTP status codes are **three-digit numbers** that a web **server sends** back **in** an **HTTP response** to **tell the client** (browser, app, API, etc.) **what happened** to its request.
-- They are grouped into **five categories**, each representing a different class of response.
-- **1xx - Informational** indicates that the request **was received** and is **still being process**. The **most common informational responses** are:
+- They are grouped into **five categories,** each representing a different class of response.
+- **1xx - Informational** indicates that the request **was received** and is **still being process.** The **most common informational responses** are:
   - **100 Continue:** server acknowledges request headers, client can send body.
   - **101 Switching Protocols:** server is switching protocols, *e.g.,* to WebSocket.
   - **102 Processing:** server **is working** but not finished. It's **not a final** response, it's **sent before** the final status code to **prevent** the client from **timing out** while the server is doing something that takes a long time, *e.g.,* large file operations, deep searches, etc.
 - **2xx - Success** indicates that the request **was successfully processed** by the server. The **most common success responses** are:
   - **200 OK:** standard success response.
   - **201 Created:** a new resource was created, *e.g.,* after `POST`.
-  - **202 Accepted:** the server **acccepted the request**, but **has not processed** it yet and **may process it later**. It's often used in APIs, **for asynchronous processing** (background jobs).
+  - **202 Accepted:** the server **acccepted the request,** but **has not processed** it yet and **may process it later.** It's often used in APIs, **for asynchronous processing** (background jobs).
   - **204 No Content:** success, but no response body, common for `DELETE`.
-- **3xx - Redirection** indicates to the client that **the requested resource** has **been moved to a different path**. Browsers, and most HTTP clients **automatically follow new URL** unless users explicitly disable that behavior. The **most common redirection responses** are:
-  - **301 Moved Permanently:** resource moved to a new permanent URL, **method might change**.
-  - **302 Found:** temporary redirect, **method might change**.
+- **3xx - Redirection** indicates to the client that **the requested resource** has **been moved to a different path.** Browsers, and most HTTP clients **automatically follow new URL** unless users explicitly disable that behavior. The **most common redirection responses** are:
+  - **301 Moved Permanently:** resource moved to a new permanent URL, **method might change.**
+  - **302 Found:** temporary redirect, **method might change.**
   - **304 Not Modified:** client can use a cached version.
-  - **307 Temporary Redirect:** like 302, but **method must not change**.
-  - **308 Permanent Redirect:** like 301 but **method must not change**.
+  - **307 Temporary Redirect:** like 302, but **method must not change.**
+  - **308 Permanent Redirect:** like 301 but **method must not change.**
 - **4xx - Client Errors** indicates that the client made a bad request. The **most common client errors responses** are:
   - **400 Bad Request:** the request was malformed.
   - **401 Unauthorized:** authentification is required.
@@ -610,36 +608,36 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
 - **5xx - Server Errors** indicates that the server failed to process a valid request. The **most common server errors responses** are:
   - **500 Internal Server Error:** generic server failure. It means the **server encountered** an **unexpected condition** and could **not fulfill** the request.
   - **501 Not Implemented:** server doesn't support the requested method. It means the server does **NOT recognize** the method.
-  - **502 Bad Gateway:** indicates a **problem between servers**. A server acting as a **gateway or proxy** received an **invalid response** from an upstream server.
+  - **502 Bad Gateway:** indicates a **problem between servers.** A server acting as a **gateway or proxy** received an **invalid response** from an upstream server.
   - **503 Service Unavailable:** server overloaded or down for maintaince.
   - **504 Gateway Timeout:** upstream server didn't respond in time.
 
 #### HTTP Secure (HTTPS)
 
-- HTTPS stands for **HTTP Secure**.
-- Uses **SSL/TLS encryption**.
+- HTTPS stands for **HTTP Secure.**
+- Uses **SSL/TLS encryption.**
   - **SSL (Secure Sockets Layer)** is **deprecated** and insecure now. SSL is **completely disabled** in modern browsers, severs.
   - **TLS (Transport Layer Security)** is the *newer and current* security protocol. **Only TLS 1.2 and TLS 1.3** are recommended today.
 - **Benefits:**
-  - **Data is encrypted**, so attacker can't read or tamper with it.
+  - **Data is encrypted,** so attacker can't read or tamper with it.
   - **Requires** an **SSL/TLS certificate** issued by a **trusted Certificate Authority** (CA).
-  - **Ensures data integrity**. Information arrives unchanged.
-  - **Protects** user privacy by **encrypting all transmitted data**.
+  - **Ensures data integrity.** Information arrives unchanged.
+  - **Protects** user privacy by **encrypting all transmitted data.**
 - **How HTTPS works:**
-  1. client $\rightarrow$ server: "Hello!". When we visit a HTTPS site, the browser **sends** the server a **hello message** which **contains**:
+  1. client $\rightarrow$ server: "Hello!". When we visit a HTTPS site, the browser **sends** the server a **hello message** which **contains:**
      - **supported encryption** methods,
      - **supported TLS** versions,
-     - a **random number**, used to generate keys later.
-  2. server $\rightarrow$ client: "Here's my certificate". The server **replies** with a message which **contains**:
-     - its **SSL/TLS certificate**,
-     - its **public keys**,
+     - a **random number,** used to generate keys later.
+  2. server $\rightarrow$ client: "Here's my certificate". The server **replies** with a message which **contains:**
+     - its **SSL/TLS certificate,**
+     - its **public keys,**
      - a **random number** of its own.
-  3. the browser **checks** if the **certificate** is **valid and trusted**, then **creates a session key**:
-     - **generates** a **secret symmetric key**.
-     - **encrypts** this key **with** the **server's public key**.
+  3. the browser **checks** if the **certificate** is **valid and trusted,** then **creates a session key:**
+     - **generates** a **secret symmetric key.**
+     - **encrypts** this key **with** the **server's public key.**
      - **sends it back** to the server. **Only** the **server can decrypt** this because it has the private key.
   4. **secure encrypted tunnel is establish.**
-      - Now, **both** browser and server **share** the same **secrete session key**.
+      - Now, **both** browser and server **share** the same **secrete session key.**
       - They **use symmetric encryption** to **exchange data** securely.
   5. **encrypted data transfer begins.** Every request/response is encrypted: URLs (except domain), cookies, form data, API calls, headers (partially).
 
@@ -647,11 +645,11 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
 
 - Django **handles** the request and response **with the help of** `HttpRequest` and `HttpResponse` classes in the `django.http` module.
 - Django **obtains** the `HttpRequest` object **from the context provided** by the server.
-- As a client's **request received**, Django's **URL dispatcher** mechanism **invokes a view** that matches the URL pattern **and passes** this `HttpRequest` object **as the first argument** so that all the request metadata is available to the view for processing.
+- As a client's **request received,** Django's **URL dispatcher** mechanism **invokes a view** that matches the URL pattern **and passes** this `HttpRequest` object **as the first argument** so that all the request metadata is available to the view for processing.
 
 #### HttpRequest Object
 
-The `HttpRequest` object **contains** metadata about the **client's request**, including method, GET and POST parameters, cookie, and user information. Some of the **main attributes and methods** of an `HttpRequest` object (*e.g.,* `request`) are:
+The `HttpRequest` object **contains** metadata about the **client's request,** including method, GET and POST parameters, cookie, and user information. Some of the **main attributes and methods** of an `HttpRequest` object (*e.g.,* `request`) are:
 
 - `request.method` **returns** the **HTTP method** that the client used to send request to the server.
 - `request.GET` and `request.POST` return a **dictionary-like object** containing GET and POST parameters, respectively.
@@ -669,18 +667,18 @@ The `HttpResponse` object is **used to construct the response** sent back to the
 
 ### Understanding URLs
 
-URL stands for **Uniform Resource Locator**. It's simply an address where the files are stored. *For example:*
+URL stands for **Uniform Resource Locator.** It's simply an address where the files are stored. *For example:*
 - `https://www.littlelemon.com/customers/5`.
 - `https://www.littlelemon.com/menu/?year=2022`.
 
 A URL is made up of multiple parts put together:
 - **scheme** or referred as the **protocol** is located at the beginning of any url address and can be identified as `http` or `https`. The protocol **determines the set of rules** around the transmission and exchange data.
 - **subdomain** is **located before the domain** and usually contains the home page and other important pages. The **most common subdomain** is World Wide Web represented by `www`.
-- **domain**, *e.g.,* `littlelemon.com`, consists of two parts:
+- **domain,** *e.g.,* `littlelemon.com`, consists of two parts:
   - **second level domain** refers to an organization or the name of a company. *e.g.,* `littlelemon`.
   - **top level domain** is used to reference a country or category of the organization. *e.g.,* `.com` address can indicate a comercial entity.
-- **path** also known as the **page path** directs the user to the **location of a resource**. *e.g.,* `/customers/5`, `/menu`.
-- **query string** begins with a question mark symbol `?` and is **placed after** the URL path. It **contains parameters** represented as **key value pairs**. *e.g.,* `?year=2022`.
+- **path** also known as the **page path** directs the user to the **location of a resource.** *e.g.,* `/customers/5`, `/menu`.
+- **query string** begins with a question mark symbol `?` and is **placed after** the URL path. It **contains parameters** represented as **key value pairs.** *e.g.,* `?year=2022`.
 
 ### Parameters
 
@@ -688,8 +686,8 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
 #### Path Parameter
 
-- A path parameter is **a variable part** of the URL that is **used to identify a specific resource**, *such as* `/customers/5`, where `5` is an argument of the path parameter.
-- There may be **multiple path parameters** in the URL, separated by the **path separtor**, the slash symbol `/`.
+- A path parameter is **a variable part** of the URL that is **used to identify a specific resource,** *such as* `/customers/5`, where `5` is an argument of the path parameter.
+- There may be **multiple path parameters** in the URL, separated by the **path separtor,** the slash symbol `/`.
 - **How it works:**
   - The URL dispatcher **maps the pattern to** the view function and identifies `5` as the customer id `cust_id` parameter.
 
@@ -702,12 +700,12 @@ The view function in Django **receives** its **mandatory argument** as the **req
     def customers(request: HttpRequest, cust_id: int):
       pass
     ```
-  - The **parameter names** added inside the `path` function in the `urls.py` file **must match the ones added** inside the `customers()` view function associated with it in the `views.py` file. The parameters **order isn't important**.
+  - The **parameter names** added inside the `path` function in the `urls.py` file **must match the ones added** inside the `customers()` view function associated with it in the `views.py` file. The parameters **order isn't important.**
 
 #### Path Converters
 
 - The URL pattern treats the **identifiers in angular brackets** `<>` as the path parameters.
-- **By default**, it **parses** the received **value to** the **string type**.
+- **By default,** it **parses** the received **value to** the **string type.**
 - Path parameters avaiblable are:
   - `str`: matches any **non-empty string** and **excludes** the path separator `/`. This is the default if a converter isn't included in the expression.
   - `path`: matches any **non-empty string** and **includes** the path separator `/`.
@@ -731,7 +729,7 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
 #### Body Parameter
 
-- Body parameters are data sent in the **body of** a `POST` request, **typically** from an **HTML form**, which is not visible in the URL.
+- Body parameters are data sent in the **body of** a `POST` request, **typically** from an **HTML form,** which is not visible in the URL.
 - Values can be get via request object's `POST` progerty, as demonstrated below.
 
   ```python
@@ -747,13 +745,13 @@ The view function in Django **receives** its **mandatory argument** as the **req
   1. a **request comes** in, *e.g.,* `/customers/5/`.
   2. Django **removes** the domain name and leading slashes.
   3. URL dispatcher **looks** at the `urlpatterns` list in `urls.py` file(s).
-  4. It checks each pattern, from **top to bottom**.
-  5. The **first matching pattern** triggers the **corresponding view**.
+  4. It checks each pattern, from **top to bottom.**
+  5. The **first matching pattern** triggers the **corresponding view.**
   6. Django **calls** that view and **returns** the response.
 
 #### URL Mapping
 
-- URL mapping is a **set of URL patterns** that **are defined** in `urls.py` file(s). It's a list of instruction or **a table of routes**.
+- URL mapping is a **set of URL patterns** that **are defined** in `urls.py` file(s). It's a list of instruction or **a table of routes.**
 - **Components** of URL mapping:
   1. **URL patterns:** written in `urls.py` using `path()` or `re_path()` function.
   2. **Views:** functions or classes that handle the request.
@@ -767,7 +765,7 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
 #### Regular Expressions in URLs
 
-- Regular expressions are used to **define**, extract, and validate **dynamic URL paths** before they are sent to the associated view function.
+- Regular expressions are used to **define,** extract, and validate **dynamic URL paths** before they are sent to the associated view function.
 - To **use regular expressions** in URLs, it needs to **import and use** the `re_path()` function from the `django.urls` module.
 - Example:
 
@@ -787,7 +785,7 @@ The view function in Django **receives** its **mandatory argument** as the **req
 #### URL Pattern Convention
 
 Django follows a convention similar to directory in Unix:
-- ending pattern with a **trailing slash**: to look like a "container" endpoints. *For example,* `"menu_item/10/"`.
+- ending pattern with a **trailing slash:** to look like a "container" endpoints. *For example,* `"menu_item/10/"`.
 - **NOT include** a leading slash.
 
 Django by default redirects URLs like `example.com/menu_item/10` to `example.com/menu_item/10/`. Hence, the pattern `menu_item/10/` works with both `example.com/menu_item/10` and `example.com/menu_item/10/`, but `menu_item/10` doesn't work with `example.com/menu_item/10/`.
@@ -811,7 +809,7 @@ Django does not expect leading slash, so `/menu_item/10/` won't match `example.c
   >>> reverse("demoapp:index")
   "/demo/"
   ```
-- We can also **define** the **instance namespace** in the `include` function **while adding** an app's `urlpatterns`. This namespace is called the **instance namespace**.
+- We can also **define** the **instance namespace** in the `include` function **while adding** an app's `urlpatterns`. This namespace is called the **instance namespace.**
 
   ```python
   urlpatterns = [
@@ -849,11 +847,13 @@ Django does not expect leading slash, so `/menu_item/10/` won't match `example.c
 
     return redirect(reverse("homepage"))
     ```
-  - **in templates**, indirectly via `{% url %}`.
+  - **in templates,** indirectly via `{% url %}`.
 
     ```html
     <a href="{% url 'homepage' %}">Home</a>
     ```
+
+    **Note:** `{% url %}` is a **built-in** Django template tag. It **works out of the box** in Django templates - **no** import and **no** `{% load %}` statement **required.**
   - in Django REST framework **when** building hyperlinks.
 
 ### Error Handling
@@ -870,7 +870,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   templates/404.html
   templates/500.html
   ```
-- **Custom error handlers**: We may define customer view functions to handle errors in the `urls.py` module at the project level.
+- **Custom error handlers:** We may define customer view functions to handle errors in the `urls.py` module at the project level.
 
   ```python
   # project/urls.py
@@ -893,7 +893,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
 
 ### Class-based Views
 
-- Class-based views are **views written as classes**, instead of functions (*function-based views*).
+- Class-based views are **views written as classes,** instead of functions (*function-based views*).
 
   Example:
   ```python
@@ -916,14 +916,14 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   ]
   ```
 - Class-based views **repond** to HTTP requests using class **instance methods:** `get`, `post`, `put`, `delete`, `patch`.
-- They allow to **structure view logic** in an **object-oriented way**, making code more **reusable**, **organized**, and **extensible**.
+- They allow to **structure view logic** in an **object-oriented way,** making code more **reusable, organized,** and **extensible.**
   - **code reusability:** we can **create base classes** and let other views **inherit** behavior.
   - **cleaner** and **orgnized code:** logic is **grouped into class methods** instead of long function-based views.
   - **extensiblity:** we can override just the parts we need.
 - Django provides many **built-in generic views** *such as* `ListView`, `DetailView`, `CreateView`, `UpdateView`, `DeleteView`, `FormView`.
-- Class-based views **allow** inheritance and **mixins**.
-  - A mixin is a class **designed to be inherited alongside another** class to **add extra features**, but **not mean to stand alone**.
-  - Mixins are **reusable**, contain **small, focused logic**, allow to **combine behaviors** cleanly.
+- Class-based views **allow** inheritance and **mixins.**
+  - A mixin is a class **designed to be inherited alongside another** class to **add extra features,** but **not mean to stand alone.**
+  - Mixins are **reusable,** contain **small, focused logic,** allow to **combine behaviors** cleanly.
   - When using mixins, always **place** them **before** the view class so that Python's **MRO (Method Resolution Order)** to find the mixin methods first.
 
     Example:
@@ -946,9 +946,9 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   - if the view is **complex or reusable** $\rightarrow$ use class-based views.
 - **Use function-based views when:**
   - **simple view:** returns a template, handles one request method, has straightforward behavior.
-  - no need for inheritance, need **maximum transparency and control**.
-  - the view is **small and not reused**.
-  - prefer **direct control**.
+  - no need for inheritance, need **maximum transparency and control.**
+  - the view is **small and not reused.**
+  - prefer **direct control.**
 - **Use class-based views when:**
   - need to **handle multiple HTTP methods** cleanly.
   - want to **reuse or extend** behavior.
@@ -958,10 +958,10 @@ Django has a **built-in error handling system** that helps us manage exceptions,
 
 ### Method Resolution Order (MRO)
 
-- **Method Resolution Order (MRO)** is the **rule** that Python uses **to decide** which class's method/attribute gets **called first** when multiple classes are involved, especially **in multiple inheritance**.
+- **Method Resolution Order (MRO)** is the **rule** that Python uses **to decide** which class's method/attribute gets **called first** when multiple classes are involved, especially **in multiple inheritance.**
 - **MRO becomes important** when:
-  - a class inherits from **multiple parent classes**.
-  - two **parents contains** a method with the **same name**.
+  - a class inherits from **multiple parent classes.**
+  - two **parents contains** a method with the **same name.**
   - mixins are used.
   - want to know which `super` method is called next.
 - **MRO decides** the search path Python will follow.
@@ -985,7 +985,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   instance = C()
   instance.hello()  # A
   ```
-  Even though the `C` class inherits from both `A` and `B` classes. Both of them have the `hello` method, Python chooses the one of `A`, not `B`. That decision is **based on the MRO**.
+  Even though the `C` class inherits from both `A` and `B` classes. Both of them have the `hello` method, Python chooses the one of `A`, not `B`. That decision is **based on the MRO.**
 - The built-in `mro` method is used to see the MRO. *For example,* `C.mro()` returns the following list, that is the **exact search order** Python uses.
 
   ```python
@@ -996,7 +996,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
     <class 'object'>
   ]
   ```
-- Python **uses** an algorithm called **C3 Linearization** to **determine MRO**:
+- Python **uses** an algorithm called **C3 Linearization** to **determine MRO:**
   - **Preserve the order** of inheritance.
   - **Respect MRO** of parent classes.
   - **Avoid** inconsistency and conflicts.
@@ -1008,7 +1008,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
 - A model is the **single definitive source** of information about the data. It **contains** the **essential fields** and **behaviors** of the data.
 
   > *A model is a blueprint for a database table, written in Python.*
-- Each model is a Python class that **subclasses** `django.db.models.Model`. A **typical definition** of a model class is done **inside the app's `models.py` file**. *For example:*
+- Each model is a Python class that **subclasses** `django.db.models.Model`. A **typical definition** of a model class is done **inside the app's `models.py` file.** *For example:*
 
   ```python
   from django.db import models
@@ -1018,18 +1018,18 @@ Django has a **built-in error handling system** that helps us manage exceptions,
     first_name = models.CharField(max_length=30)
     last_name = models.CharField(max_length=30)
   ```
-- **`pk`** stands for **primary key**. It is a **symbolic pointer** to **whatever field** serves as the model's primary key. It is **not a real** model field, just a **built-in alias**. We can use `pk` in **any ORM operations**. *For example:*
+- **`pk`** stands for **primary key.** It is a **symbolic pointer** to **whatever field** serves as the model's primary key. It is **not a real** model field, just a **built-in alias.** We can use `pk` in **any ORM operations.** *For example:*
   ```python
   User.objects.get(pk=2)
   User.objects.filter(pk__in=[1, 2, 3])
   ```
 - **`id` field:** when declaring a model,
-  - if **no field** is **explicitly defined** as the **primary key**, Django **automatically creates** an auto‑incrementing `id` field **to serve** as the primary key.
+  - if **no field** is **explicitly defined** as the **primary key,** Django **automatically creates** an auto‑incrementing `id` field **to serve** as the primary key.
   - if a **specific field is defined** as the primary key, Django **does not** add the default `id` field.
 - A model:
-  - represents **a single** database **table**.
-  - each **attribute** of the model represents a **database field**.
-  - each **instance** of the model **is a row**.
+  - represents **a single** database **table.**
+  - each **attribute** of the model represents a **database field.**
+  - each **instance** of the model **is a row.**
   - provides model methods to **perform CRUD** (Create, Read, Update, and Delete) operations using [Django's ORM](#django-orm-object-relationship-mapping) (**Object-Relational Mapper**).
 
     *For example:*
@@ -1063,13 +1063,13 @@ The `django.models` module has many field types to choose from.
 
 - `CharField`: is the most used field type. It can hold string data of length specified by `max_length` parameter.
 - `TextField`: is similar to `CharField`, but for a longer string.
-- `IntegerField`: stores an integer between $-2^{31}$ to $2^{31}-1$ (2_147_483_647). This **limit comes from** Django mapping `IntegerField` to the database `INTEGER` / `INT` data type, which is limited to **32 bits**. Similar fields to store integers of varying lengths:
+- `IntegerField`: stores an integer between $-2^{31}$ to $2^{31}-1$ (2_147_483_647). This **limit comes from** Django mapping `IntegerField` to the database `INTEGER` / `INT` data type, which is limited to **32 bits.** Similar fields to store integers of varying lengths:
   - `SmallIntegerField`: stores an integer between $-2^{15}$ to $2^{15}-1$ (32_767).
   - `BigIntegerField`: stores an integer between $-2^{63}$ to $2^{63}-1$ (9.22e18).
   - `PositiveIntegerField`: stores an integer between $0$ to $2^{31}-1$. In fact, it store **non-negative** values.
   - `AutoField`: **only** used **for primary key** and auto-increment, stores an integer between $1$ to $2^{31}-1$.
 - `FloatField`: stores a floating-point number.
-- `DecimalField`: stores a number **with fixed digits** in the **fractional part**.
+- `DecimalField`: stores a number **with fixed digits** in the **fractional part.**
 - `DateTimeField`: stores the date and time as an object of Python's `datetime.datetime` class.
 - `DateField`: stores `datetime.date` value.
 - `EmailField`: is a `CharField` with an in-built `EmailValidator`.
@@ -1079,10 +1079,10 @@ The `django.models` module has many field types to choose from.
 ### Model Relationships
 
 - **Primary Key** is a **unique identifier** for each record in a database table, **ensuring** that no two rows have the same value.
-- **Foreign Key** is a **field** in one table that **uniquely identifies** a row of **another table**, establishing a **relationship between two table**.
-- The idea behind **designing related tables** is to **avoid data redundancy**, unnecessary repetition of the same data in many rows and **ensure data integrity**.
+- **Foreign Key** is a **field** in one table that **uniquely identifies** a row of **another table,** establishing a **relationship between two table.**
+- The idea behind **designing related tables** is to **avoid data redundancy,** unnecessary repetition of the same data in many rows and **ensure data integrity.**
 
-- Relational databases have a mechanism to **prevent** the **deletion of the primary key** if it is **being used** in the **related table** so that the data integrity is **intact**.
+- Relational databases have a mechanism to **prevent** the **deletion of the primary key** if it is **being used** in the **related table** so that the data integrity is **intact.**
 - There are **three types of relationships** that exists:
   - **One-to-One** relationship: **a record** in one model is **associated with exactly one record** in another model.
 
@@ -1142,18 +1142,18 @@ The `django.models` module has many field types to choose from.
       credits = model.IntegerField()
     ```
 
-    **Note:** Relational databases do **not natively support** Many‑to‑Many relationships and therefore **require an intermediate table**. Django **generates this junction model automatically**, managing **referential integrity** as well as **admin and ORM integration**. This **simplifies** development and **prevents** accidental duplicates, although it **also reduces** the level of customization available.
+    **Note:** Relational databases do **not natively support** Many‑to‑Many relationships and therefore **require an intermediate table.** Django **generates this junction model automatically,** managing **referential integrity** as well as **admin and ORM integration.** This **simplifies** development and **prevents** accidental duplicates, although it **also reduces** the level of customization available.
 
-- `on_delete` option **sepcifies the behavior** in case the **associated object** in the primary model **is deleted**. The values are:
+- `on_delete` option **sepcifies the behavior** in case the **associated object** in the primary model **is deleted.** The values are:
   - **CASCADE:** deletes the object containing the `ForeignKey`. Deleting the reference object will also delete the referred objects.
 
-    *For example,* suppose that a vehicle belongs to a customer. **When the customer** is deleted, **all the vehicles** that reference the customer will **be automatically deleted**.
-  - **PROTECT:** is the opposite of **CASCADE**. It prevents deletion of a referenced object if it has an object referencing it in the database.
+    *For example,* suppose that a vehicle belongs to a customer. **When the customer** is deleted, **all the vehicles** that reference the customer will **be automatically deleted.**
+  - **PROTECT:** is the opposite of **CASCADE.** It prevents deletion of a referenced object if it has an object referencing it in the database.
 
     *For example,* if a customer has vehicles, it cannot be deleted. Django will raise the `ProtectedError` if the customer is forcefully deleted.
-  - **RESTRICT:** prevents deletion of the referenced object by raising `RestrictedError`, but it **allows deletion if** *all referencing objects are also being deleted* **in the same operation**.
+  - **RESTRICT:** prevents deletion of the referenced object by raising `RestrictedError`, but it **allows deletion if** *all referencing objects are also being deleted* **in the same operation.**
 
-    This behavior is **different** from **PROTECT**, which prevents deletion whenever a related reference exists, **even** when that referenced record is being deleted too.
+    This behavior is **different** from **PROTECT,** which prevents deletion whenever a related reference exists, **even** when that referenced record is being deleted too.
 
     *For example,* with the code block below
 
@@ -1169,22 +1169,22 @@ The `django.models` module has many field types to choose from.
     college.delete()
     principal.delete()
     ```
-    - if the relationship between `College` and `Principal` is set to **PROTECT**, the deletion will be blocked and a `ProtectedError` will be raised.
-    - if the relationship between `College` and `Principal` is set **RESTRICT**, the deletion will be succeed because Django recognizes that the referenced object will be deleted as part of the same operation.
-  - **Note:** when `delete` methods are called, Django does **NOT delete rows immediately**. Instead, it **first plans** the entire delete, **then checks** whether it's legal, **then executes** it.
+    - if the relationship between `College` and `Principal` is set to **PROTECT,** the deletion will be blocked and a `ProtectedError` will be raised.
+    - if the relationship between `College` and `Principal` is set **RESTRICT,** the deletion will be succeed because Django recognizes that the referenced object will be deleted as part of the same operation.
+  - **Note:** when `delete` methods are called, Django does **NOT delete rows immediately.** Instead, it **first plans** the entire delete, **then checks** whether it's legal, **then executes** it.
     - Builds a delete graph.
     - Checks constraints (`on_delete`).
     - Executes deletes in a safe order.
 
     Under **PROTECT** relationship, Django **aborts the deletion immediately** as soon as it detects a related object. It does not considers whether that the related object might also be deleted later, no delete graph analysis is performed.
 
-    Under **RESTRICT** relationship, Django **waits until the entire delete graph is known**, then it determines *whether any restricted objects would remain after the operation*. If so, it raises `RestrictedError`; if not, the deletion procceds.
+    Under **RESTRICT** relationship, Django **waits until the entire delete graph is known,** then it determines *whether any restricted objects would remain after the operation.* If so, it raises `RestrictedError`; if not, the deletion procceds.
 
 ### Migrations
 
 - Migration is a **mechanism** that **translates** the model changes into database schema changes, allowing for **version control** of the database structure.
-- It **propagates** any changes in the model structure *such as* adding, modifying, or removing a field attribute of a model class to the **mapped table**.
-- Django's migration is a **version control system**. It has the following commands:
+- It **propagates** any changes in the model structure *such as* adding, modifying, or removing a field attribute of a model class to the **mapped table.**
+- Django's migration is a **version control system.** It has the following commands:
   - `makemigrations` creates migration scripts that reflect changes made to models, which are then applied to the database.
   - `migrate` applies the migration scripts to the database, creating or modifying tables as defined in the migration files.
   - `sqlmigrate` shows the SQL query or queries executed when a certain migration script is run.
@@ -1206,9 +1206,9 @@ from django.db import models
 
 ### Django ORM (Object Relationship Mapping)
 
-[Object-Relational Mapping (ORM)](#object-relational-mapping-orm) is the ability to **create** a **SQL query using object-oriented programming language**. This **enables** a **quick turnaround time** in fast **production environments** that need constant updates.
+[Object-Relational Mapping (ORM)](#object-relational-mapping-orm) is the ability to **create** a **SQL query using object-oriented programming language.** This **enables** a **quick turnaround time** in fast **production environments** that need constant updates.
 
-Django has its own ORM layer. Its migration mechanism **propagates** the **models** in **database tables**. We need to **construct** a `QuerySet` via a `Manager` of a **model class** to **retrieve objects** from our database.
+Django has its own ORM layer. Its migration mechanism **propagates** the **models** in **database tables.** We need to **construct** a `QuerySet` via a `Manager` of a **model class** to **retrieve objects** from our database.
 
 Each model is a Python class that subclasses `django.db.models.Model`. *For example:*
 ```python
@@ -1240,8 +1240,8 @@ class Menu(models.Model):
   print(type(Menu.objects.all()))  # django.db.models.query.QuerySet
   ```
 - **When to use** `Manager`s ?
-  - Queries related to the **entire table**.
-  - Default **filtering logic**.
+  - Queries related to the **entire table.**
+  - Default **filtering logic.**
   - Entry point for **custom query** methods.
 
 #### QuerySet
@@ -1249,19 +1249,19 @@ class Menu(models.Model):
 - A `QuerySet` is a **lazy collection of objects** retrieved from the database.
 - A `QuerySet`:
   - **represents** a database query.
-  - can be **filtered, sliced, ordered**.
+  - can be **filtered, sliced, ordered.**
 
     *For example:*
     ```python
     qs = Menu.objects.filter(name__icontains="pasta")
     ```
-  - can be **chained**.
+  - can be **chained.**
 
     *For example:*
     ```python
     qs = Menu.objects.filter(name__icontains="pasta").order_by("name")
     ```
-    These above query sets are **chained to one SQL query**, not many.
+    These above query sets are **chained to one SQL query,** not many.
   - is a **lazy evaluation** (not executed until needed).
   - **returns** model instances.
 
@@ -1271,7 +1271,7 @@ class Menu(models.Model):
   - **printed**
   - **accessed** with the `len` function.
 
-- **How to find the SQL query generated?** the`QuerySet`'s `query` attribute **returns** the **SQL query generated**.
+- **How to find the SQL query generated?** the`QuerySet`'s `query` attribute **returns** the **SQL query generated.**
 
   *For example:*
   ```python
@@ -1326,7 +1326,7 @@ class Menu(models.Model):
 
 ### Common Problems
 
-We use the `Author` and `Book` classes below to demonstrate the problems.
+The `Author` and `Book` classes below are used to demonstrate the problems.
 
 ```python
 from django.db import models
@@ -1344,7 +1344,7 @@ class Book(models.Model):
 
 #### N+1 Problem
 
-Refers to a problem where **one query** is used to fetch a list of objects, **followed by N additional** queries **to fetch** their **related data**. *For example:*
+Refers to a problem where **one query** is used to fetch a list of objects, **followed by N additional** queries **to fetch** their **related data.** *For example:*
 
 ```python
 books = Book.objects.all()
@@ -1377,9 +1377,9 @@ class Book(models.Model):
   status = models.CharField(max_length=50, db_index=True)
 ```
 
-#### Fetching Too Many Columns
+#### Fetching Too Many Columns Problem
 
-Is a **data-access performance problem** where the query **retrieves more** fields **than** the actual needs. *For example:*
+Refers to a **data-access performance problem** where the query **retrieves more** fields **than** the actual needs. *For example:*
 
 ```python
 Book.objects.all()
@@ -1391,15 +1391,15 @@ Book.objects.all()
 Book.objects.only("id", "status")
 ```
 
-#### Too many JOINs
+#### Too many JOINs Problem
 
-Happens when a query **joins more tables than are actually needed**, making it slow, complex, and hard for the database optimizer to execute efficiently. *For example:*
+Happens when a query **joins more tables than are actually needed,** making it slow, complex, and hard for the database optimizer to execute efficiently. *For example:*
 
 ```python
 Book.objects.select_related("author__profile__country__continent")
 ```
 
-**To fix** the problem, we should **join only** what we need, **fetch specific** fields rather than entire tables, or intentionally **split queries**. *For example:*
+**To fix** the problem, we should **join only** what we need, **fetch specific** fields rather than entire tables, or intentionally **split queries.** *For example:*
 
 ```python
 # join only what we need
@@ -1409,7 +1409,234 @@ Book.objects.select_related("author")
 Book.objects.only("id", "author__name")
 ```
 
-### Form
+### Django Form
+
+- A form is a **document** wherein the user **enters** their responses **at** certain labeled placeholders.
+- Django **includes** a `Form` class, its attributes, and methods **in** the `django.forms` module. This class is **used as a base** for a user-defined form design.
+
+  ```python
+  form django import forms
+
+
+  class ApplicationForm(forms.Form):
+    pass
+  ```
+- The **attributes of the form** are `Field` class objects. The `django.forms` module has a collection of `Field` types. These fields **correspond to** the HTML elements they enventually render on the user's browser. *For example:*
+  - the `forms.CharField` is translated to HTML's text input type.
+  - the `forms.ChoiceField` is equivalent to `<select>` in HTML.
+
+  ```python
+  from django import forms
+
+
+  POSTS = (
+    ("mananger", "Manager"),
+    ("cashier", "Cashier"),
+    ("operator", "Operator"),
+  )
+
+
+  class ApplicationForm(forms.Form):
+    name = forms.CharField(label="Name of Application", max_length=50)
+    address = forms.CharField(label="Address", max_length=100)
+    post = forms.ChoiceField(choices=POSTS)
+  ```
+- **By convention,** the user-defined **form classes** are **stored in** a `forms.py` file in the **app's package folder.**
+
+#### Form Fields
+
+Some of the **most frequently used fields** are as follow:
+- `CharField`: translates to **input** `type=text` HTML form element.
+
+  ```python
+  forms.CharField(label="Name of Application", max_length=50)
+  ```
+
+  **Set** the field's `widget` property to `forms.Textarea` **to create** a `textarea`.
+
+  ```python
+  forms.CharField(label="Name of Application", widget=forms.Textarea)
+  ```
+- `EmailField`: a `CharField` that can **validate** if the text entered is a **valid email.**
+
+  ```python
+  forms.EmailField(max_length=254)
+  ```
+- `IntegerField`: similar to a `CharField` but customized to **accept only integer** numbers. We **can limit** the value entered by setting `min_value` and `max_value` parameters.
+
+  ```python
+  forms.IntegerField(min_value=0, max_value=10)
+  ```
+- `FloatField`: a text input field that **validates** if the input is a valid **float number.**
+
+  ```python
+  forms.FloatField()
+  ```
+- `DecimalField`: similar to `FloatField` but **supports fixed** numbers of **decimal places.**
+
+  ```python
+  forms.DecimalField(max_digits=10, decimal_places=2)
+  ```
+
+  `max_digits` and `decimal_places` are **mandatory** parameters of this field type.
+- `FileField`: presents an **input** `type=file` element on the HTML form.
+
+  ```python
+  forms.FileField(upload_to="uploads/")
+  ```
+- `ImageField`: similar to `FileField` with **added validation** to check if the uploaded file is an **image**. The [pillow](https://pypi.org/project/pillow/) library is **required** for this field type to be used.
+
+  ```python
+  forms.ImageField(upload_to="uploads/")
+  ```
+- `ChoiceField`: **emulates** the HTML's `select` element. Populates the **drop-down list** with a `choices` parameter whose value should be a **sequence of two item tuples** `([value], [text_displayed])`.
+
+  ```python
+  PAYMENT_CHOICES = (
+    ("card", "Credit Card"),
+    ("cash", "Cash"),
+    ("upi", "UPI"),
+  )
+
+  forms.ChoiceField(choices=PAYMENT_CHOICES)
+  ```
+
+  **Set** the field's `widget` property to `forms.RadioSelect` to create **radio buttons.**
+
+  ```python
+  forms.ChoiceField(choices=PAYMENT_CHOICES, widget=forms.RadioSelect)
+  ```
+
+#### Form Rendering
+
+To **render** a form object on a browser, we have to **first write** an HTML template and put the form object in `jinja2` tag. *For example,* we create the `form.html` file as follow:
+
+```html
+<html>
+  <body>
+    <form action="{% url 'application-form' %}" action="POST">
+      {% csrf_token %}
+      <table>
+        {{ form }}
+      </table>
+      <input type="submit" value="Submit">
+    </form>
+  </body>
+</html>
+```
+
+**Then** in the app's `views.py` file which renders the `form.html` template and **sends** the `ApplicationForm` object as a context.
+
+```python
+from django.http import HttpRequest, HttpResponse
+from django.shortcuts import render
+from .forms import ApplicationForm
+
+
+def render_application_form(request: HttpRequest) -> HttpResponse:
+  application_form = ApplicationForm()
+  return render(request, "form.html", {"form": application_form})
+```
+
+Inside the `form.html` template, the **form** can **be rendered** in **different ways:**
+- `{{ form.as_table }}`: renders the form **as table cells** wrapped in `<tr>` tags. The form is **rendered** as a table **by default**. *For example:*
+
+  ```html
+  <tr>
+    <th><label for="id_name">Name of Applicant:</label></th>
+    <td>
+      <input type="text" name="name" maxlength="50" required id="id_name">
+    </td>
+  </tr>
+  ```
+- `{{ form.as_div }}`: renders the form **as divisions** wrapped in `<div>` tags. *For example:*
+
+  ```html
+  <div>
+    <label for="id_name">Name of Applicant:</label>
+    <input type="text" name="name" maxlength="50" required id="id_name">
+  </div>
+  ```
+- `{{ form.as_p }}`: renders the form **as paragraphs** wrapped in `<p>` tags. *For example:*
+
+  ```html
+  <p>
+    <label for="id_name">Name of Applicant:</label>
+    <input type="text" name="name" maxlength="50" required id="id_name">
+  </p>
+  ```
+- `{{ form.as_ul }}`: renders the form **as list items** wrapped in `<li>` tags. *For example:*
+
+  ```html
+  <li>
+    <label for="id_name">Name of Applicant:</label>
+    <input type="text" name="name" maxlength="50" required id="id_name">
+  </li>
+  ```
+
+#### Reading From Contents
+
+- A **view function** processes data submitted by the user, whether to create a new record or perform other server‑side actions.
+- It first **populate** the form object with the POST data and **check** it is valid.
+- The `django.forms.Form` class **provides** the `is_valid` method to **run validation** on each field and **return** `True` if all field validations are passed. *For example:*
+
+  ```python
+  from django.http import HttpRequest, HttpResponse
+  from .forms import ApplicationForm
+
+
+  def process_application_form(request: HttpRequest) -> HttpResponse:
+    if request.method != "POST":
+      return HttpResponse("method not allowed!")
+
+    form = ApplicationForm(request.POST)
+    if not form.is_valid():
+      return HttpResponse("data submitted is invalid!")
+
+    # process the data submitted
+    return HttpResponse("data submitted is processed!")
+  ```
+
+- Once the `Form` instance is **validated**, we can **access** the data individual field **via** its `cleaned_data` **attribute.** It ensures that the field contains the output in consistent form. *For example:*
+
+  ```python
+  name = form.cleaned_data["name"]
+  address = form.cleaned_data["address"]
+  post = form.cleaned_data["post"]
+  ```
+
+#### Cross-Site Request Forgery (CSRF) Attack
+
+- **CSRF** (Cross-Site Request Forgery) **exploits** the browser's implicit trust, **not a bug** in the code.
+
+  > Browsers **automatically send cookies** (session, auth) with every request to a domain, even if the request was **triggered by** another site.
+- A CSRF attack **tricks** a logged-in user's browser **into sending** an **unintended request** to a trusted site, **using** the **user's own cookies** to **perform** an action **without** consent. *For example:*
+  - The user **logs into** `bank.com`.
+  - The **browser stores** a session cookie `session_id=abc123`.
+  - The user **visits** `evil.com` **while** still logged in `bank.com`.
+  - `evil.com` contains a **hidden HTML form to** send a request to `bank.com`.
+  - The browser **automatically includes** user's session cookie.
+  - The bank server **sees** valid session cookie, valid POST request then it **processes** the request.
+
+  The scenario **works because** cookies are **included automatically** and the server **cannot tell whether** the request came from the legitimate form or from another site. That's the **CSRF vulnerability.**
+
+  **Cookies** alone are **not enough,** because they **prove** who the user is **but not where** the request comes from.
+- **How CSRF tokens work?**
+  - When the **user visits** the website, Django **generates** a radom, secret **CSRF token** for the user.
+  - The token is **sent and stored** in a cookie in the browser.
+  - When the user submits a form, **the token** stored in the cookies **is embedded** into the HTML form as a **hidden field generated** by `{% csrf_token %}`.
+  - The browser **sends both** cookies and the form token.
+  - Django's **CSRF middleware compares** the two tokens.
+  - If they **match**, the request is **accepted.**
+  - If **missing or different**, Django returns **403 Forbidden.**
+
+  The attacker **cannot supply the correct CSRF token** because:
+  - it **cannot read cookies** from another domain.
+  - it **cannot read form** HTML from another domain.
+  - it **cannot guess token** (random and long).
+- **When** to **use** a **CSRF token** and **when not** to?
+  - CSRF token **required for** `POST`, `PUT`, `PATCH`, `DELETE` when using forms or **modifying** server-side data.
+  - CSRF token **not required** for `GET` requests and read-only views.
 
 ### Django Admin
 
