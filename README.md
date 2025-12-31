@@ -48,6 +48,7 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
   - [Error Handling](#error-handling)
   - [Class-based Views](#class-based-views)
   - [Method Resolution Order (MRO)](#method-resolution-order-mro)
+  - [Naming Convention](#naming-convention)
 - [Models](#models)
   - [Field Types](#field-types)
   - [Model Relationships](#model-relationships)
@@ -67,6 +68,10 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
     - [Reading From Contents](#reading-from-contents)
     - [Cross-Site Request Forgery (CSRF) Attack](#cross-site-request-forgery-csrf-attack)
   - [Django Admin](#django-admin)
+    - [Customizing User Admin](#customizing-user-admin)
+    - [Customizing Model Admin](#customizing-model-admin)
+    - [Permissions](#permissions)
+    - [Enforcing Permissions](#enforcing-permissions)
   - [Database Options](#database-options)
 
 
@@ -271,7 +276,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 - An app is **responsible for performing one single task** out of the many involved in the complete web application, represented by the Django project.
 - The `startapp` command option of the `manage.py` script creates a default folder structure for the app of that name.
 
-  ```python
+  ```cmd
   > python manage.py startapp <app_name>
   ```
 - The folder structure looks like this
@@ -776,21 +781,21 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
 
   urlpatterns = [
-    path("menu_item/10/", views.display_menu_item, name="static_path"),
-    path("menu_item/<int:id>/", views.display_menu_item, name="dynamic_path"),
-    re_path(r"^menu_item/([0-9]{2})/$", views.display_menu_item, name="regex_path"),
+    path("menu-item/10/", views.display_menu_item, name="static_path"),
+    path("menu-item/<int:id>/", views.display_menu_item, name="dynamic_path"),
+    re_path(r"^menu-item/([0-9]{2})/$", views.display_menu_item, name="regex_path"),
   ]
   ```
 
 #### URL Pattern Convention
 
 Django follows a convention similar to directory in Unix:
-- ending pattern with a **trailing slash:** to look like a "container" endpoints. *For example,* `"menu_item/10/"`.
+- ending pattern with a **trailing slash:** to look like a "container" endpoints. *For example,* `"menu-item/10/"`.
 - **NOT include** a leading slash.
 
-Django by default redirects URLs like `example.com/menu_item/10` to `example.com/menu_item/10/`. Hence, the pattern `menu_item/10/` works with both `example.com/menu_item/10` and `example.com/menu_item/10/`, but `menu_item/10` doesn't work with `example.com/menu_item/10/`.
+Django by default redirects URLs like `example.com/menu-item/10` to `example.com/menu-item/10/`. Hence, the pattern `menu-item/10/` works with both `example.com/menu-item/10` and `example.com/menu-item/10/`, but `menu-item/10` doesn't work with `example.com/menu-item/10/`.
 
-Django does not expect leading slash, so `/menu_item/10/` won't match `example.com/menu_item/10/`.
+Django does not expect leading slash, so `/menu-item/10/` won't match `example.com/menu-item/10/`.
 
 **Rule of thumb: never use** leading slash, **use trailing slash** to keep consistency.
 
@@ -800,12 +805,12 @@ Django does not expect leading slash, so `/menu_item/10/` won't match `example.c
 
   ```python
   # demoapp/urls.py
-  app_name = "demoapp"
+  app_name = "demo_app"
   ```
 - Django **differentiates** between **same-name URLs** in multiple apps with application namespace.
 - The `app_name` defines the **application namespace** so that the views in this app are identified by it.
 
-  ```python
+  ```shell
   >>> reverse("demoapp:index")
   "/demo/"
   ```
@@ -813,7 +818,7 @@ Django does not expect leading slash, so `/menu_item/10/` won't match `example.c
 
   ```python
   urlpatterns = [
-    path("demo/", include("demoapp.urls", namespace="demoapp"))
+    path("demo/", include("demoapp.urls", namespace="demo_app"))
   ]
   ```
 
@@ -828,14 +833,14 @@ Django does not expect leading slash, so `/menu_item/10/` won't match `example.c
   - URL name is defined in the `urls.py` module.
 
     ```python
-    path("menu/<str:dish>/<int:menu_id>/", views.menu_items, name="menu_items")
+    path("menu-items/<str:dish>/<int:pk>/", views.menu_items, name="menu_items")
     ```
   - Using `reverse()` function in the `views.py` module to get the actual URL path.
 
     ```python
     from django.urls import reverse
 
-    url = reverse("menu_items", kwargs={"name": "pasta", "menu_id": 10})
+    url = reverse("menu_items", kwargs={"name": "pasta", "pk": 10})
     print(url)  # /menu/pasta/10/
     ```
 - The `reverse()` function is **commonly used:**
@@ -1002,6 +1007,62 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   - **Avoid** inconsistency and conflicts.
   - Guarantee a **single, predictable** path (linear).
 
+### Naming Convention
+
+- Naming a **view:**
+  - use **snake_case for** funtion-based views and **PascalCase for** class-based views.
+  - **use** verbs or verb-noun phrases.
+  - name **should describe** what the view does.
+  - **class-based view** names should **end with** `View`.
+
+  *For example:*
+
+  ```python
+  # views.py
+  def create_order(request: HttpRequest) -> HttpResponse:
+    pass
+
+
+  def customer_list(request: HttpRequest) -> HttpResponse:
+    pass
+
+
+  class OrderCreateView(View):
+    pass
+
+
+  class CustomerListView(View):
+    pass
+  ```
+
+- Naming **URL patterns**:
+  - use **kebab-case** (hyphen-separated) **for** URL paths, **snake_case for** URL names (the `name=` argument).
+  - **use nouns,** not verbs.
+  - should **describe** the resource/action.
+
+  *For example:*
+
+  ```python
+  # urls.py
+  urlpatterns = [
+    path("my-orders/", views.list_orders, name="order_list")
+    path("customers/", views.customer_list, name="customer_list")
+  ]
+  ```
+
+- Naming a **namespace** (`app_name`):
+  - use **snake_case.**
+  - **usually** the app name.
+  - lowercase.
+
+  *For example:*
+
+  ```python
+  # urls.py
+  app_name = "demo_app"
+  ```
+
+- In bref, use **snake_case for** URL names, function-based views and namespaces, **kebab-case for** URL paths, and **PascalCase for** class-based views.
 
 ## Models
 
@@ -1639,5 +1700,277 @@ Inside the `form.html` template, the **form** can **be rendered** in **different
   - CSRF token **not required** for `GET` requests and read-only views.
 
 ### Django Admin
+
+- Django Admin Interface, usually called **Django Admin** is a **built-in** web application that **allows for easy management** of users, groups, and permissions.
+- To **access** the Django Admin, a superuser is **required.** A **superuser** has the privileges to **add or modify** users and groups, and **can be created** using the `createsuperuser` command as follows.
+
+  ```cmd
+  > python manage.py createsuperuser
+  ```
+- If a user's `is_staff` property is **set** to `True`, they **can log in** to the admin interface. **Non-staff users** cannot access the admin site.
+- Django's admin site **provides** a very easy-to-use interface to add and modify users and groups, there are **no real restrictions** as the User admin. *For instance,* a **user** with **staff status:**
+  - can **manage** the other users.
+  - can **edit** their **own permissions**, which is not warranted.
+  - can **allocate** superuser right.
+
+  The out-of-box implementation of the admin site **doesn't prevent** this.
+- Since **Django Admin is restricted** to staff users, **to allow** regular (**non-staff**) users to **log in** the website, we need to **create a login page** using Django's built-in authentication system, as shown in the example below.
+
+  ```python
+  # views.py
+  from django.contrib.auth import authentication, login
+  from django.http import HttpRequest, HttpResponse
+  from django.shortcuts import render, redirect
+
+
+  def user_login(request: HttpRequest) -> HttpResponse:
+    if request.method != "POST":
+      return render(request, "login.html")
+
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    user = authenticate(request, username=username, password=password)
+
+    if user is None:
+      return render(request, "login.html", {"error": "Invalid credentials!"})
+
+    login(request, user)  # work for non-staff users
+    return redirect("home")
+  ```
+
+#### Customizing User Admin
+
+- The `UserAdmin` class from the `django.contrib.auth.admin` module **allows** developers to **control** which fields are editable and to implement additional security measures.
+- **To customize** the User Admin, we **first extend** the `UserAdmin` class in the app's `admin.py` file, **then unregister** the default `User` model and **register it with** the new exteded class.
+  ```python
+  # admin.py
+  from django.contrib import admin
+  from django.contrib.auth.models import User
+  from django.contrib.auth.admin import UserAdmin
+
+
+  class CustomUserAdmin(UserAdmin):
+    pass
+
+
+  admin.site.unregister(User)
+  admin.site.register(User, CustomUserAdmin)
+  ```
+
+  **Alternatively**, we **can unregister** the `User` model first, then **use** the `admin.register` **decorator to** create and register it with the extended class, as shown below.
+
+  ```python
+  # admin.py
+  from django.contrib import admin
+  from django.contrib.auth.models import User
+  from django.contrib.auth.admin import UserAdmin
+
+  admin.site.unregister(User)
+
+
+  @admin.register(User)
+  class CustomUserAdmin(UserAdmin):
+    pass
+  ```
+- In *the example* below, the `CustomUserAdmin` class **prevents users** from **modifying** the `last_login` and `date_joined` fields. It also **prevents non-superusers** from **changing** the `username`, **assigning** groups, user permissions, or **granting superuser** privileges by marking corresponding fields as read-only.
+
+  ```python
+  class CustomUserAdmin(UserAdmin):
+    readonly_fields: tuple[str, ...] = ("last_login", "date_joined")
+
+    def get_readonly_fields(self, request: HttpRequest, obj: Any = None) -> tuple[str, ...]:
+      if obj and not request.user.is_superuser:
+        return self.readonly_fields + (
+          "username",
+          "groups",
+          "user_permissions",
+          "is_superuser",
+        )
+      return self.readonly_fields
+  ```
+
+- **Notes:**
+  - If two apps **both customize** `UserAdmin`, **the one registered last wins**, and the other is silently overridden. No error. No warning. Just override.
+
+    An app's loading **order** is **determined** by its **position** in the `INSTALLED_APPS` list. *For example:*
+
+    ```python
+    # settings.py
+    INSTALLED_APPS = [
+      "app_loaded_first",
+      "app_loaded_second",
+    ]
+    ```
+  - **Best practice:** create **one app** responsible for the User Admin.
+
+#### Customizing Model Admin
+
+- Users can **perform** CRUD operations **on a model** through the Django Admin. To enable this, the model must be **registered with the admin site** as follows.
+  - **define** the model **in** the app's `models.py` file. *For example:*
+
+    ```python
+    # models.py
+    from django.db import models
+
+
+    class Book(models.Model):
+      title = models.CharField(max_length=100)
+      author = models.CharField(max_length=100)
+    ```
+  - **register** the model with the admin site **in** the app's `admin.py` file. *For example:*
+
+    ```python
+    # admin.py
+    from django.contrib import admin
+    from .models import Book
+
+
+    admin.site.register(Book)
+    ```
+- To customize a **model's admin interface**, we first **create a custom admin** class by **extending** the `ModelAdmin` class, **imported from** `django.contrib.admin` module, **then register** the model with this new admin class, similar to how we customize the User Admin. *For example:*
+
+  ```python
+  from django.contrib import admin
+
+  class BookAdmin(admin.ModelAdmin):
+    list_display = ("title", "author")
+    search_fields = ("title__contains", )
+
+
+  admin.site.register(Book, BookAdmin)
+  ```
+
+#### Permissions
+
+- Django has an **in-built system for** handling permissions. This authentication system has **features for both** authentication and authorization.
+- A **user** in Django can **be one of three** classifications:
+  - **superuser:** is a **top level user** or adminstrator of the system. This type of user **possesses permission** to add, change, or delete other users, as well as perform operations **on all the data** in the project.
+  - **staff user:** is **allowed to** access Django Admin Interface. However, a staff user **doesn't automatically get** the permission to create, read, update, and delete data in the Django admin. It **must be** given explicitly.
+  - (regular) **user:** is **not authorized to** use the admin site. When a user is created, they're **marked as** a regular, active user by default.
+- **Setting** the `is_staff` and `is_superuser` **properties** to `True` **makes a user** a staff user or a superuser, respectively.
+- The permission mechanism is **handled by** the `django.contrib.auth` app.
+- When a model is created, Django **automatically creates** `add`, `change`, `delete`, and `view` permissions. These permissions follow the **naming pattern** `[app].[action_model]` pattern.
+  - `app`: is the application name.
+  - `action`: is `add`, `change`, `delete`, or `view`.
+  - `model`: is the model name in lowercase.
+
+  *For instance,* `my_app.add_mymodel` **represents** the permission required to add a `MyModel` instance in the `my_app` application.
+- A Django **group** is a **convient way** to **assign** the **same set of permissions** to multiple users. A **group** is simply a **collection of permissions** that can **be applied to** one or more users.
+
+#### Enforcing Permissions
+
+- Django app **receives** user information **through** the `request` context.
+- **Permissions** are **often enforced at** the view layer. However, they **can also be applied** within templates, URL configurations, and both function-based and class-based views.
+- Enforcing permissions **in views:**
+
+  Below are several **common ways to verify** that a user is logged in and **authenticated:**
+  - **Use** the `is_anonymous` function of the `request.user` object. *For example:*
+
+    ```python
+    from django.core.exceptions import PermissionDenied
+    from django.http import HttpRequest, HttpResponse
+
+
+    def my_view(request: HttpRequest) -> HttpResponse:
+      if request.user.is_anonymous():
+        raise PermisionDenied()
+      return HttpResponse("Authenticated user!")
+    ```
+  - **Use** the `login_required` decorator, **imported from** `django.contrib.auth.decorators` module. *For example:*
+
+    ```python
+    from django.contrib.auth.decorators import login_required
+    from django.http import HttpRequest, HttpResponse
+
+
+    @login_required
+    def my_view(request: HttpRequest) -> HttpResponse
+      return HttpResponse("Authenticated user!")
+    ```
+
+  - **Use** the `user_passes_test` decorator, **imported from** `django.contrib.auth.decorators` module. This decorator **takes** a **single required argument**, which is a boolean function, so it **can be used for both** authentication and authorization. *For example:*
+
+    ```python
+    from typing import Union
+
+    from django.contrib.auth.base_user import AbstractBaseUser
+    from django.contrib.auth.decorators import user_passes_test
+    from django.contrib.auth.models import AnonymousUser
+    from django.http import HttpRequest, HttpResponse
+
+
+    def verify_permission(user: Union[AbstractBaseUser, AnonymousUser]) -> bool:
+      return user.is_authenticated() and user.has_perm("my_app.change_category")
+
+
+    @user_passes_test(verify_permission)
+    def update_category(request: HttpRequest) -> HttpResponse
+      return HttpResponse("Authorized user!")
+    ```
+
+  **For authorization:**
+  - **Use** the `permission_required` decorator, **imported from** `django.contrib.auth.decorators` **with** function-based views. *For example:*
+
+    ```python
+    from django.contrib.auth.decorators import permission_required
+    from django.http import HttpRequest, HttpResponse
+
+
+    @permission_required("my_app.change_category")
+    def update_category(request: HttpRequest) -> HttpResponse
+      return HttpResponse("Authorized user!")
+    ```
+  - **Use** the `PermissionRequiredMixin` class, **imported from** `django.contrib.auth.mixins` **with** class-based views. *For example:*
+
+    ```python
+    from django.contrib.auth.mixins import PermissionRequiredMixin
+    from django.views.generic import ListView
+
+    from .models import Product
+
+
+    class ProductListView(PermissionRequiredMixin, ListView):
+      model = Product
+      permission_required = "my_app.view_product"
+      template_name = "product.html"
+    ```
+- Enforcing permissions **in templates:**
+  - Django automatically injects the `user` and `perms` variables into templates, making authentication and authorization checks available directly in the template context.
+  - Check the authentication:
+
+    ```html
+    {% if user.is_authenticated %}
+    Authenticated user!
+    {% endif %}
+    ```
+  - Check the authorization:
+
+    ```html
+    {% if perms.my_app.view_product %}
+    Authorized user!
+    {% endif %}
+    ```
+  - **Note** that templates do **not enforce security** on their own. They **only hide** UI elements **and improve** the UX. Actual **permission enforcement** must **be handled** on the **server side,** typically **within views.**
+- Enforcing permissions in **URL patterns:**
+  - URL patterns **cannot** enforce permissions on their own, but we **can wrap** views with permission checks in `urls.py` **to enforce** access control at the URL level. For example:
+
+    ```python
+    # urls.py
+    from django.contrib.auth.decorators import login_required, permission_required
+    from django.urls import path
+
+    from . import views
+
+    urlpatterns = [
+      path("products/", login_required(views.display_products), name="view_product"),
+      path(
+        "products/<int:pk>/edit/",
+        permission_required("my_app.change_product")(views.update_product),
+        name="update_product"
+      ),
+    ]
+    ```
+  - **This approach** to enforcing permissions **is not recommended.**
+  - **Best practice:** URLs route requests. Views enforce permissions.
 
 ### Database Options
