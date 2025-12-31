@@ -20,8 +20,9 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
     - [Three-tier Architecture](#three-tier-architecture)
     - [Model-View-Control (MVC) Architecture](#model-view-control-mvc-architecture)
     - [Model-View-Template (MVT) Architecture](#model-view-template-mvt-architecture)
-- [View](#view)
-  - [Generic Views](#generic-views)
+- [Views](#views)
+  - [Class-Based Views](#class-based-views)
+  - [Function-Based Views vs. Class-Based Views](#function-based-views-vs-class-based-views)
   - [HyperText Transfer Protocol (HTTP)](#hypertext-transfer-protocol-http)
     - [HTTP Request](#http-request)
     - [HTTP Response](#http-response)
@@ -46,7 +47,6 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
     - [URL Namespacing](#url-namespacing)
     - [`reverse` Function](#reverse-function)
   - [Error Handling](#error-handling)
-  - [Class-based Views](#class-based-views)
   - [Method Resolution Order (MRO)](#method-resolution-order-mro)
   - [Naming Convention](#naming-convention)
 - [Models](#models)
@@ -75,6 +75,7 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
   - [Database Configuration](#database-configuration)
     - [Setup Steps](#setup-steps)
     - [Environment Variables vs. Configuration Files](#environment-variables-vs-configuration-files)
+- [Templates](#templates)
 
 
 ## Introduction to Django
@@ -307,7 +308,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   ```
 - `views.py`
 
-  **A [view](#view)** is a **user-defined function** that's **called** when Django's **URL dispatcher identifies** the client's request URL and **matches** it with a URL pattern defined in the `urls.py` file.
+  **A [view](#views)** is a **user-defined function** that's **called** when Django's **[URL dispatcher](#url-dispatcher) identifies** the client's request URL and **matches** it with a URL pattern defined in the `urls.py` file.
 - `models.py`. The **data models required** for processing in the app **are created** in this file.
 
   **A data [model](#models)** is a Python **class based on** `django.db.models` class. All the models present here **are migrated** to the database tables.
@@ -361,16 +362,123 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
     Django's **template processor uses** any context data from the view inserted in these blocks to **formulate** a dynamic response.
 
 
-## View
+## Views
 
-- The **primary role** of the view function is to **fetch the data** from the client's request, **apply** a certain processing logic to it and **send an appropriate response** back to the client.
-- It **receives** the request data in an object of class `HttpRequest`.
-- The **return value** of the view function is a `HttpResponse` object containing the actual contents, the status code, and some header information.
+- The **primary role** of a view function is to **fetch the data** from the client's request, **apply** the necessary processing logic, and **return an appropriate response** to the client.
 
-### Generic Views
-- Django make the view declaration process easier with its generic class-based view.
-- The `django.views.generic` module contains serveral view classes that provide the functionality required to perform tasks *such as* rendering a template, showing an instance, showing the list of instances and so on.
-- Some generic views are `TemplateView`, `CreateView`, `ListView`, `DetailView`, and `UpdateView`.
+  > A view function is a Python function that handles a web request and returns a web response.
+
+- It **receives** the request as an `HttpRequest` object, and **returns** an `HttpResponse` object containing the response body, status code, and any relevant headers.
+- View functions **often:**
+  - handle GET/POST requests,
+  - validate forms,
+  - query models,
+  - redirect users,
+  - return JSON (for APIs).
+- **Best practice:** view functions are placed in the application's `views.py` module.
+
+  *For example:*
+  ```python
+  # views.py
+  from django.shortcuts import render
+  from django.http import HttpResponse, HttpRequest
+
+
+  def home(request: HttpRequest) -> HttpResponse:
+    return HttpResponse("Hello World!")
+
+
+  def welcome(request: HttpRequest) -> HttpResponse:
+    context = {"name": "Alice"}
+    return render(request, "welcome.html", context)
+  ```
+
+- View functions need to [be mapped to specific URLs](#url-dispatcher), ensuring that Django calls the appropriate view when a request targets that URL.
+
+### Class-Based Views
+
+- Class-based views are **views written as classes,** instead of functions (*function-based views*).
+- Class-based views **repond** to HTTP requests using class **instance methods:** `get`, `post`, `put`, `delete`, `patch`.
+
+  *For example:*
+  ```python
+  # views.py
+  from django.views import View
+  from django.http import HttpRequest, HttpResponse
+
+
+  class HomeView(View):
+    def get(self, request: HttpRequest) -> HttpResponse:
+      return HttpResponse("Response to GET request")
+
+    def post(self, request: HttpRequest) -> HttpResponse:
+      return HttpResponse("Response to POST request")
+  ```
+- They allow to **structure view logic** in an **object-oriented way,** making code more **reusable, organized,** and **extensible.**
+  - **code reusability:** we can **create base classes** and let other views **inherit** behavior.
+  - **cleaner** and **orgnized code:** logic is **grouped into class methods** instead of long function-based views.
+  - **extensiblity:** we can override just the parts we need.
+- Django provides many **built-in generic views** in the `django.views.generic` module, *such as:*
+  - `ListView`: displays a list of objects.
+  - `DetailView`: displays details of a single object.
+  - `CreateView`: creates a new object.
+  - `UpdateView`: updates an existing object.
+  - `DeleteView`: deletes an object.
+  - `TemplateView`: renders a template.
+
+  These class-based views **simplify the process** of declaring view patterns **and reduce** the amount of boilerplate code we need to write. *For example:*
+  ```python
+  # views.py
+  from django.views.generic import ListView
+
+  from .models import Book
+
+
+  class BookListView(ListView):
+    model = Book
+    template_name = "book_list.html"
+    context_object_name = "books"
+  ```
+- Class-based views **allow** inheritance and **mixins.**
+  - A mixin is a class **designed to be inherited alongside another** class to **add extra features,** but **not mean to stand alone.**
+  - Mixins are **reusable,** contain **small, focused logic,** allow to **combine behaviors** cleanly.
+  - When using mixins, always **place** them **before** the view class so that Python's **MRO (Method Resolution Order)** to find the mixin methods first. *For example:*
+
+    ```python
+    # views.py
+    from django.views.generic import TemplateView
+
+
+    class TitleMixin:
+      title = ""
+
+      def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["title"] = self.title
+        return context
+
+
+    class HomeView(TitleMixin, TemplateView):
+      template_view = "home.html"
+      title = "Home Page"
+    ```
+
+### Function-Based Views vs. Class-Based Views
+
+- **The choice** of function-based views and class-based view **depends on** complexity, reusability, and clarity.
+  - if the view is **simple** $\rightarrow$ use function-based views.
+  - if the view is **complex or reusable** $\rightarrow$ use class-based views.
+- **Use function-based views when:**
+  - **simple view:** returns a template, handles one request method, has straightforward behavior.
+  - no need for inheritance, need **maximum transparency and control.**
+  - the view is **small and not reused.**
+  - prefer **direct control.**
+- **Use class-based views when:**
+  - need to **handle multiple HTTP methods** cleanly.
+  - want to **reuse or extend** behavior.
+  - **using generic views** *such as* `ListView`, `DetailView`, `CreateView`, `UpdateView`, `DeleteView`, `FormView`.
+  - need **cleaner, structured** code. Class-based views break behavior into clear override-able methods.
+  - **need mixins:** authentication, permissions, etc.
 
 ### HyperText Transfer Protocol (HTTP)
 
@@ -767,7 +875,8 @@ The view function in Django **receives** its **mandatory argument** as the **req
 - **Example** of a URL mapping:
 
   ```python
-  path("article/<int:year>/<slug:title>/", views.article, name="article")
+  path("home/", views.HomeView.as_view(), name="home")  # class-based view
+  path("article/<int:year>/<slug:title>/", views.article, name="article")  # function-based view
   ```
 
 #### Regular Expressions in URLs
@@ -898,71 +1007,6 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   - returns a `HttpResponseNotFound`, which is a **subclass of** `HttpResponse` that specifically indicates a 404 error. It internally **sends** an error code `404`. Other **predefined subclasses** include `HttpResponseBadRequest` and `HttpResponseForbidden`.
   - **raises** a `Http404` exception, which is a class defined in the `django.core.exceptions` module. Some **important exception types** are: `ObjectDoesNotExist`, `EmptyResultSet`, and `FieldDoesNotExist`.
 
-### Class-based Views
-
-- Class-based views are **views written as classes,** instead of functions (*function-based views*).
-
-  Example:
-  ```python
-  # views.py
-  from django.views import View
-  from django.http import HttpRequest, HttpResponse
-
-
-  class HomeView(View):
-    def get(self, request: HttpRequest) -> HttpResponse:
-      return HttpResponse("Hello world!")
-
-
-  # urls.py
-  from django.urls import path
-  from .views import HomeView
-
-  urlpatterns = [
-    path("home/", HomeView.as_view(), name="home")
-  ]
-  ```
-- Class-based views **repond** to HTTP requests using class **instance methods:** `get`, `post`, `put`, `delete`, `patch`.
-- They allow to **structure view logic** in an **object-oriented way,** making code more **reusable, organized,** and **extensible.**
-  - **code reusability:** we can **create base classes** and let other views **inherit** behavior.
-  - **cleaner** and **orgnized code:** logic is **grouped into class methods** instead of long function-based views.
-  - **extensiblity:** we can override just the parts we need.
-- Django provides many **built-in generic views** *such as* `ListView`, `DetailView`, `CreateView`, `UpdateView`, `DeleteView`, `FormView`.
-- Class-based views **allow** inheritance and **mixins.**
-  - A mixin is a class **designed to be inherited alongside another** class to **add extra features,** but **not mean to stand alone.**
-  - Mixins are **reusable,** contain **small, focused logic,** allow to **combine behaviors** cleanly.
-  - When using mixins, always **place** them **before** the view class so that Python's **MRO (Method Resolution Order)** to find the mixin methods first.
-
-    Example:
-    ```python
-    class TitleMixin:
-      title = ""
-
-      def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["title"] = self.title
-        return context
-
-
-    class HomeView(TitleMixin, TemplateView):
-      template_view = "home.html"
-      title = "Home Page"
-    ```
-- **The choice** of function-based views and class-based view **depends on** complexity, reusability, and clarity.
-  - if the view is **simple** $\rightarrow$ use function-based views.
-  - if the view is **complex or reusable** $\rightarrow$ use class-based views.
-- **Use function-based views when:**
-  - **simple view:** returns a template, handles one request method, has straightforward behavior.
-  - no need for inheritance, need **maximum transparency and control.**
-  - the view is **small and not reused.**
-  - prefer **direct control.**
-- **Use class-based views when:**
-  - need to **handle multiple HTTP methods** cleanly.
-  - want to **reuse or extend** behavior.
-  - **using generic views** *such as* `ListView`, `DetailView`, `CreateView`, `UpdateView`, `DeleteView`, `FormView`.
-  - need **cleaner, structured** code. Class-based views break behavior into clear override-able methods.
-  - **need mixins:** authentication, permissions, etc.
-
 ### Method Resolution Order (MRO)
 
 - **Method Resolution Order (MRO)** is the **rule** that Python uses **to decide** which class's method/attribute gets **called first** when multiple classes are involved, especially **in multiple inheritance.**
@@ -1040,6 +1084,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
 - Naming **URL patterns**:
   - use **kebab-case** (hyphen-separated) **for** URL paths, **snake_case for** URL names (the `name=` argument).
   - **use nouns,** not verbs.
+  - use **plural nouns** for **list endpoints.**
   - should **describe** the resource/action.
 
   *For example:*
@@ -2063,3 +2108,6 @@ The following steps outline how to configure Django with supported databases.
   PASSWORD = config("DB_PASSWORD")
   HOST = config("HOST")
   ```
+
+
+## Templates
