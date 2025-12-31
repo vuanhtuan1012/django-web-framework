@@ -72,7 +72,9 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
     - [Customizing Model Admin](#customizing-model-admin)
     - [Permissions](#permissions)
     - [Enforcing Permissions](#enforcing-permissions)
-  - [Database Options](#database-options)
+  - [Database Configuration](#database-configuration)
+    - [Setup Steps](#setup-steps)
+    - [Environment Variables vs. Configuration Files](#environment-variables-vs-configuration-files)
 
 
 ## Introduction to Django
@@ -1935,15 +1937,15 @@ Inside the `form.html` template, the **form** can **be rendered** in **different
       template_name = "product.html"
     ```
 - Enforcing permissions **in templates:**
-  - Django automatically injects the `user` and `perms` variables into templates, making authentication and authorization checks available directly in the template context.
-  - Check the authentication:
+  - Django **automatically injects** the `user` and `perms` variables **into templates,** making authentication and authorization checks **available directly in** the template context.
+  - **Check the authentication:**
 
     ```html
     {% if user.is_authenticated %}
     Authenticated user!
     {% endif %}
     ```
-  - Check the authorization:
+  - **Check the authorization:**
 
     ```html
     {% if perms.my_app.view_product %}
@@ -1973,4 +1975,91 @@ Inside the `form.html` template, the **form** can **be rendered** in **different
   - **This approach** to enforcing permissions **is not recommended.**
   - **Best practice:** URLs route requests. Views enforce permissions.
 
-### Database Options
+### Database Configuration
+
+- **By default,** Django **uses the SQLite database** for storing and retrieving application data, since Python provides built-in support for it.
+- Django also **supports other databases** such as PostgreSQL, MySQL, and more.
+
+#### Setup Steps
+
+The following steps outline how to configure Django with supported databases.
+
+- **Install** the **database server.** *For example:* PostgreSQL, MySQL.
+- **Create** a **database and user,** ensuring both are ready to use.
+- **Install** the **appropriate Python driver** so Django can connect to the database. *For example:*
+
+  ```cmd
+  # PostgreSQL driver
+  > pip install psycopg2-binary
+
+  # MySQL driver
+  > pip install mysqlclient
+  ```
+- **Configure** `settings.py` by **updating** the `DATABASES` setting with the correct `ENGINE`, `NAME`, `USER`, `PASSWORD`, `HOST`, `PORT`, and any required `OPTIONS`. *For example:*
+
+  ```python
+  # PostgreSQL
+  DATABASES = {
+    "default": {
+      "ENGINE": "django.db.backends.postgresql",
+      "NAME": "mydb",
+      "USER": "myuser",
+      "PASSWORD": "mypassword",
+      "HOST": "localhost",
+      "PORT": "5432",
+    }
+  }
+
+  # MySQL
+  DATABASES = {
+    "default": {
+      "ENGINE": "django.db.backends.mysql",
+      "NAME": "mydb",
+      "USER": "myuser",
+      "PASSWORD": "mypassword",
+      "HOST": "localhost",
+      "PORT": "3306",
+      "OPTIONS": {
+        "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+      },
+    }
+  }
+  ```
+- **Run migrations** to initialize the database schema.
+
+  ```cmd
+  > python manage.py makemigrations
+  > python manage.py migrate
+  ```
+- **Test connection** to confirm everything is working correctly.
+
+  ```cmd
+  > python manage.py dbshell
+  ```
+
+  If the command opens a DB shell (`psql`, `mysql`, etc.), the config works.
+
+#### Environment Variables vs. Configuration Files
+
+- **Best practice:**
+  - **Never hardcode sensitive information** in source code, as it can easily **be exposed, leaked, or commited** to version control.
+  - Use **environment variables** to **manage secrets** and deployment-specific values.
+  - Use **configuration files** to **define** structure, defaults, and non-sensitive settings.
+- `python-decouple` is a **lightweight** Python package that **helps separate configuration** from code, especially secrets and environment-specific settings. It **allows** Python **read configuration from** environment variables and `.env` files in a clean and safe way. It:
+  - **reads environment variables** first,
+  - **falls back to** a `.env` file (for local development),
+  - **converts values** to proper Python types, and
+  - **keeps** secrets out of source code.
+
+  *For example:*
+
+  ```python
+  from decouple import config
+
+
+  DEBUG = config("DEBUG", default=False, cast=bool)
+  NAME = config("DB_NAME")
+  USER = config("DB_USER")
+  PASSWORD = config("DB_PASSWORD")
+  HOST = config("HOST")
+  ```
