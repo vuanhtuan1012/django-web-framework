@@ -804,18 +804,20 @@ The view function in Django **receives** its **mandatory argument** as the **req
 - A path parameter is **a variable part** of the URL that is **used to identify a specific resource,** *such as* `/customers/5`, where `5` is an argument of the path parameter.
 - There may be **multiple path parameters** in the URL, separated by the **path separtor,** the slash symbol `/`.
 - **How it works:**
-  - The URL dispatcher **maps the pattern to** the view function and identifies `5` as the customer id `cust_id` parameter.
+  - The URL dispatcher **maps the pattern to** the view function and identifies `5` as the customer id `pk` parameter.
 
     ```python
-    path("custmers/<int:cust_id>/", views.customers, name = "customers"),
+    path("custmers/<int:pk>/", views.customer_detail, name="customer_detail"),
     ```
-  - The parameter **is parsed as** `cust_id` parameter and **picked** by the `views.customers()` function. The view `customers` function needs an **additional parameter** `cust_id`, as shown in the following example, because an **argument was passed** inside the `urls.py` file.
+  - The parameter **is parsed as** `pk` parameter and **picked** by the `views.customer_detail()` function.
+  - The view `customer_detail` function needs an **additional parameter** `pk`, as shown in the following example, because an **argument was passed** inside the `urls.py` file.
 
     ```python
-    def customers(request: HttpRequest, cust_id: int):
+    def customer_detail(request: HttpRequest, pk: int):
       pass
     ```
-  - The **parameter names** added inside the `path` function in the `urls.py` file **must match the ones added** inside the `customers()` view function associated with it in the `views.py` file. The parameters **order isn't important.**
+  - The **parameter names** added inside the `path` function in the `urls.py` file **must match the ones added** inside the `customer_detail()` view function associated with it in the `views.py` file.
+  - **Best pratice:** avoid overly **verbose parameter names** such as `customer_id`, **prefer** the conventional `pk`.
 
 #### Path Converters
 
@@ -876,7 +878,7 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
   ```python
   path("home/", views.HomeView.as_view(), name="home")  # class-based view
-  path("article/<int:year>/<slug:title>/", views.article, name="article")  # function-based view
+  path("articles/<int:year>/<slug:title>/", views.articles, name="articles")  # function-based view
   ```
 
 #### Regular Expressions in URLs
@@ -893,7 +895,7 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
   urlpatterns = [
     path("menu-item/10/", views.display_menu_item, name="static_path"),
-    path("menu-item/<int:id>/", views.display_menu_item, name="dynamic_path"),
+    path("menu-item/<int:pk>/", views.display_menu_item, name="dynamic_path"),
     re_path(r"^menu-item/([0-9]{2})/$", views.display_menu_item, name="regex_path"),
   ]
   ```
