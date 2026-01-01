@@ -378,6 +378,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 - **Best practice:** view functions are placed in the application's `views.py` module.
 
   *For example:*
+
   ```python
   # views.py
   from django.shortcuts import render
@@ -401,6 +402,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 - Class-based views **repond** to HTTP requests using class **instance methods:** `get`, `post`, `put`, `delete`, `patch`.
 
   *For example:*
+
   ```python
   # views.py
   from django.views import View
@@ -427,6 +429,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - `TemplateView`: renders a template.
 
   These class-based views **simplify the process** of declaring view patterns **and reduce** the amount of boilerplate code we need to write. *For example:*
+
   ```python
   # views.py
   from django.views.generic import ListView
@@ -872,9 +875,10 @@ The view function in Django **receives** its **mandatory argument** as the **req
 - **Components** of URL mapping:
   1. **URL patterns:** written in `urls.py` using `path()` or `re_path()` function.
   2. **Views:** functions or classes that handle the request.
-  3. **Arguments / Parameters:** dynamic segments like `<id>` or `<slug>`.
-  4. **Names:** each URL can be given a `name` **for reverse** URL lookup.
-- **Example** of a URL mapping:
+  3. **Arguments / Parameters:** dynamic segments like `<int>` or `<slug>`.
+  4. **Names:** each URL can be given a `name` **for [reverse](#reverse-function)** URL lookup.
+
+  *For example:*
 
   ```python
   path("home/", views.HomeView.as_view(), name="home")  # class-based view
@@ -885,7 +889,8 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
 - Regular expressions are used to **define,** extract, and validate **dynamic URL paths** before they are sent to the associated view function.
 - To **use regular expressions** in URLs, it needs to **import and use** the `re_path()` function from the `django.urls` module.
-- Example:
+
+  *For example:*
 
   ```python
   from django.urls import path, re_path
@@ -942,7 +947,8 @@ Django does not expect leading slash, so `/menu-item/10/` won't match `example.c
   - **avoid hard-coding URLs** as strings.
   - **keep URLs consistent** even if our URL patterns change.
   - help when **generating links** inside views, models, forms, etc.
-- Example:
+
+  *For example:*
   - URL name is defined in the `urls.py` module.
 
     ```python
@@ -1019,7 +1025,8 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   - want to know which `super` method is called next.
 - **MRO decides** the search path Python will follow.
 
-  Example:
+  *For example:*
+
   ```python
   class A:
     def hello(self):
@@ -1129,6 +1136,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
     last_name = models.CharField(max_length=30)
   ```
 - **`pk`** stands for **primary key.** It is a **symbolic pointer** to **whatever field** serves as the model's primary key. It is **not a real** model field, just a **built-in alias.** We can use `pk` in **any ORM operations.** *For example:*
+
   ```python
   User.objects.get(pk=2)
   User.objects.filter(pk__in=[1, 2, 3])
@@ -1321,6 +1329,7 @@ from django.db import models
 Django has its own ORM layer. Its migration mechanism **propagates** the **models** in **database tables.** We need to **construct** a `QuerySet` via a `Manager` of a **model class** to **retrieve objects** from our database.
 
 Each model is a Python class that subclasses `django.db.models.Model`. *For example:*
+
 ```python
 from django.db import models
 
@@ -1362,12 +1371,14 @@ class Menu(models.Model):
   - can be **filtered, sliced, ordered.**
 
     *For example:*
+
     ```python
     qs = Menu.objects.filter(name__icontains="pasta")
     ```
   - can be **chained.**
 
     *For example:*
+
     ```python
     qs = Menu.objects.filter(name__icontains="pasta").order_by("name")
     ```
@@ -1384,6 +1395,7 @@ class Menu(models.Model):
 - **How to find the SQL query generated?** the`QuerySet`'s `query` attribute **returns** the **SQL query generated.**
 
   *For example:*
+
   ```python
   qs = Menu.objects.filter(name__icontains="pasta").order_by("name").only("name", "price")
   print(qs.query)
@@ -1535,22 +1547,22 @@ Book.objects.only("id", "author__name")
   - the `forms.CharField` is translated to HTML's text input type.
   - the `forms.ChoiceField` is equivalent to `<select>` in HTML.
 
-  ```python
-  from django import forms
+    ```python
+    from django import forms
 
 
-  POSTS = (
-    ("mananger", "Manager"),
-    ("cashier", "Cashier"),
-    ("operator", "Operator"),
-  )
+    POSTS = (
+      ("mananger", "Manager"),
+      ("cashier", "Cashier"),
+      ("operator", "Operator"),
+    )
 
 
-  class ApplicationForm(forms.Form):
-    name = forms.CharField(label="Name of Application", max_length=50)
-    address = forms.CharField(label="Address", max_length=100)
-    post = forms.ChoiceField(choices=POSTS)
-  ```
+    class ApplicationForm(forms.Form):
+      name = forms.CharField(label="Name of Application", max_length=50)
+      address = forms.CharField(label="Address", max_length=100)
+      post = forms.ChoiceField(choices=POSTS)
+    ```
 - **By convention,** the user-defined **form classes** are **stored in** a `forms.py` file in the **app's package folder.**
 
 #### Form Fields
