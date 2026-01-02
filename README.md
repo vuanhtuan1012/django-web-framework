@@ -962,7 +962,7 @@ Django follows a convention similar to directory in Unix:
     from django.urls import reverse
 
     url = reverse("menu_items", kwargs={"name": "pasta", "pk": 10})
-    print(url)  # /menu/pasta/10/
+    print(url)  # /menu-items/pasta/10/
     ```
 - The `reverse()` function is **commonly used:**
   - **in views** to redirect.
