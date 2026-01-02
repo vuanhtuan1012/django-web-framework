@@ -96,10 +96,10 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
     - is just a **generic container.**
     - used mainly for grouping elements for styling or scripting.
     - does not describe the purpose of its content.
-  - HTML5 **supports multimedia** without plugins like Flash.
-  - HTML5 adds `<canvas>` for **drawing graphics** and animations and improves SVG support.
   - HTML5 introduces **new form inputs,** *such as* `email`, `date`, `number`, `range`, `color` and **new attributes** *such as* `placeholder`, `required`, `pattern`, `autofocus`.
   - HTML5 **adds client-side storage** like `localStorage`, `sessionStorage`, `IndexedDB`, application cache / service workers while HTML had only cookies.
+  - HTML5 **supports multimedia** without plugins like Flash.
+  - HTML5 adds `<canvas>` for **drawing graphics** and animations and improves SVG support.
 
 ### Vitual Environment
 
@@ -909,13 +909,14 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
 Django follows a convention similar to directory in Unix:
 - ending pattern with a **trailing slash:** to look like a "container" endpoints. *For example,* `"menu-item/10/"`.
+
+  Django by default redirects URLs like `example.com/menu-item/10` to `example.com/menu-item/10/`. Hence, the pattern `menu-item/10/` works with both `example.com/menu-item/10` and `example.com/menu-item/10/`, but `menu-item/10` doesn't work with `example.com/menu-item/10/`.
 - **NOT include** a leading slash.
 
-Django by default redirects URLs like `example.com/menu-item/10` to `example.com/menu-item/10/`. Hence, the pattern `menu-item/10/` works with both `example.com/menu-item/10` and `example.com/menu-item/10/`, but `menu-item/10` doesn't work with `example.com/menu-item/10/`.
+  Django does not expect leading slash, so `/menu-item/10/` won't match `example.com/menu-item/10/`.
+- use **kebab-case** for URL paths. *For example:* `menu-item`.
 
-Django does not expect leading slash, so `/menu-item/10/` won't match `example.com/menu-item/10/`.
-
-**Rule of thumb: never use** leading slash, **use trailing slash** to keep consistency.
+**Rule of thumb: never use** leading slash, **use trailing slash** to keep consistency, **use kebab-case** for naming URL paths.
 
 #### URL Namespacing
 
@@ -929,7 +930,7 @@ Django does not expect leading slash, so `/menu-item/10/` won't match `example.c
 - The `app_name` defines the **application namespace** so that the views in this app are identified by it.
 
   ```shell
-  >>> reverse("demoapp:index")
+  >>> reverse("demo_app:index")
   "/demo/"
   ```
 - We can also **define** the **instance namespace** in the `include` function **while adding** an app's `urlpatterns`. This namespace is called the **instance namespace.**
@@ -939,6 +940,7 @@ Django does not expect leading slash, so `/menu-item/10/` won't match `example.c
     path("demo/", include("demoapp.urls", namespace="demo_app"))
   ]
   ```
+- By convention, **use snake_case** for application namespace. *For example:* `demo_app`.
 
 #### `reverse` Function
 
@@ -2125,3 +2127,5 @@ The following steps outline how to configure Django with supported databases.
 
 
 ## Templates
+
+
