@@ -436,28 +436,195 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - **code reusability:** we can **create base classes** and let other views **inherit** behavior.
   - **cleaner** and **orgnized code:** logic is **grouped into class methods** instead of long function-based views.
   - **extensiblity:** we can override just the parts we need.
-- Django provides many **built-in generic views** in the `django.views.generic` module, *such as:*
-  - `ListView`: displays a list of objects.
-  - `DetailView`: displays details of a single object.
-  - `CreateView`: creates a new object.
-  - `UpdateView`: updates an existing object.
-  - `DeleteView`: deletes an object.
-  - `TemplateView`: renders a template.
+- Django provides many **built-in generic views** in the `django.views.generic` module. These class-based views **simplify the process** of declaring view patterns **and reduce** the amount of boilerplate code we need to write.
+  - `ListView`: displays a list of objects. *For example:*
 
-  These class-based views **simplify the process** of declaring view patterns **and reduce** the amount of boilerplate code we need to write. *For example:*
-
-  ```python
-  # views.py
-  from django.views.generic import ListView
-
-  from .models import Book
+    ```python
+    # views.py
+    from django.views.generic.list import ListView
+    from .models import Employee
 
 
-  class BookListView(ListView):
-    model = Book
-    template_name = "book_list.html"
-    context_object_name = "books"
-  ```
+    class EmployeeListView(ListView):
+      model = Employee
+      success_url = "/employees/success/"
+      template_name = "employee_list.html"
+
+
+    # urls.py
+    from django.urls import path
+    from .views import EmployeeListView
+
+
+    urlpatterns = [
+      path("employees/", EmployeeListView.as_view(), name="employee_list"),
+    ]
+    ```
+
+    ```html
+    <!-- employee_list.html -->
+    <ul>
+      {% for object in object_list %}
+      <li>Name: {{ object.name }}</li>
+      <li>Email: {{ object.email }}</li>
+      <li>contact: {{ object.contact }}</li>
+      <br/>
+      {% endfor %}
+    </ul>
+    ```
+  - `DetailView`: displays details of a single object. *For example:*
+
+    ```python
+    # views.py
+    from django.views.generic.detail import DetailView
+    from .models import Employee
+
+
+    class EmployeeDetailView(DetailView):
+      model = Employee
+      success_url = "/employees/success/"
+      template_name = "employee_detail.html"
+
+
+    # urls.py
+    from django.urls import path
+    from .views import EmployeeDetailView
+
+
+    urlpatterns = [
+      path("employees/<int:pk>/", EmployeeDetailView.as_view(), name="employee_detail"),
+    ]
+    ```
+
+    ```html
+    <!-- employee_detail.html -->
+    <h1>Name : {{object.name}}</h1>
+    <p>Email : {{ object.email }}</p>
+    <p>Contact : {{ object.contact }}</p>
+    ```
+  - `CreateView`: creates a new object. *For example:*
+
+    ```python
+    # views.py
+    from django.views.generic.edit import CreateView
+    from .models import Employee
+
+
+    class EmployeeCreateView(CreateView):
+      model = Employee
+      fields = "__all__"
+      success_url = "/employees/success/"
+      template_name = "employee_create.html"
+
+
+    # urls.py
+    from django.urls import path
+    from .views import EmployeeCreateView
+
+
+    urlpatterns = [
+      path("create/", EmployeeCreateView.as_view(), name="employee_create"),
+    ]
+    ```
+
+    ```html
+    <!-- employee_create.html -->
+    <form method="post">
+    {% csrf_token %}
+    <table>
+      {{ form.as_table }}
+    </table>
+      <input type="submit" value="Save">
+    </form>
+    ```
+  - `UpdateView`: updates an existing object. *For example:*
+
+    ```python
+    # views.py
+    from django.views.generic.edit import UpdateView
+    from .models import Employee
+
+
+    class EmployeeUpdateView(UpdateView):
+      model = Employee
+      fields = "__all__"
+      success_url = "/employees/success/"
+      template_name = "employee_update.html"
+
+
+    # urls.py
+    from django.urls import path
+    from .views import EmployeeUpdateView
+
+
+    urlpatterns = [
+      path("update/<int:pk>/", EmployeeUpdateView.as_view(), name="employee_update"),
+    ]
+    ```
+
+    ```html
+    <!-- employee_update_form.html -->
+    <form method="post">
+    {% csrf_token %}
+    <table>
+        {{ form.as_table }}
+    </table>
+        <input type="submit" value="Save">
+    </form>
+    ```
+  - `DeleteView`: deletes an object. *For example:*
+
+    ```python
+    # views.py
+    from django.views.generic.edit import DeleteView
+    from .models import Employee
+
+
+    class EmployeeDeleteView(DeleteView):
+      model = Employee
+      success_url = "/employees/success/"
+      template_name = "employee_detele.html"
+
+
+    # urls.py
+    from django.urls import path
+    from .views import EmployeeDeleteView
+
+
+    urlpatterns = [
+      path("update/<int:pk>/", EmployeeDeleteView.as_view(), name="employee_delete"),
+    ]
+    ```
+
+    ```html
+    <!-- employee_confirm_delete.html -->
+    <form method="post">
+    {% csrf_token %}
+      <p>Are you sure you want to delete "{{ object }}"?</p>
+      <input type="submit" value="Confirm">
+    </form>
+    ```
+  - `TemplateView`: renders a template. *For example:*
+
+    ```python
+    # views.py
+    from django.views.generic.base import TemplateView
+
+
+    class IndexView(TemplateView):
+      template_name = "index.html"
+
+
+    # urls.py
+    from django.urls import path
+    from .views import IndexView
+
+
+    urlpatterns = [
+      path("/", IndexView.as_view(), name="index"),
+    ]
+    ```
+
 - Class-based views **allow** inheritance and **mixins.**
   - A mixin is a class **designed to be inherited alongside another** class to **add extra features,** but **not mean to stand alone.**
   - Mixins are **reusable,** contain **small, focused logic,** allow to **combine behaviors** cleanly.
