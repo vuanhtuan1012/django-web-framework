@@ -2606,7 +2606,7 @@ The following steps outline how to configure Django with supported databases.
       User.objects.create(email="a@test.com")
   ```
 
-  > **In summary,** unit tests **check logic,** integration tests **check** how components **work together,** functional tests **check real user behavior,** and regression tests **ensure old bugs don't comback.**
+> **In summary,** unit tests **check logic,** integration tests **check** how components **work together,** functional tests **check real user behavior,** and regression tests **ensure old bugs don't comback.**
 
 #### Best Practices for Django Testing
 
