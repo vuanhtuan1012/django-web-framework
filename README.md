@@ -304,7 +304,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   │   db.sqlite3
   │   manage.py
   │
-  ├───demoapp
+  ├───demo_app
   │   │   admin.py
   │   │   apps.py
   │   │   models.py
@@ -1103,7 +1103,7 @@ Django follows a convention similar to directory in Unix:
 - The **application namespace** is created **by defining** the `app_name` variable in the applications's `urls.py` module and assigning it the name of the app.
 
   ```python
-  # demoapp/urls.py
+  # demo_app/urls.py
   app_name = "demo_app"
   ```
 - Django **differentiates** between **same-name URLs** in multiple apps with application namespace.
@@ -1117,7 +1117,7 @@ Django follows a convention similar to directory in Unix:
 
   ```python
   urlpatterns = [
-    path("demo/", include("demoapp.urls", namespace="demo_app"))
+    path("demo/", include("demo_app.urls", namespace="demo_app"))
   ]
   ```
 - By convention, **use snake_case** for application namespace. *For example:* `demo_app`.
@@ -1602,7 +1602,7 @@ class Menu(models.Model):
   qs = Menu.objects.filter(name__icontains="pasta").order_by("name").only("name", "price")
   print(qs.query)
 
-  # SELECT "demoapp_menu"."id", "demoapp_menu"."name", "demoapp_menu"."price" FROM "demoapp_menu" WHERE "demoapp_menu"."name" LIKE %pasta% ESCAPE '\' ORDER BY "demoapp_menu"."name" ASC
+  # SELECT "demo_app_menu"."id", "demo_app_menu"."name", "demo_app_menu"."price" FROM "demo_app_menu" WHERE "demo_app_menu"."name" LIKE %pasta% ESCAPE '\' ORDER BY "demo_app_menu"."name" ASC
   ```
 
 - **In bef,**
