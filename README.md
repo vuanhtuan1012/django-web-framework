@@ -1249,8 +1249,8 @@ Django has a **built-in error handling system** that helps us manage exceptions,
 - Naming a **view:**
   - use **snake_case for** funtion-based views and **PascalCase for** class-based views.
   - **use** verbs or verb-noun phrases.
-  - **function-based view** names should follow the pattern `[ressource]_[action]`.
-  - **class-based view** names should **end with** `View`, following the pattern `[Ressource][Action]View`.
+  - **function-based view** names should follow the pattern `[resource]_[action]`.
+  - **class-based view** names should **end with** `View`, following the pattern `[Resource][Action]View`.
 
   *For example:*
 
