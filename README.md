@@ -437,18 +437,18 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - **cleaner** and **orgnized code:** logic is **grouped into class methods** instead of long function-based views.
   - **extensiblity:** we can override just the parts we need.
 - Django provides many **built-in generic views** in the `django.views.generic` module. These class-based views **simplify the process** of declaring view patterns **and reduce** the amount of boilerplate code we need to write.
-  - `ListView`: displays a list of objects. *For example:*
+  - `ListView`: displays a **list of objects.** *For example:*
 
     ```python
     # views.py
-    from django.views.generic.list import ListView
+    from django.views.generic import ListView
     from .models import Employee
 
 
     class EmployeeListView(ListView):
       model = Employee
-      success_url = "/employees/success/"
-      template_name = "employee_list.html"
+      template_name = "employees/employee_list.html"
+      context_object_name = "employees"
 
 
     # urls.py
@@ -462,28 +462,28 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
     ```
 
     ```html
-    <!-- employee_list.html -->
+    <!-- employees/employee_list.html -->
     <ul>
-      {% for object in object_list %}
-      <li>Name: {{ object.name }}</li>
-      <li>Email: {{ object.email }}</li>
-      <li>contact: {{ object.contact }}</li>
+      {% for employee in employees %}
+      <li>Name: {{ employee.name }}</li>
+      <li>Email: {{ employee.email }}</li>
+      <li>contact: {{ employee.contact }}</li>
       <br/>
       {% endfor %}
     </ul>
     ```
-  - `DetailView`: displays details of a single object. *For example:*
+  - `DetailView`: displays details of a **single object.** *For example:*
 
     ```python
     # views.py
-    from django.views.generic.detail import DetailView
+    from django.views.generic import DetailView
     from .models import Employee
 
 
     class EmployeeDetailView(DetailView):
       model = Employee
-      success_url = "/employees/success/"
-      template_name = "employee_detail.html"
+      template_name = "employees/employee_detail.html"
+      context_object_name = 'employee'
 
 
     # urls.py
@@ -497,24 +497,24 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
     ```
 
     ```html
-    <!-- employee_detail.html -->
-    <h1>Name : {{object.name}}</h1>
-    <p>Email : {{ object.email }}</p>
-    <p>Contact : {{ object.contact }}</p>
+    <!-- employees/employee_detail.html -->
+    <h1>Name : {{employee.name}}</h1>
+    <p>Email : {{ employee.email }}</p>
+    <p>Contact : {{ employee.contact }}</p>
     ```
-  - `CreateView`: creates a new object. *For example:*
+  - `CreateView`: creates a **new object** using a form. *For example:*
 
     ```python
     # views.py
-    from django.views.generic.edit import CreateView
+    from django.views.generic import CreateView
     from .models import Employee
 
 
     class EmployeeCreateView(CreateView):
       model = Employee
       fields = "__all__"
-      success_url = "/employees/success/"
-      template_name = "employee_create.html"
+      template_name = "employees/employee_form.html"
+      success_url = "/employees/"
 
 
     # urls.py
@@ -523,33 +523,30 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 
 
     urlpatterns = [
-      path("create/", EmployeeCreateView.as_view(), name="employee_create"),
+      path("employees/create/", EmployeeCreateView.as_view(), name="employee_create"),
     ]
     ```
 
     ```html
-    <!-- employee_create.html -->
+    <!-- employees/employee_form.html -->
     <form method="post">
-    {% csrf_token %}
-    <table>
-      {{ form.as_table }}
-    </table>
+      {% csrf_token %}
+      {{ form.as_p }}
       <input type="submit" value="Save">
     </form>
     ```
-  - `UpdateView`: updates an existing object. *For example:*
+  - `UpdateView`: updates an **existing object.** *For example:*
 
     ```python
     # views.py
-    from django.views.generic.edit import UpdateView
+    from django.views.generic import UpdateView
     from .models import Employee
 
 
     class EmployeeUpdateView(UpdateView):
       model = Employee
       fields = "__all__"
-      success_url = "/employees/success/"
-      template_name = "employee_update.html"
+      template_name = "employees/employee_form.html"
 
 
     # urls.py
@@ -558,32 +555,24 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 
 
     urlpatterns = [
-      path("update/<int:pk>/", EmployeeUpdateView.as_view(), name="employee_update"),
+      path("employees/<int:pk>/update/", EmployeeUpdateView.as_view(), name="employee_update"),
     ]
     ```
-
-    ```html
-    <!-- employee_update_form.html -->
-    <form method="post">
-    {% csrf_token %}
-    <table>
-        {{ form.as_table }}
-    </table>
-        <input type="submit" value="Save">
-    </form>
-    ```
-  - `DeleteView`: deletes an object. *For example:*
+  - `DeleteView`: deletes an **existing object** with confirmation. *For example:*
 
     ```python
     # views.py
-    from django.views.generic.edit import DeleteView
+    from django.views.generic import DeleteView
+    from django.urls import reverse_lazy
+
     from .models import Employee
 
 
     class EmployeeDeleteView(DeleteView):
       model = Employee
-      success_url = "/employees/success/"
-      template_name = "employee_detele.html"
+      template_name = "employees/employee_confirm_detele.html"
+      context_object_name = 'employee'
+      success_url = reverse_lazy("employee_list")
 
 
     # urls.py
@@ -592,37 +581,43 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 
 
     urlpatterns = [
-      path("update/<int:pk>/", EmployeeDeleteView.as_view(), name="employee_delete"),
+      path("employees/<int:pk>/delete/", EmployeeDeleteView.as_view(), name="employee_delete"),
     ]
     ```
 
     ```html
-    <!-- employee_confirm_delete.html -->
+    <!-- employees/employee_confirm_detele.html -->
     <form method="post">
-    {% csrf_token %}
-      <p>Are you sure you want to delete "{{ object }}"?</p>
+      {% csrf_token %}
+      <p>Are you sure you want to delete "{{ employee.name }}"?</p>
       <input type="submit" value="Confirm">
     </form>
     ```
-  - `TemplateView`: renders a template. *For example:*
+  - `TemplateView`: renders a **static template** (no database). *For example:*
 
     ```python
     # views.py
-    from django.views.generic.base import TemplateView
+    from django.views.generic import TemplateView
 
 
-    class IndexView(TemplateView):
-      template_name = "index.html"
+    class AboutView(TemplateView):
+      template_name = "about.html"
 
 
     # urls.py
     from django.urls import path
-    from .views import IndexView
+    from .views import AboutView
 
 
     urlpatterns = [
-      path("/", IndexView.as_view(), name="index"),
+      path("about/", AboutView.as_view(), name="about"),
     ]
+    ```
+
+    ```html
+    <!-- about.html -->
+    <h1>About Us</h1>
+    <p>Welcome to our company.</p>
     ```
 
 - Class-based views **allow** inheritance and **mixins.**
@@ -1082,18 +1077,20 @@ The view function in Django **receives** its **mandatory argument** as the **req
 
 
   urlpatterns = [
-    path("menu-item/10/", views.display_menu_item, name="static_path"),
-    path("menu-item/<int:pk>/", views.display_menu_item, name="dynamic_path"),
-    re_path(r"^menu-item/([0-9]{2})/$", views.display_menu_item, name="regex_path"),
+    path("about/", views.about, name="about"),
+    path("menu-items/<int:pk>/", views.menu_item_list, name="menu_item_list"),
+    re_path(r"^products/([0-9]{2})/$", views.product_list, name="product_list"),
   ]
   ```
 
 #### URL Pattern Convention
 
 Django follows a convention similar to directory in Unix:
-- ending pattern with a **trailing slash:** to look like a "container" endpoints. *For example,* `"menu-item/10/"`.
+- ending pattern with a **trailing slash:** to look like a "container" endpoints. *For example,* `"menu-items/10/"`.
 
-  Django by default redirects URLs like `example.com/menu-item/10` to `example.com/menu-item/10/`. Hence, the pattern `menu-item/10/` works with both `example.com/menu-item/10` and `example.com/menu-item/10/`, but `menu-item/10` doesn't work with `example.com/menu-item/10/`.
+  Django by default redirects URLs like `example.com/menu-items/10` to `example.com/menu-items/10/`.
+
+  Hence, the pattern `menu-items/10/` works with both `example.com/menu-items/10` and `example.com/menu-items/10/`, but `menu-items/10` doesn't work with `example.com/menu-items/10/`.
 - **NOT include** a leading slash.
 
   Django does not expect leading slash, so `/menu-item/10/` won't match `example.com/menu-item/10/`.
@@ -1137,15 +1134,15 @@ Django follows a convention similar to directory in Unix:
   - URL name is defined in the `urls.py` module.
 
     ```python
-    path("menu-items/<str:dish>/<int:pk>/", views.menu_items, name="menu_items")
+    path("menu-items/<int:pk>/<str:dish>/", views.menu_item_detail, name="menu_item_detail")
     ```
   - Using `reverse()` function in the `views.py` module to get the actual URL path.
 
     ```python
     from django.urls import reverse
 
-    url = reverse("menu_items", kwargs={"name": "pasta", "pk": 10})
-    print(url)  # /menu-items/pasta/10/
+    url = reverse("menu_items", kwargs={"dish": "pasta", "pk": 10})
+    print(url)  # /menu-items/10/pasta/
     ```
 - The `reverse()` function is **commonly used:**
   - **in views** to redirect.
@@ -1184,14 +1181,14 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   ```python
   # project/urls.py
 
-  handler400 = "myapp.views.custom_400"
-  handler403 = "myapp.views.custom_403"
-  handler404 = "myapp.views.custom_404"
-  handler500 = "myapp.views.custom_500"
+  handler400 = "my_app.views.custom_400"
+  handler403 = "my_app.views.custom_403"
+  handler404 = "my_app.views.custom_404"
+  handler500 = "my_app.views.custom_500"
   ```
 
   ```python
-  # myapp/views.py
+  # my_app/views.py
 
   def custom_400(request, exception):
     return render(request, "400.html", status=400)
@@ -1252,14 +1249,14 @@ Django has a **built-in error handling system** that helps us manage exceptions,
 - Naming a **view:**
   - use **snake_case for** funtion-based views and **PascalCase for** class-based views.
   - **use** verbs or verb-noun phrases.
-  - name **should describe** what the view does.
-  - **class-based view** names should **end with** `View`.
+  - **function-based view** names should follow the pattern `[ressource]_[action]`.
+  - **class-based view** names should **end with** `View`, following the pattern `[Ressource][Action]View`.
 
   *For example:*
 
   ```python
   # views.py
-  def create_order(request: HttpRequest) -> HttpResponse:
+  def order_create(request: HttpRequest) -> HttpResponse:
     pass
 
 
@@ -1286,8 +1283,28 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   ```python
   # urls.py
   urlpatterns = [
-    path("my-orders/", views.list_orders, name="order_list")
+    path("orders/", views.order_list, name="order_list"),
     path("customers/", views.customer_list, name="customer_list")
+  ]
+  ```
+
+- Naming **URL paths** for **CRUD operations:** use the pattern `[resources]/[instance]/[action]` to keep routes **predictable and consistent.**
+
+  *For example:*
+  - `employees/`: list view
+  - `employees/<int:pk>/`: detail view
+  - `employees/create/`: create view
+  - `employees/<int:pk>/update/`: update view
+  - `employees/<int:pk>/delete/`: delete view
+
+  ```python
+  # urls.py
+  urlpatterns = [
+    path("employees/", views.employee_list, name="employee_list"),
+    path("employees/<int:pk>/", views.employee_detail, name="employee_detail"),
+    path("employees/create/", views.employee_create, name="employee_create"),
+    path("employees/<int:pk>/update/", views.employee_update, name="employee_update"),
+    path("employees/<int:pk>/delete/", views.employee_delete, name="employee_delete"),
   ]
   ```
 
@@ -1303,7 +1320,7 @@ Django has a **built-in error handling system** that helps us manage exceptions,
   app_name = "demo_app"
   ```
 
-- In bref, use **snake_case for** URL names, function-based views and namespaces, **kebab-case for** URL paths, and **PascalCase for** class-based views.
+> In bref, use **snake_case for** URL names, function-based views and namespaces, **kebab-case for** URL paths, and **PascalCase for** class-based views.
 
 ## Models
 
@@ -1492,7 +1509,7 @@ The `django.models` module has many field types to choose from.
   - `migrate` applies the migration scripts to the database, creating or modifying tables as defined in the migration files.
   - `sqlmigrate` shows the SQL query or queries executed when a certain migration script is run.
   - `showmigrations` displays the status of migrations, indicating which have been applied and which are pending.
-- When migrating a model, Django **automatically names the table** as `[app_name]_[model_name]`, *for instance,* `myapp_college`, `myapp_principal`, etc. We can override this by assigning the desired name to `db_table` parameter of the `Meta` class, to be declared inside the model class, as shown below.
+- When migrating a model, Django **automatically names the table** as `[app_name]_[model_name]`, *for instance,* `my_app_college`, `my_app_principal`, etc. We can override this by assigning the desired name to `db_table` parameter of the `Meta` class, to be declared inside the model class, as shown below.
 
 ```python
 from django.db import models
@@ -2640,7 +2657,7 @@ The following steps outline how to configure Django with supported databases.
 - For **small apps,** all tests **can live** in a **single** `tests.py` file. For **larger apps,** it's **best practice** to **create** a `tests/` package **and split** tests by domain. *For example:*
 
   ```text
-  myapp/
+  my_app/
   └── tests/
     ├── __init__.py
     ├── test_models.py
