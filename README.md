@@ -76,6 +76,15 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
     - [Setup Steps](#setup-steps)
     - [Environment Variables vs. Configuration Files](#environment-variables-vs-configuration-files)
 - [Templates](#templates)
+  - [Django Template Language (DTL)](#django-template-language-dtl)
+  - [`TEMPLATES` Settings](#templates-settings)
+  - [Template Inheritance](#template-inheritance)
+  - [Extends vs. Include Tags](#extends-vs-include-tags)
+  - [Static Files](#static-files)
+  - [Testing in Django](#testing-in-django)
+    - [Writing Tests](#writing-tests)
+    - [Types of Tests in Django](#types-of-tests-in-django)
+    - [Best Practices for Django Testing](#best-practices-for-django-testing)
 
 
 ## Introduction to Django
@@ -141,21 +150,28 @@ In simple terms, it **prevents duplicating code, logic, or data.**
   ```
   - **Project directory** is created when we create a Django project. It contains `manage.py` and *project package folder.*
   - **Project package** contains a `settings.py` file and other files.
+  - **By convention,** project names use **lowercase** with no spaces or hyphens. Underscores are **allowed**, but **generally avoided.** *For example:* the Little Lemon project should be named `littlelemon`.
 - The `manage.py` script **has the same role as** the `django-admin` utility. It can perform everything that the `django-admin` utility does. However, using `manage.py` is **more straightforward,** especially if we are required to work on a single project.
 - The `startapp` command is used to create a new app. An app is also represented by a folder of a specific file system.
+
   ```cmd
   > python manage.py startapp <app_name>
   ```
+
+  **By convention,** app names use **snake_case** and **singular nouns.** *For example:* `book`, `demo_app`.
 - Django manages the database operations with the **[ORM technique](#object-relational-mapping-orm).**
 - [Migration](#migrations) refers to **generating a database table whose** structure matches the data model declared in the app.
+
   ```cmd
   > python manage.py makemigration
   ```
 - The `migrate` command **synchronizes the database state** with the currently declared models and migrations.
+
   ```cmd
   > python manage.py migrate
   ```
 - The `runserver` command **starts** Django's built-in **development server** on the local machine.
+
   ```cmd
   > python manage.py runserver
   ```
@@ -929,7 +945,7 @@ Django follows a convention similar to directory in Unix:
 - Django **differentiates** between **same-name URLs** in multiple apps with application namespace.
 - The `app_name` defines the **application namespace** so that the views in this app are identified by it.
 
-  ```shell
+  ```bash
   >>> reverse("demo_app:index")
   "/demo/"
   ```
@@ -2128,4 +2144,474 @@ The following steps outline how to configure Django with supported databases.
 
 ## Templates
 
+- The **[view functions](#views) retrieve** the data from the database connected to the application, and **Django uses templates** and the **[Django Template Language (DTL)](#django-template-language-dtl) to display** this dynamic data.
+- Templates **form** the **[presentation layer](#three-tier-architecture)** in the [MVT architecture](#model-view-template-mvt-architecture).
+- Templates **consist** mainly two types of content:
+  - **static:** the **HTML** that does not change on the web page. **It defines** the structure and layout of the page.
+  - **template language:** the **syntax** that allows to insert **dynamic data.**
 
+  *For example:*
+
+  ```html
+  <h2>This weeks special is {{ dish_name }} with a price of {{ price }}.</h2>
+  ```
+
+- Dynamic data is **rendered by** the `render` function, imported from `django.shortcuts` in [**view functions.**](#views)
+- The `render` function takes three parameters:
+  - a `request` **object: represents** the initial HTTP request to object.
+  - a **template path:** represents the **relative path** of the HTML file to the template directory.
+  - and a **dictionary of variables:** provides **context data** for the template. During rendering, **template variables are replaced** with their corresponding values from the context.
+
+  *For example:*
+
+  ```python
+  # views.py
+  from django.http import HttpRequest, HttpResponse
+  from django.shortcuts import render
+
+  def dish_of_the_day(request: HttpRequest) -> HttpResponse:
+    context = {"dish_name": "pasta", "price": 10.5}
+    return render(request, "dish_of_the_day.html", context)
+  ```
+
+### Django Template Language (DTL)
+
+- Django Template Language (DTL) **is a built-in templating system** to generate dynamic HTML pages by combining static HTML with dynamic data from Django [views](#views).
+- DTL **consists of constructs** such as:
+  - **variables:** used **to display data** passed from the view to the template. *For example:*
+
+    ```html
+    <p>Username: {{ user.username }}</p>
+    <p>Age: {{ age }}</p>
+    ```
+  - **tags:** used **to add logic** like conditions, loops, and template control. *For example:*
+
+    ```html
+    {% if user.is_authenticated %}
+    <p>Welcome back!</p>
+    {% endif %}
+
+    {% for item in menu_items %}
+    <li>{{ item }}</li>
+    {% endfor %}
+    ```
+  - **filters:** used **to modify how** variables are displayed. *For example:*
+
+    ```html
+    <p>{{ name|upper }}</p> <!-- converts to uppercase -->
+    <p>{{ description|truncatewords:5 }}</p> <!-- limit words -->
+    <p>{{ price|floatformat:2 }}</p> <!-- format decimal -->
+    <p>{{ text|length }}</p> <!-- returns length -->
+    ```
+  - **comments:** used **to write notes** that will **not appear in** the rendered HTML. *For example:*
+
+    ```html
+    {# This is a single-line comment #}
+
+    {% comment %}
+    This is a multi-line comment.
+    It will not shown in the output.
+    {% endcomment %}
+    ```
+
+### `TEMPLATES` Settings
+
+- Django uses template loaders to locate templates based on the configuration defined in the `TEMPLATES` section in the project's `settings.py` file.
+- `TEMPLATES` is a **list of** template engine configurations. Django **allows** multiple template engines, but **most projects use** [Django Template Language (DTL)](#django-template-language-dtl). *For example:*
+
+  ```python
+  TEMPLATES = [
+    {
+      'BACKEND': 'django.template.backends.django.DjangoTemplates',
+      'DIRS': [],
+      'APP_DIRS': True,
+      'OPTIONS': {
+        'context_processors': [
+          'django.template.context_processors.request',
+          'django.contrib.auth.context_processors.auth',
+          'django.contrib.messages.context_processors.messages',
+        ],
+      },
+    },
+  ]
+  ```
+- `BACKEND`: **specifies which template engine** Django should **use to interpret** templates. Using `django.template.backends.django.DjangoTemplates` means the [Django Template Language](#django-template-language-dtl) is in use.
+- `DIRS`: a list of **absolute paths** where Django will look for templates. Common usage:
+
+  ```python
+  'DIRS': [BASE_DIR / "templates"],
+  ```
+
+  This configuration allows Django to look for templates in a **project-level** `templates` folder.
+- `APP_DIRS`: **indicates whether** Django should search for templates **inside installed apps.**
+  - `True`: Django **looks for** templates in a `templates` folder **within** each installed app. The folder name `templates` **is fixed unless** custom template loaders are configured.
+  - `False`: Django **does not search for** templates **inside** app directories.
+- **How Django finds a template?**
+  - It **first searches** the directories **listed in** `DIRS`.
+  - **Then** it **looks in** the `templates/` folders of installed apps (if `APP_DIRS` is set to `True`).
+  - Next, it **applies** context processors.
+  - Finally, it **renders** the HTML.
+
+  **Note:** Django uses the first matching template it finds which is why project-level templates can override templates provided by installed apps.
+- **Best practice:**
+  - Use the **directories** listed in `DIRS` **for shared or base** templates.
+  - Use each **installed apps's** `templates` directory **for app-specific** templates.
+  - **Place** an app's templates **inside** `templates/[app_name]/[template_name]` **to avoid** accidental overrides. *For example:*
+
+    ```
+    my_app/
+    └── templates/
+        └── my_app/
+            └── home.html
+    ```
+- `OPTIONS`: provides **extra configuration** for the template engine.
+- `context_processors`: **automatically add variables** to every template context.
+  - `django.template.context_processors.request`: adds the `request` **object** to templates.
+  - `django.contrib.auth.context_processors.auth`: adds **authentication-related variables** `user`, `perms`.
+  - `django.contrib.messages.context_processors.messages`: adds **Django messages framework** support. It is used for success messages, error notifications, alerts.
+
+### Template Inheritance
+
+- Template inheritance **lets us to define** a base template containing common elements such as the header, footer, and navigation, and **then extend** it in other templates.
+- Instead of duplicating HTML, child templates **simply fill in** the blocks defined in the base template.
+- **Base** template:
+  - contains the **common structure** of the site.
+  - **defines blocks** that child templates can override.
+
+  *For example:* `base.html`
+
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <title>{% block title %}My Website{% endblock %}</title>
+  </head>
+  <body>
+    <header>
+      <h1>My Website Header</h1>
+    </header>
+
+    <nav>
+      <a href="/">Home</a>
+      <a href="/about/">About</a>
+    </nav>
+
+    <main>
+      {% block content %}
+      <!-- Child templates will inject content here -->
+      {% endblock %}
+    </main>
+
+    <footer>
+      <p>© 2026 My Website</p>
+    </footer>
+  </body>
+  </html>
+  ```
+- **Child** templates:
+  - **use** `{% extend %}` to **inherit** from a base template.
+  - **override blocks** defined in the base template.
+
+  *For example:* `home.html`
+
+  ```html
+  {% extend "base.html" %}
+
+  {% block title %}
+  Home - My Website
+  {% endblock %}
+
+  {% block content %}
+  <h2>Welcome to the home page!</h2>
+  <p>This is some dynamic content.</p>
+  {% endblock %}
+  ```
+- **How it works?**
+  1. Django **loads** the child template.
+  2. It **encounters** the `{% extends %}` tag and then **loads** the base template.
+  3. It **replace** the base template's `{% block %}` sections **with** the content provided by the child template.
+  4. The **result** is a complete **HTML page** that **combines** the **base layout** with the **child template's content.**
+
+### Extends vs. Include Tags
+
+- Both `{% extends %}` and `{% include %}` support template reuse, but they serve very different purposes.
+- The `{% extends %}` tag **enables template inheritance.** It:
+  - establishes a **parent-child relationship** between templates.
+  - defines the overall **page layout** by referencing a base template.
+  - allows the child template to **replace the blocks defined** in the parent.
+- **Key characteristics of** the `{% extends %}` tag:
+  - only **one** `{% extends %}` tag is allowed **per template.**
+  - it must **be the first tag** in the template.
+  - it works with `{% block %}` tags to enable template inheritance.
+- The `{% include %}` tag **enables template composition.** It:
+  - **inserts** another template into the current template.
+  - does **not involve inheritance** or block overriding.
+  - **simply renders** the included templace in place.
+- **Key characteristics of** the `{% include %}` tag:
+  - it can **be used multiple times** within a template.
+  - it can **appear anywhere** in the template structure.
+  - it can **receive variables** passed from the parent template.
+
+  *For example:*
+
+  ```html
+  <!-- head.html -->
+  <head>
+    <title>{{ title }}</title>
+  </head>
+
+
+  <!-- footer.html -->
+  <footer>
+    <p>© 2026 My Website</p>
+  </footer>
+
+
+  <!-- base.html -->
+  <html>
+    {% include "head.html" with title="Home" %}
+    <body>
+      {% block content %}
+      {% endblock %}
+      {% include "footer.html" %}
+    </body>
+  </html>
+    ```
+- In practice, **use** the `{% extends %}` tag when we need a **full page layout,** and **use** the `{% include %}` tag when we want **small, reusable components.**
+- **Best practice** for combining layout and components:
+
+  ```text
+  templates/
+  ├── base.html
+  ├── home.html
+  ├── about.html
+  └── includes/
+      ├── navbar.html
+      └── footer.html
+  ```
+
+### Static Files
+
+- A web application needs to serve static content to the client such as images, fonts, Javascript files, and style sheet. These assets are managed by the `django.contrib.staticfiles` app, which handles locating, collecting, and serving static files in a consistent and organized way.
+- When rendering a static asset (for instance, an image stored in a static folder) we must use the `{% static %}` tag to generate the correct URL. *For example:*
+
+  ```html
+  {% load static %}
+  <img src="{% static 'my_app/images/logo.png' %}" alt="Logo">
+  ```
+- The `{% load static %}` tag loads the `{% static %}` tag into the template and should be placed at the top of temlates. *For example:*
+
+  ```html
+  <!-- base.html -->
+  {% load static %}
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <link rel="stylesheet" href="{% static 'my_app/css/style.css' %}">
+    <script src="{% static 'my_app/js/main.js' %}"></script>
+    <link rel="icon" href="{% static 'my_app/images/favicon.ico' %}">
+    <title>{% block title %}My Website{% endblock %}</title>
+  </head>
+  <body>
+    {% block content %}
+    {% endblock %}
+  </body>
+  </html>
+  ```
+- The `STATIC_URL` setting in `settings.py` **defines the URL prefix** used to serve static files. Templates use this prefix through the `{% static %}` tag.
+
+  *For example,* with `STATIC_URL = 'static/'` the tag `{% static 'css/style.css' %}` generates the URL `/static/css/style.css`.
+
+  However, `STATIC_URL` does **not tell Django where** static files are stored. It only defines how they are acessed via a URL.
+- The `STATICFILES_DIRS` setting in `settings.py` **tells Django where** to look for additional static files. It is **mainly used for project-level** satic assets. A **common configuration** is:
+
+  ```python
+  STATICFILES_DIRS = [
+    BASE_DIR / "static"
+  ]
+  ```
+
+  Django **searches static files** in the following order:
+
+  1. **app-level** `static/` directories (inside each installed app).
+  2. **directories** listed in `STATICFILES_DIR`.
+
+  `STATICFILES_DIR` is **not set by default** because Django **prioritizes app-level** static files. We should **define** `STATICFILES_DIR` **when** we:
+
+  - **neeed project-level** static files that are not tied to any specific app.
+  - **have shared assets** used across multiple apps, *e.g.,* global CSS, JS, or images.
+- **Best practice,** always **namespace** static files to prevent filename collisions and keep assets **organized by** type. *For example:*
+
+  ```text
+  my_app/
+  └── static/
+    └── my_app/
+      └── css/
+        ├── style.css
+      └── js/
+        ├── main.js
+      └── images/
+        ├── favicon.ico
+        ├── logo.png
+  ```
+
+### Testing in Django
+
+- Django's testing system is **built on** Python's `unittest` framework, **with additional** Django-specific extensions.
+- Tests follow a **class-based structure:** each test class inherits from `django.test.TestCase`, and individual test methods begin with `test_`.
+- The `test` management command is used to run the test suite.
+
+  ```bash
+  python manage.py test
+  ```
+
+  **When executed,** Django will:
+  - automatically **discover** all tests,
+  - create a **temporary test database,**
+  - run each test **in isolation,**
+  - and **delete** the test database **once** the suite completes.
+- For **small apps,** all tests **can live** in a **single** `tests.py` file. For **larger apps,** it's **best practice** to **create** a `tests/` package **and split** tests by domain. *For example:*
+
+  ```text
+  myapp/
+  └── tests/
+    ├── __init__.py
+    ├── test_models.py
+    ├── test_views.py
+    ├── test_urls.py
+  ```
+
+#### Writing Tests
+
+- Testing **simple cases.** *For example:*
+
+  ```python
+  from django.test import TestCase
+
+
+  class SimpleTest(TestCase):
+    def test_basic_addition(self):
+      self.assertEqual(1 + 1, 2)
+  ```
+- Testing **views.** *For example:*
+
+  ```python
+  from django.test import TestCase
+  from django.urls import reverse
+
+
+  class HomeViewTest(TestCase):
+    def test_home_status_code(self):
+      response = self.client.get(reverse("home"))
+      self.assertEqual(response.status_code, 200)
+  ```
+- Testing **models.** *For example:*
+
+  ```python
+  from django.test import TestCase
+  from .models import Product
+
+
+  class ProductModelTest(TestCase):
+    def test_string_representation(self):
+      product = Product(name="Pizza")
+      self.assertEqual(str(product), "Pizza")
+  ```
+- Testing **forms.** *For example:*
+
+  ```python
+  from django.test import TestCase
+  from .forms import ContactForm
+
+
+  class ContactFormTest(TestCase):
+    def test_valid_form(self):
+      form = ContactForm(data={
+        "name": "John", "email": "john@example.com"
+      })
+      self.assertTrue(form.is_valid())
+  ```
+- Testing **templates.** *For example:*
+
+  ```python
+  from django.test import TestCase
+  from django.urls import reverse
+
+
+  class TemplateTest(TestCase):
+    def test_home_template_used(self):
+      response = self.client.get(reverse("home"))
+      self.assertTemplateUsed(response, "home.html")
+  ```
+- Testing **urls.** *For example:*
+
+  ```python
+  from django.test import TestCase
+  from django.urls import reverse, resolve
+  from .views import home
+
+
+  class UrlTest(TestCase):
+    def test_home_url_resolved(self):
+      resolver = resolve("/")
+      self.assertEqual(resolver.func, home)
+  ```
+- Testing **with the database.** *For example:*
+
+  ```python
+  from django.test import TestCase
+  from .models import User
+
+
+  class UserTest(TestCase):
+    def test_create_user(self):
+      user = User.objects.create(username="John")
+      self.assertEqual(User.objects.count(), 1)
+  ```
+
+#### Types of Tests in Django
+
+- **Unit tests:** verify small, isolated pieces of logic, *e.g.,* models, utility functions. *For example:*
+
+  ```python
+  class ProductModelTest(TestCase):
+    def test_str_method(self):
+      product = Product(name="Pizza")
+      self.assertEqual(str(product), "Pizza")
+  ```
+- **Integration tests:** ensure multiple components work together correctly. *For example:*
+
+  ```python
+  class SignupTest(TestCase):
+    def test_user_signup(self):
+      response = self.client.post("/signup/", {
+        "username": "john",
+        "password": "pass123"
+      })
+      self.assertEqual(User.objects.count(), 1)
+  ```
+- **Functional tests:** simulate real user behavior and end-to-end flows. *For example:*
+
+  ```python
+  def test_user_login(self):
+    self.browser.get(self.live_server_url)
+    self.browser.find_element(...).click()
+  ```
+- **Regression tests:** ensure previously fixed bugs do not reappear. *For example:*
+
+  ```python
+  def test_duplicate_email_not_allowed(self):
+    User.objects.create(email="a@test.com")
+    with self.assertRaises(IntegrityError):
+      User.objects.create(email="a@test.com")
+  ```
+
+  > **In summary,** unit tests **check logic,** integration tests **check** how components **work together,** functional tests **check real user behavior,** and regression tests **ensure old bugs don't comback.**
+
+#### Best Practices for Django Testing
+
+- Organize **tests per app.**
+- Test **behavior, not implementation** details.
+- Keep tests **small, focus, and readable.**
+- Use **clear, descriptive** names.
+- Use `Test` as a **suffix** for test **classes** and `test_` as a **prefix** for test **methods.**
