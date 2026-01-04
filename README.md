@@ -1840,9 +1840,7 @@ To **render** a form object on a browser, we have to **first write** an HTML tem
   <body>
     <form action="{% url 'application-form' %}" action="POST">
       {% csrf_token %}
-      <table>
-        {{ form }}
-      </table>
+      {{ form }}
       <input type="submit" value="Submit">
     </form>
   </body>
@@ -1857,13 +1855,23 @@ from django.shortcuts import render
 from .forms import ApplicationForm
 
 
-def render_application_form(request: HttpRequest) -> HttpResponse:
-  application_form = ApplicationForm()
-  return render(request, "form.html", {"form": application_form})
+def application_form(request: HttpRequest) -> HttpResponse:
+  form = ApplicationForm()
+  return render(request, "application_form.html", {"form": form})
 ```
 
 Inside the `form.html` template, the **form** can **be rendered** in **different ways:**
-- `{{ form.as_table }}`: renders the form **as table cells** wrapped in `<tr>` tags. The form is **rendered** as a table **by default**. *For example:*
+- `{{ form.as_div }}`: renders the form **as divisions** wrapped in `<div>` tags. *For example:*
+
+  ```html
+  <div>
+    <label for="id_name">Name of Applicant:</label>
+    <input type="text" name="name" maxlength="50" required id="id_name">
+  </div>
+  ```
+
+  The form is **rendered** as a div **by default**.
+- `{{ form.as_table }}`: renders the form **as table cells** wrapped in `<tr>` tags. *For example:*
 
   ```html
   <tr>
@@ -1872,14 +1880,6 @@ Inside the `form.html` template, the **form** can **be rendered** in **different
       <input type="text" name="name" maxlength="50" required id="id_name">
     </td>
   </tr>
-  ```
-- `{{ form.as_div }}`: renders the form **as divisions** wrapped in `<div>` tags. *For example:*
-
-  ```html
-  <div>
-    <label for="id_name">Name of Applicant:</label>
-    <input type="text" name="name" maxlength="50" required id="id_name">
-  </div>
   ```
 - `{{ form.as_p }}`: renders the form **as paragraphs** wrapped in `<p>` tags. *For example:*
 
@@ -1906,19 +1906,24 @@ Inside the `form.html` template, the **form** can **be rendered** in **different
 
   ```python
   from django.http import HttpRequest, HttpResponse
+  from django.shortcuts import render
   from .forms import ApplicationForm
 
 
-  def process_application_form(request: HttpRequest) -> HttpResponse:
-    if request.method != "POST":
-      return HttpResponse("method not allowed!")
+  def application_form(request: HttpRequest) -> HttpResponse:
+    form = ApplicationForm()
 
-    form = ApplicationForm(request.POST)
-    if not form.is_valid():
+    if request.method == "POST":
+      form = ApplicationForm(request.POST)
+      if form.is_valid():
+        form.save()  # save the data submitted to the datbase
+        return HttpResponse("data submitted is processed!")
+
+      # data submitted is invalid
       return HttpResponse("data submitted is invalid!")
 
-    # process the data submitted
-    return HttpResponse("data submitted is processed!")
+    # render the application form
+    return render(request, "application_form.html", {"form": form})
   ```
 
 - Once the `Form` instance is **validated**, we can **access** the data individual field **via** its `cleaned_data` **attribute.** It ensures that the field contains the output in consistent form. *For example:*
