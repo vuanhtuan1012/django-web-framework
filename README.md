@@ -2436,7 +2436,7 @@ The following steps outline how to configure Django with supported databases.
   - Next, it **applies** context processors.
   - Finally, it **renders** the HTML.
 
-  **Note:** Django uses the first matching template it finds which is why project-level templates can override templates provided by installed apps.
+  **Note:** Django **uses** the **first matching template** it finds **which is why** project-level templates can override templates provided by installed apps.
 - **Best practice:**
   - Use the **directories** listed in `DIRS` **for shared or base** templates.
   - Use each **installed apps's** `templates` directory **for app-specific** templates.
@@ -2566,12 +2566,13 @@ The following steps outline how to configure Django with supported databases.
 
   ```text
   templates/
-  ├── base.html
-  ├── home.html
-  ├── about.html
-  └── includes/
-      ├── navbar.html
-      └── footer.html
+  └── my_app/
+      ├── base.html
+      ├── home.html
+      ├── about.html
+      └── includes/
+          ├── navbar.html
+          └── footer.html
   ```
 
 ### Static Files
@@ -2631,12 +2632,12 @@ The following steps outline how to configure Django with supported databases.
   └── static/
     └── my_app/
       └── css/
-        ├── style.css
+        └── style.css
       └── js/
-        ├── main.js
+        └── main.js
       └── images/
         ├── favicon.ico
-        ├── logo.png
+        └── logo.png
   ```
 
 ### Testing in Django
@@ -2662,7 +2663,7 @@ The following steps outline how to configure Django with supported databases.
     ├── __init__.py
     ├── test_models.py
     ├── test_views.py
-    ├── test_urls.py
+    └── test_urls.py
   ```
 
 #### Writing Tests
