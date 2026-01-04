@@ -1,0 +1,49 @@
+<!--
+  @Author: VU Anh Tuan
+  @Date:   2026-01-03 21:20:35
+  @Last Modified by:   VU Anh Tuan
+  @Last Modified time: 2026-01-04 19:53:15
+-->
+<header class="sticky top-0 z-50 backdrop-blur bg-white/80 border-b border-gray-200" x-data="{ open: false }">
+  <nav class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <!-- Logo -->
+    <div class="text-xl font-bold text-primary">
+      🍋 <a href="{% url 'restaurant:home' %}" class="cta-link">Little Lemon</a>
+    </div>
+
+    <!-- Desktop Menu -->
+    <div class="hidden md:flex items-center gap-10">
+      <a href="{% url 'restaurant:home' %}" class="menu-link text-primary hover:font-semibold transition">
+        Home
+      </a>
+      <a href="{% url 'restaurant:about' %}" class="menu-link text-primary hover:font-semibold transition">
+        About
+      </a>
+      <a href="{% url 'restaurant:menu' %}" class="menu-link text-primary hover:font-semibold transition">
+        Menu
+      </a>
+      <a href="{% url 'restaurant:reserve_table' %}"
+        class="bg-primary text-white px-6 py-3 rounded-full font-semibold hover:shadow-lg hover:-translate-y-0.5 transition">
+        Reserve a Table
+      </a>
+    </div>
+
+    <!-- Mobile Menu Button -->
+    <button @click="open = !open" class="md:hidden text-3xl focus:outline-none">
+      ☰
+    </button>
+  </nav>
+
+  <!-- Mobile Dropdown Menu -->
+  <div x-show="open" x-transition @click.outside="open = false" class="md:hidden bg-white border-t border-gray-200">
+    <div class="flex flex-col px-6 py-4 space-y-4">
+      <a href="{% url 'restaurant:home' %}" class="menu-link text-primary hover:font-semibold transition">Home</a>
+      <a href="{% url 'restaurant:about' %}" class="menu-link text-primary hover:font-semibold transition">About</a>
+      <a href="{% url 'restaurant:menu' %}" class="menu-link text-primary hover:font-semibold transition">Menu</a>
+      <a href="{% url 'restaurant:reserve_table' %}"
+        class="bg-primary text-white px-6 py-3 rounded-full text-center font-semibold hover:shadow-lg hover:-translate-y-0.5 transition">
+        Reserve a Table
+      </a>
+    </div>
+  </div>
+</header>

@@ -1,0 +1,94 @@
+<!--
+  @Author: VU Anh Tuan
+  @Date:   2026-01-03 21:42:14
+  @Last Modified by:   VU Anh Tuan
+  @Last Modified time: 2026-01-04 13:08:08
+-->
+{% extends "restaurant/base.html" %}
+
+{% block title %}
+Little Lemon - Home
+{% endblock %}
+
+{% block content %}
+<!-- HERO -->
+<section class="min-h-[70vh] flex items-center bg-cover bg-center relative"
+  style="background-image: url('https://images.unsplash.com/photo-1552566626-52f8b828add9');">
+  <div class="absolute inset-0 bg-black/50"></div>
+
+  <div class="relative max-w-7xl mx-auto px-6 text-white">
+    <h1 class="text-4xl md:text-6xl font-bold mb-6">
+      30% Off This Weekend
+    </h1>
+    <p class="max-w-lg text-lg text-gray-200 mb-10">
+      A modern Mediterranean dining experience inspired by Italian,
+      Greek, and Turkish cuisine.
+    </p>
+    <a href="{% url 'restaurant:reserve_table' %}"
+      class="inline-block bg-accent text-black px-8 py-4 rounded-full font-semibold hover:shadow-xl hover:-translate-y-1 transition">
+      Reserve a Table
+    </a>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="max-w-7xl mx-auto px-6 py-24">
+  <h2 class="text-3xl font-bold text-center mb-16 text-primary">
+    Experience Little Lemon
+  </h2>
+
+  <div class="grid gap-10 md:grid-cols-3">
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition">
+      <img src="https://images.unsplash.com/photo-1544025162-d76694265947" class="h-56 w-full object-cover" />
+      <div class="p-8">
+        <h3 class="text-xl font-semibold mb-3 text-primary">Our New Menu</h3>
+        <p class="text-gray-600 mb-6">
+          Seasonal dishes crafted from fresh Mediterranean ingredients.
+        </p>
+        <a href="{% url 'restaurant:menu' %}" class="font-semibold text-primary cta-link">
+          Explore menu →
+        </a>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition">
+      <img src="https://images.unsplash.com/photo-1540189549336-e6e99c3679fe" class="h-56 w-full object-cover" />
+      <div class="p-8">
+        <h3 class="text-xl font-semibold mb-3 text-primary">Reserve a Table</h3>
+        <p class="text-gray-600 mb-6">
+          Reserve your table for an unforgettable dining experience.
+        </p>
+        <a href="{% url 'restaurant:reserve_table' %}" class="font-semibold text-primary cta-link">
+          Reserve now →
+        </a>
+      </div>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden hover:-translate-y-2 hover:shadow-2xl transition">
+      <img src="https://images.unsplash.com/photo-1551218808-94e220e084d2" class="h-56 w-full object-cover" />
+      <div class="p-8">
+        <h3 class="text-xl font-semibold mb-3 text-primary">Opening Hours</h3>
+        <p class="text-gray-600 mb-6">
+          Open 7 days a week, excluding public holidays.
+        </p>
+        <a href="{% url 'restaurant:opening_hours' %}" class="font-semibold text-primary cta-link">
+          View hours →
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOURS -->
+<section class="max-w-5xl mx-auto px-6 pb-24">
+  <div class="bg-primary text-white rounded-2xl p-12 text-center">
+    <h2 class="text-3xl font-bold mb-6">Opening Hours</h2>
+    <p>Mon - Fri: 2pm - 10pm</p>
+    <p>Sat: 2pm - 11pm</p>
+    <p>Sun: 2pm - 9pm</p>
+  </div>
+</section>
+{% endblock %}

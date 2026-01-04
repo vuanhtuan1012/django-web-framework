@@ -1,0 +1,57 @@
+/**
+ * @Author: VU Anh Tuan
+ * @Date:   2026-01-03 21:16:21
+ * @Last Modified by:   VU Anh Tuan
+ * @Last Modified time: 2026-01-04 18:20:51
+ */
+/* Menu Hover */
+ .menu-link {
+    position: relative;
+    padding-bottom: 4px;
+}
+
+.menu-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: #3f5d53;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+}
+
+.menu-link:hover::after {
+    transform: scaleX(1);
+}
+
+
+/* Highlight CTA links on hover */
+.cta-link {
+  position: relative;
+  font-weight: 600;
+  transition: color 0.25s ease;
+}
+
+.cta-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -4px;
+  width: 100%;
+  height: 2px;
+  background-color: #f4ce14; /* accent color */
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.3s ease;
+}
+
+.cta-link:hover {
+  font-weight: bold;
+}
+
+.cta-link:hover::after {
+  transform: scaleX(1);
+}

@@ -1,0 +1,69 @@
+<!--
+  @Author: VU Anh Tuan
+  @Date:   2026-01-03 22:20:42
+  @Last Modified by:   VU Anh Tuan
+  @Last Modified time: 2026-01-04 19:53:23
+-->
+{% extends "restaurant/base.html" %}
+
+{% block title %}
+Little Lemon - Our Story
+{% endblock %}
+
+{% block content %}
+<section class="max-w-7xl mx-auto px-6 py-24">
+  <div class="grid md:grid-cols-2 gap-16 items-center">
+
+    <!-- TEXT -->
+    <div class="space-y-6">
+      <h2 class="text-3xl font-bold text-center mb-16 flex items-center justify-center gap-3 text-primary">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="size-16">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 6.042A8.967 8.967 0 0 0 6 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 0 1 6 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 0 1 6-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0 0 18 18a8.967 8.967 0 0 0-6 2.292m0-14.25v14.25" />
+        </svg>
+
+        Our Story
+      </h2>
+
+      <p class="text-gray-700 leading-relaxed">
+        Based in Chicago, Illinois, Little Lemon is a family-owned Mediterranean restaurant,
+        focused on traditional recipes served with a modern twist.
+      </p>
+
+      <p class="text-gray-700 leading-relaxed">
+        The chefs draw inspiration from Italian, Greek, and Turkish culture and curate a menu
+        of 12-15 dishes that rotate seasonally to highlight fresh ingredients.
+      </p>
+
+      <p class="text-gray-700 leading-relaxed">
+        The restaurant offers a rustic and relaxed atmosphere with moderate prices, making it
+        a popular destination for a meal any time of the day.
+      </p>
+
+      <p class="text-gray-700 leading-relaxed">
+        Little Lemon is owned by two Italian brothers, <strong>Mario</strong> and
+        <strong>Adrian</strong>, who moved to the United States to pursue their shared dream
+        of owning a restaurant.
+      </p>
+
+      <p class="text-gray-700 leading-relaxed">
+        Mario relies on family recipes and his experience as a chef in Italy to craft the menu,
+        while Adrian leads the marketing efforts and expanded the menu beyond classic Italian
+        cuisine to include flavors from across the Mediterranean region.
+      </p>
+    </div>
+
+    <!-- IMAGE -->
+    <div class="relative">
+      <img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1" alt="Little Lemon Owners"
+        class="rounded-2xl shadow-xl object-cover w-full h-[420px]" />
+      <div class="absolute -bottom-6 -left-6 bg-accent text-black px-6 py-4 rounded-xl shadow-lg font-semibold">
+        Mario & Adrian<br />
+        Owners & Founders
+      </div>
+    </div>
+
+  </div>
+</section>
+{% endblock %}

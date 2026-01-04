@@ -1,0 +1,31 @@
+<!--
+  @Author: VU Anh Tuan
+  @Date:   2026-01-03 19:33:35
+  @Last Modified by:   VU Anh Tuan
+  @Last Modified time: 2026-01-04 19:53:36
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Little Lemon{% endblock %}</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="{% static 'restaurant/js/tailwind_config.js' %}"></script>
+  <link rel="icon" href="{% static 'restaurant/images/favicon.ico' %}">
+  <link rel="icon" type="image/png" sizes="16x16" href="{% static 'restaurant/images/favicon-16x16.png' %}">
+  <link rel="icon" type="image/png" sizes="32x32" href="{% static 'restaurant/images/favicon-32x32.png' %}">
+  <link rel="stylesheet" href="{% static 'restaurant/css/styles.css' %}">
+</head>
+
+<body class="bg-gray-50 text-gray-900">
+  {% include "restaurant/includes/navbar.html" %}
+  {% block content %}{% endblock %}
+  {% include "restaurant/includes/footer.html" %}
+
+  <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js" defer></script>
+</body>
+
+</html>

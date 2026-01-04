@@ -85,6 +85,16 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
     - [Writing Tests](#writing-tests)
     - [Types of Tests in Django](#types-of-tests-in-django)
     - [Best Practices for Django Testing](#best-practices-for-django-testing)
+- [Little Lemon Project](#little-lemon-project)
+  - [Introduction](#introduction)
+  - [Project Structure](#project-structure)
+  - [Forms](#forms)
+  - [Views](#views-1)
+  - [Template Filters](#template-filters)
+  - [Admin Configuration](#admin-configuration)
+  - [Frontend Technologies](#frontend-technologies)
+  - [Installation and Setup](#installation-and-setup)
+  - [Demo Video](#demo-video)
 
 
 ## Introduction to Django
@@ -2805,3 +2815,104 @@ The following steps outline how to configure Django with supported databases.
 - Keep tests **small, focus, and readable.**
 - Use **clear, descriptive** names.
 - Use `Test` as a **suffix** for test **classes** and `test_` as a **prefix** for test **methods.**
+
+
+## Little Lemon Project
+
+### Introduction
+
+This project implements a small website for a **virtual Little Lemon restaurant.** It provide six main pages:
+  - **Home:** presents quick‑access cards linking to the menu, reservation form, and opening hours.
+  - **About:** introduces the restaurant, its story, and its owners.
+  - **Menu:** displays the list of dishes offered by the restaurant.
+  - **Dish:** shows detailed information about a specific dish.
+  - **Reservation:** allows customers to reserve a table through an online form.
+  - **Opening Hours:** presents the restaurant's weekly timetable.
+
+### Project Structure
+
+This website is built with Django, using:
+- **Project:** `littlelemon`.
+- **Application:** `restaurant`.
+
+The app **contains both** static and dynamic pages:
+- **Static pages** rendered using Django's `TemplateView`: *Home, About,* and *Opening Hours*.
+- **Dynamic pages** backed by two database **models:**
+  - `Dish`: **stores** dish information such as name, price, and description, **and powers** the Menu and individual Dish pages.
+  - `Reservation`: **stores** reservation data submitted **through** the reseveration form.
+
+This structure keeps the project lightweight while clearly separating static content from database-driven features.
+
+### Forms
+
+The project include a **custom form** `ReservationForm`. It inherits from `django.forms.ModelForm` and include:
+- **custom** `is_valid` method **to prevent** reservations for a past dates or times.
+- **custom** `clean` method **to strip** leading and trailing whitespace from all `CharField` and `TextField` inputs.
+
+### Views
+
+The project **uses both** class-based and function-based views:
+- `DishListView` inherits from `ListView`, **generates** the Menu page.
+- `DishDetailView` inherits from `DetailView`, **generates** individual Dish pages.
+- `reserve_table` is a function-based view that **renders** the Reservation page and processes form submissions.
+
+### Template Filters
+
+The `custom_filters.py` module inside the `templatetags` package **defines and registers** a custom `trim` filter, making it available for use in templates.
+
+### Admin Configuration
+
+The Django admin interface is customized through:
+- `DishAdmin`.
+- `RersverationAdmin`.
+
+Both inherit from `django.contrib.admin.ModuleAdmin`, providing a clearer and more intuitive interface **for managing** dishes and reservations.
+
+### Frontend Technologies
+
+The templates use:
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Alpine.js](https://alpinejs.dev/)
+- [Heroicons](https://heroicons.com/)
+
+These tools provide a **modern, responsive UI** that works smoothly **on both** desktop and mobile devices.
+
+### Installation and Setup
+
+- **Prerequisite:** Python 3.10+
+- **Clone** the repository, then **navigate into** the `littlelemon` directory.
+
+  ```bash
+  cd littlelemon
+  ```
+- **Create and active** a virtual environment.
+- **Install** dependencies.
+
+  ```bash
+  pip install -r requirements.txt
+  ```
+- Apply database **migrations.**
+
+  ```bash
+  python manage.py migrate
+  ```
+- Create a **superuser** (to access the Django admin site).
+
+  ```bash
+  python manage.py createsuperuser
+  ```
+- **Run** the development server
+
+  ```bash
+  python manage.py runserver
+  ```
+
+  The site will be available at `http://localhost:8000`.
+
+  The admin panel will be available at `http://localhost:8000/admin`
+
+### Demo Video
+
+To provide a quick overview of the project in action, a short demo video is available. It walks through the main pages, demonstrates the reservation workflow, and highlights the responsive design built with Tailwind CSS, Alpine.js, and Heroicons.
+
+[▶ Watch demo video](https://youtu.be/gu9DSmO1JdQ)
