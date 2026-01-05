@@ -2,7 +2,7 @@
 # @Author: VU Anh Tuan
 # @Date:   2026-01-03 19:57:40
 # @Last Modified by:   VU Anh Tuan
-# @Last Modified time: 2026-01-04 12:35:42
+# @Last Modified time: 2026-01-05 08:01:01
 """
 Admin module
 """
@@ -13,7 +13,7 @@ from .models import Dish, Reservation
 
 class DishAdmin(admin.ModelAdmin):
     """
-    ReservationAdmin class
+    DishAdmin class
     """
 
     list_display = ("name", "price")
@@ -27,18 +27,18 @@ class ReservationAdmin(admin.ModelAdmin):
     list_display = (
         "first_name",
         "last_name",
-        "guests_display",
+        "guests",
         "reserved_at",
         "created_at",
     )
 
-    def guests_display(self, obj):
+    def guests(self, obj: Reservation):
         """
         Returns number of guests
         """
         return obj.no_guests
 
-    guests_display.short_description = "Number of Guests"
+    guests.short_description = "Number of Guests"
 
 
 admin.site.register(Dish, DishAdmin)
