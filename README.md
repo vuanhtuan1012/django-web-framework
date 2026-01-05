@@ -1,6 +1,14 @@
 # Django Web Framework  <!-- omit in toc -->
 
-Comprehensive notes covering key concepts of the [Django Web Framework](https://www.coursera.org/learn/django-web-framework) course.
+This repository is a structured, comprehensive collection of notes designed based on the [Django Web Framework](https://www.coursera.org/learn/django-web-framework) offered on Coursera. It brings together essential web fundamentals, Python best practices, and Django's core features in a clear, organized format that's easy to study and reference.
+
+The material progresses from foundational concepts, such as [HTTP](#hypertext-transfer-protocol-http), [virtual environments](#vitual-environment), and [project architecture](#django-project-structure) to more advanced topics including [ORM modeling](#object-relational-mapping-orm), [class‑based views](#class-based-views), [URL routing](#url-dispatcher), [templates](#templates), [forms](#django-form), security, and [testing](#testing-in-django). Each section is crafted to help you build a strong mental model of how Django applications work, both internally and in real-world development.
+
+To bridge theory and practice, the repository also includes an applied project, **[Little Lemon](#little-lemon-project)**, demonstrating how these concepts come together in a functional Django application. Whether you're learning Django for the first time or refining your understanding, this repository aims to be a reliable companion throughout your journey.
+
+To provide a quick overview of the project in action, a short demo video is available. It walks through the main pages, demonstrates the reservation workflow, and highlights the responsive design built with [Tailwind CSS](https://tailwindcss.com/), [Alpine.js](https://alpinejs.dev/), and [Heroicons](https://heroicons.com/).
+
+[▶ Watch demo video](https://youtu.be/8pFBiqvY1B4)
 
 - [Introduction to Django](#introduction-to-django)
   - [Hyper Text Markup Language (HTML) vs. HTML5](#hyper-text-markup-language-html-vs-html5)
@@ -94,7 +102,6 @@ Comprehensive notes covering key concepts of the [Django Web Framework](https://
   - [Admin Configuration](#admin-configuration)
   - [Frontend Technologies](#frontend-technologies)
   - [Installation and Setup](#installation-and-setup)
-  - [Demo Video](#demo-video)
 
 
 ## Introduction to Django
@@ -2829,6 +2836,8 @@ This project implements a small website for a **virtual Little Lemon restaurant.
   - **Reservation:** allows customers to reserve a table through an online form.
   - **Opening Hours:** presents the restaurant's weekly timetable.
 
+To provide a quick overview of the project in action, a short demo video is available. It walks through the main pages, demonstrates the reservation workflow, and highlights the responsive design built with [Tailwind CSS](https://tailwindcss.com/), [Alpine.js](https://alpinejs.dev/), and [Heroicons](https://heroicons.com/).
+
 [▶ Watch demo video](https://youtu.be/8pFBiqvY1B4)
 
 ### Project Structure
@@ -2912,9 +2921,3 @@ These tools provide a **modern, responsive UI** that works smoothly **on both** 
   The site will be available at `http://localhost:8000`.
 
   The admin panel will be available at `http://localhost:8000/admin`
-
-### Demo Video
-
-To provide a quick overview of the project in action, a short demo video is available. It walks through the main pages, demonstrates the reservation workflow, and highlights the responsive design built with [Tailwind CSS](https://tailwindcss.com/), [Alpine.js](https://alpinejs.dev/), and [Heroicons](https://heroicons.com/).
-
-[▶ Watch demo video](https://youtu.be/8pFBiqvY1B4)
