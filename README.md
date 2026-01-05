@@ -2829,6 +2829,8 @@ This project implements a small website for a **virtual Little Lemon restaurant.
   - **Reservation:** allows customers to reserve a table through an online form.
   - **Opening Hours:** presents the restaurant's weekly timetable.
 
+[▶ Watch demo video](https://youtu.be/8pFBiqvY1B4)
+
 ### Project Structure
 
 This website is built with Django, using:
@@ -2913,6 +2915,6 @@ These tools provide a **modern, responsive UI** that works smoothly **on both** 
 
 ### Demo Video
 
-To provide a quick overview of the project in action, a short demo video is available. It walks through the main pages, demonstrates the reservation workflow, and highlights the responsive design built with Tailwind CSS, Alpine.js, and Heroicons.
+To provide a quick overview of the project in action, a short demo video is available. It walks through the main pages, demonstrates the reservation workflow, and highlights the responsive design built with [Tailwind CSS](https://tailwindcss.com/), [Alpine.js](https://alpinejs.dev/), and [Heroicons](https://heroicons.com/).
 
 [▶ Watch demo video](https://youtu.be/8pFBiqvY1B4)
