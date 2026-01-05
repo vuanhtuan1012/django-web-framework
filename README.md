@@ -2915,4 +2915,4 @@ These tools provide a **modern, responsive UI** that works smoothly **on both** 
 
 To provide a quick overview of the project in action, a short demo video is available. It walks through the main pages, demonstrates the reservation workflow, and highlights the responsive design built with Tailwind CSS, Alpine.js, and Heroicons.
 
-[▶ Watch demo video](https://youtu.be/gu9DSmO1JdQ)
+[▶ Watch demo video](https://youtu.be/8pFBiqvY1B4)
