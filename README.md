@@ -90,6 +90,7 @@ To provide a quick overview of the project in action, a short demo video is avai
   - [Extends vs. Include Tags](#extends-vs-include-tags)
   - [Static Files](#static-files)
   - [Testing in Django](#testing-in-django)
+    - [Unit Test Naming Conventions](#unit-test-naming-conventions)
     - [Writing Tests](#writing-tests)
     - [Types of Tests in Django](#types-of-tests-in-django)
     - [Best Practices for Django Testing](#best-practices-for-django-testing)
@@ -2688,6 +2689,95 @@ The following steps outline how to configure Django with supported databases.
     └── test_urls.py
   ```
 
+#### Unit Test Naming Conventions
+
+- Django projects typically use **behavior-driven, feature-grouped naming.** The goal is for tests to read like documentation of the app's behavior.
+- **Group tests by feature using test classes.**
+  - Each Django app should **contain a dedicated** `tests/` package. *For example:*
+
+    ```text
+    my_app/
+    └── tests/
+      ├── __init__.py
+      ├── test_models.py
+      ├── test_views.py
+      └── test_urls.py
+    ```
+  - Inside each file, group tests by **domain concept,** not by method name. *For example:*
+    ```python
+    class TestDishModel(TestCase):
+    """
+    TestDishModel class
+    """
+
+    def test_string_representation_includes_name(self):
+      """
+      Verifies that the string representation includes the dish name
+      """
+
+    def test_string_representation_includes_price(self):
+      """
+      Verifies that the string representation includes the dish price
+      """
+    ```
+- Use the naming pattern `test_[action]_[condition]_[expected]`. This format expresses business rules clearly and avoids leaking implementation details. It is both Django-friendly and Pythonic style. *For example:*
+
+  ```python
+  def test_home_url_resolves_to_correct_view(self):
+    """
+    Verifies that the home URL resolves to the correct view
+    """
+
+  def test_about_view_returns_200(self):
+    """
+    Verifies that the about view returns a 200 OK response
+    """
+
+  def test_form_is_invalid_with_incorrect_no_guests(self):
+    """
+    Verifies that the form fails validation when the number of guests is incorrect
+    """
+  ```
+- For **views,** use HTTP-focused naming. *For example:*
+
+  ```python
+  def test_home_view_returns_200(self):
+    """
+    Verifies that the home view returns a 200 OK response
+    """
+
+  def test_about_view_returns_200(self):
+    """
+    Verifies that the about view returns a 200 OK response
+    """
+  ```
+- For **models,** focus on **behavior,** not fields. *For example:*
+
+  ```python
+  def test_string_representation_includes_name(self):
+    """
+    Verifies that the string representation includes the dish name
+    """
+
+  def test_string_representation_includes_no_guests(self):
+    """
+    Verifies that the string representation includes number of guests
+    """
+  ```
+- For **forms,** emphasize **validation rules.** *For example:*
+
+  ```python
+  def test_form_is_valid_with_correct_data(self):
+    """
+    Verifies that the form validates successfully with correct input data
+    """
+
+  def test_form_is_invalid_with_incorrect_first_name(self):
+    """
+    Verifies that the form fails validation when the first name is incorrect
+    """
+  ```
+
 #### Writing Tests
 
 - Testing **simple cases.** *For example:*
@@ -2696,8 +2786,11 @@ The following steps outline how to configure Django with supported databases.
   from django.test import TestCase
 
 
-  class SimpleTest(TestCase):
-    def test_basic_addition(self):
+  class TestSimple(TestCase):
+    def test_addition_returns_correct_value(self):
+      """
+      Verifies that the addition returns a correct value
+      """
       self.assertEqual(1 + 1, 2)
   ```
 - Testing **views.** *For example:*
@@ -2707,36 +2800,71 @@ The following steps outline how to configure Django with supported databases.
   from django.urls import reverse
 
 
-  class HomeViewTest(TestCase):
-    def test_home_status_code(self):
-      response = self.client.get(reverse("home"))
-      self.assertEqual(response.status_code, 200)
+  def test_home_view_returns_200(self):
+    """
+    Verifies that the home view returns a 200 OK response
+    """
+    response = self.client.get(reverse("restaurant:home"))
+    self.assertEqual(response.status_code, 200)
   ```
 - Testing **models.** *For example:*
 
   ```python
   from django.test import TestCase
-  from .models import Product
+
+  from restaurant.models import Dish
 
 
-  class ProductModelTest(TestCase):
-    def test_string_representation(self):
-      product = Product(name="Pizza")
-      self.assertEqual(str(product), "Pizza")
+  class TestDishModel(TestCase):
+    """
+    TestDishModel class
+    """
+
+    def test_string_representation_includes_name(self):
+      """
+      Verifies that the string representation includes the dish name
+      """
+      dish = Dish(name="Pizza", price=12.5)
+      self.assertIn(dish.name, str(dish))
   ```
 - Testing **forms.** *For example:*
 
   ```python
+  from datetime import datetime, timedelta, timezone
+  from unittest.mock import patch
+
   from django.test import TestCase
-  from .forms import ContactForm
+
+  from restaurant.forms import ReservationForm
 
 
-  class ContactFormTest(TestCase):
-    def test_valid_form(self):
-      form = ContactForm(data={
-        "name": "John", "email": "john@example.com"
-      })
-      self.assertTrue(form.is_valid())
+  class TestReservationForm(TestCase):
+    """
+    ReservationFormTest class
+    """
+
+    def setUp(self) -> None:
+      """
+      Setups attributes for ReservationForm tests
+      """
+      self.fake_now = datetime(2025, 1, 1, tzinfo=timezone.utc)
+      self.reserved_at = self.fake_now + timedelta(days=1)
+
+    def test_form_is_valid_with_correct_data(self):
+      """
+      Verifies that the form validates successfully with correct input data
+      """
+      with patch("restaurant.forms.timezone.now", return_value=self.fake_now):
+        form = ReservationForm(
+          data={
+            "first_name": "John",
+            "last_name": "Doe",
+            "no_guests": 2,
+            "reserved_at": self.reserved_at,
+            "comment": "",
+          }
+        )
+        self.assertEqual(form.is_valid(), True)
   ```
 - Testing **templates.** *For example:*
 
@@ -2745,35 +2873,59 @@ The following steps outline how to configure Django with supported databases.
   from django.urls import reverse
 
 
-  class TemplateTest(TestCase):
-    def test_home_template_used(self):
-      response = self.client.get(reverse("home"))
-      self.assertTemplateUsed(response, "home.html")
+  class TestTemplate(TestCase):
+    """
+    TestTemplate class
+    """
+
+    def test_templates_used_by_home_url(self):
+      """
+      Verifies that the home url renders the expected template
+      """
+      response = self.client.get(reverse("restaurant:home"))
+      self.assertTemplateUsed(response, "restaurant/home.html")
   ```
 - Testing **urls.** *For example:*
 
   ```python
   from django.test import TestCase
-  from django.urls import reverse, resolve
-  from .views import home
+  from django.urls import resolve, reverse
+
+  from restaurant.views import HomeView
 
 
-  class UrlTest(TestCase):
-    def test_home_url_resolved(self):
-      resolver = resolve("/")
-      self.assertEqual(resolver.func, home)
+  class TestUrl(TestCase):
+    """
+    TestUrl class
+    """
+
+    def test_home_url_resolves_to_correct_view(self):
+      """
+      Verifies that the home URL resolves to the correct view
+      """
+      resolver = resolve(reverse("restaurant:home"))
+      self.assertEqual(resolver.func.view_class, HomeView)
   ```
 - Testing **with the database.** *For example:*
 
   ```python
   from django.test import TestCase
-  from .models import User
+
+  from restaurant.models import Dish
 
 
-  class UserTest(TestCase):
-    def test_create_user(self):
-      user = User.objects.create(username="John")
-      self.assertEqual(User.objects.count(), 1)
+  class TestDishModel(TestCase):
+    """
+    TestDishModel class
+    """
+
+    def test_creates_dish_when_data_is_valid(self):
+      """
+      Verifies that a dish is successfully created when valid data is provided
+      """
+      # pylint: disable=no-member
+      Dish.objects.create(name="Pizza", price=10.5)
+      self.assertEqual(Dish.objects.count(), 1)
   ```
 
 #### Types of Tests in Django
@@ -2817,11 +2969,11 @@ The following steps outline how to configure Django with supported databases.
 
 #### Best Practices for Django Testing
 
-- Organize **tests per app.**
-- Test **behavior, not implementation** details.
-- Keep tests **small, focus, and readable.**
-- Use **clear, descriptive** names.
-- Use `Test` as a **suffix** for test **classes** and `test_` as a **prefix** for test **methods.**
+- Use **behavior-driven, feature-grouped naming**.
+- Name test methods using the pattern `test_[action]_[condition]_[expected]`.
+- Focus on **observable behaviors,** not implementation details.
+- Prefix test **classes** with `Test` and test **methods** with `test_`.
+- Keep tests **small, focus, and easy to read.**
 
 
 ## Little Lemon Project
