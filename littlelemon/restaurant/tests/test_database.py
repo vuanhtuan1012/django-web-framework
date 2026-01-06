@@ -2,37 +2,50 @@
 # @Author: VU Anh Tuan
 # @Date:   2026-01-05 22:01:55
 # @Last Modified by:   VU Anh Tuan
-# @Last Modified time: 2026-01-05 22:07:29
+# @Last Modified time: 2026-01-06 05:40:04
 """
 Test Database
 """
 from datetime import datetime, timezone
+
+from django.db import IntegrityError, transaction
 from django.test import TestCase
 
 from restaurant.models import Dish, Reservation
 
 
-class DishTest(TestCase):
+class TestDishModel(TestCase):
     """
-    DishTest
+    TestDishModel class
     """
 
-    def test_dish_create(self):
+    def test_creates_dish_when_data_is_valid(self):
         """
-        Tests dish create
+        Verifies that a dish is successfully created when valid data is provided
         """
         # pylint: disable=no-member
         Dish.objects.create(name="Pizza", price=10.5)
         self.assertEqual(Dish.objects.count(), 1)
 
-class ReservationTest(TestCase):
+    def test_name_is_unique(self):
+        """
+        Verifies that the dish name is unique in the database
+        """
+        # pylint: disable=no-member
+        Dish.objects.create(name="Pizza", description="Tasty", price=10.5)
+        with self.assertRaises(IntegrityError):
+            with transaction.atomic():
+                Dish.objects.create(name="Pizza", description="Duplicate", price=12.5)
+
+
+class TestReservationModel(TestCase):
     """
-    ReservationTest
+    TestReservation class
     """
 
-    def test_reservation_create(self):
+    def test_creates_reservation_when_data_is_valid(self):
         """
-        Tests reservation create
+        Verifies that a reservation is successfully created when valid data is provided
         """
         # pylint: disable=no-member
         Reservation.objects.create(

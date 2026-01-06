@@ -2,7 +2,7 @@
 # @Author: VU Anh Tuan
 # @Date:   2026-01-05 21:04:34
 # @Last Modified by:   VU Anh Tuan
-# @Last Modified time: 2026-01-05 21:49:28
+# @Last Modified time: 2026-01-06 05:40:32
 """
 Test Forms
 """
@@ -14,22 +14,22 @@ from django.test import TestCase
 from restaurant.forms import ReservationForm
 
 
-class ReservationFormTest(TestCase):
+class TestReservationForm(TestCase):
     """
-    ReservationFormTest
+    ReservationFormTest class
     """
 
     def setUp(self) -> None:
         """
-        Setup
+        Setups attributes for ReservationForm tests
         """
         self.fake_now = datetime(2025, 1, 1, tzinfo=timezone.utc)
         self.yesterday = self.fake_now - timedelta(days=1)
         self.reserved_at = self.fake_now + timedelta(days=1)
 
-    def test_form_valid(self):
+    def test_form_is_valid_with_correct_data(self):
         """
-        Tests form valid
+        Verifies that the form validates successfully with correct input data
         """
         with patch("restaurant.forms.timezone.now", return_value=self.fake_now):
             form = ReservationForm(
@@ -43,9 +43,9 @@ class ReservationFormTest(TestCase):
             )
             self.assertEqual(form.is_valid(), True)
 
-    def test_first_name_invalid(self):
+    def test_form_is_invalid_with_incorrect_first_name(self):
         """
-        Tests first name invalid
+        Verifies that the form fails validation when the first name is incorrect
         """
         with patch("restaurant.forms.timezone.now", return_value=self.fake_now):
             form = ReservationForm(
@@ -59,9 +59,9 @@ class ReservationFormTest(TestCase):
             )
             self.assertEqual(form.is_valid(), False)
 
-    def test_last_name_invalid(self):
+    def test_form_is_invalid_with_incorrect_last_name(self):
         """
-        Tests last name invalid
+        Verifies that the form fails validation when the last name is incorrect
         """
         with patch("restaurant.forms.timezone.now", return_value=self.fake_now):
             form = ReservationForm(
@@ -75,9 +75,9 @@ class ReservationFormTest(TestCase):
             )
             self.assertEqual(form.is_valid(), False)
 
-    def test_no_guests_invalid(self):
+    def test_form_is_invalid_with_incorrect_no_guests(self):
         """
-        Tests number of guests invalid
+        Verifies that the form fails validation when the number of guests is incorrect
         """
         with patch("restaurant.forms.timezone.now", return_value=self.fake_now):
             form = ReservationForm(
@@ -91,9 +91,9 @@ class ReservationFormTest(TestCase):
             )
             self.assertEqual(form.is_valid(), False)
 
-    def test_reserved_at_invalid(self):
+    def test_form_is_invalid_with_incorrect_reserved_at(self):
         """
-        Tests reserved at invalid
+        Verifies that the form fails validation when the reserved at is incorrect
         """
         with patch("restaurant.forms.timezone.now", return_value=self.fake_now):
             form = ReservationForm(
@@ -107,9 +107,10 @@ class ReservationFormTest(TestCase):
             )
             self.assertEqual(form.is_valid(), False)
 
-    def test_form_clean(self):
+    def test_text_inputs_are_trimmed_in_cleaned_data(self):
         """
-        Tests form clean
+        Verifies that text inputs are trimmed of leading and trailing whitespace
+        in the cleaned data
         """
         with patch("restaurant.forms.timezone.now", return_value=self.fake_now):
             form = ReservationForm(

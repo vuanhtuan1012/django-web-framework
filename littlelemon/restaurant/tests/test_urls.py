@@ -2,7 +2,7 @@
 # @Author: VU Anh Tuan
 # @Date:   2026-01-03 19:57:40
 # @Last Modified by:   VU Anh Tuan
-# @Last Modified time: 2026-01-05 20:38:42
+# @Last Modified time: 2026-01-06 05:48:12
 """
 Test URLs
 """
@@ -19,37 +19,49 @@ from restaurant.views import (
 )
 
 
-class UrlTest(TestCase):
+class TestUrl(TestCase):
     """
-    UrlTest
+    TestUrl class
     """
 
-    def test_urls_resolve_to_correct_views(self):
+    def test_home_url_resolves_to_correct_view(self):
         """
-        Tests home, about, menu, opening hours urls
+        Verifies that the home URL resolves to the correct view
         """
-        test_cases = [
-            ("restaurant:home", HomeView),
-            ("restaurant:about", AboutView),
-            ("restaurant:menu", DishListView),
-            ("restaurant:opening_hours", OpeningHoursView),
-        ]
+        resolver = resolve(reverse("restaurant:home"))
+        self.assertEqual(resolver.func.view_class, HomeView)
 
-        for url_name, view in test_cases:
-            with self.subTest(url_name=url_name, view=view):
-                resolver = resolve(reverse(url_name))
-                self.assertEqual(resolver.func.view_class, view)
+    def test_about_url_resolves_to_correct_view(self):
+        """
+        Verifies that the about URL resolves to the correct view
+        """
+        resolver = resolve(reverse("restaurant:about"))
+        self.assertEqual(resolver.func.view_class, AboutView)
 
-    def test_dish_detail_url(self):
+    def test_menu_url_resolves_to_correct_view(self):
+        """
+        Verifies that the menu URL resolves to the correct view
+        """
+        resolver = resolve(reverse("restaurant:menu"))
+        self.assertEqual(resolver.func.view_class, DishListView)
+
+    def test_dish_detail_url_resolves_to_correct_view(self):
         """
         Tests dish detail url
         """
         resolver = resolve(reverse("restaurant:dish_detail", kwargs={"pk": 1}))
         self.assertEqual(resolver.func.view_class, DishDetailView)
 
-    def test_reserve_table_url(self):
+    def test_reserve_table_url_resolves_to_correct_view(self):
         """
-        Tests reserve table url
+        Verifies that the reserve table URL resolves to the correct view
         """
         resolver = resolve(reverse("restaurant:reserve_table"))
         self.assertEqual(resolver.func, reserve_table)
+
+    def test_opening_hours_url_resolves_to_correct_view(self):
+        """
+        Verifies that the opening hours URL resolves to the correct view
+        """
+        resolver = resolve(reverse("restaurant:opening_hours"))
+        self.assertEqual(resolver.func.view_class, OpeningHoursView)
