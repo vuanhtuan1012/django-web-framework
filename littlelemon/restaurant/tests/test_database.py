@@ -2,7 +2,7 @@
 # @Author: VU Anh Tuan
 # @Date:   2026-01-05 22:01:55
 # @Last Modified by:   VU Anh Tuan
-# @Last Modified time: 2026-01-06 05:40:04
+# @Last Modified time: 2026-01-06 12:24:14
 """
 Test Database
 """
@@ -19,7 +19,7 @@ class TestDishModel(TestCase):
     TestDishModel class
     """
 
-    def test_creates_dish_when_data_is_valid(self):
+    def test_dish_creation_succeeds_with_valid_data(self):
         """
         Verifies that a dish is successfully created when valid data is provided
         """
@@ -27,7 +27,7 @@ class TestDishModel(TestCase):
         Dish.objects.create(name="Pizza", price=10.5)
         self.assertEqual(Dish.objects.count(), 1)
 
-    def test_name_is_unique(self):
+    def test_creation_fails_with_duplicate_name(self):
         """
         Verifies that the dish name is unique in the database
         """
@@ -43,7 +43,7 @@ class TestReservationModel(TestCase):
     TestReservation class
     """
 
-    def test_creates_reservation_when_data_is_valid(self):
+    def test_reservation_creation_succeeds_with_valid_data(self):
         """
         Verifies that a reservation is successfully created when valid data is provided
         """
