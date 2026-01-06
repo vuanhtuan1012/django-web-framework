@@ -2933,16 +2933,16 @@ The following steps outline how to configure Django with supported databases.
 - **Unit tests:** verify small, isolated pieces of logic, *e.g.,* models, utility functions. *For example:*
 
   ```python
-  class ProductModelTest(TestCase):
-    def test_str_method(self):
+  class TestProductModel(TestCase):
+    def test_string_representation_returns_name(self):
       product = Product(name="Pizza")
-      self.assertEqual(str(product), "Pizza")
+      self.assertEqual(str(product), product.name)
   ```
 - **Integration tests:** ensure multiple components work together correctly. *For example:*
 
   ```python
-  class SignupTest(TestCase):
-    def test_user_signup(self):
+  class TestSignup(TestCase):
+    def test_signup_succeeds_with_valid_data(self):
       response = self.client.post("/signup/", {
         "username": "john",
         "password": "pass123"
@@ -2952,14 +2952,14 @@ The following steps outline how to configure Django with supported databases.
 - **Functional tests:** simulate real user behavior and end-to-end flows. *For example:*
 
   ```python
-  def test_user_login(self):
+  def test_login_succeeds_for_valid_credentials(self):
     self.browser.get(self.live_server_url)
     self.browser.find_element(...).click()
   ```
 - **Regression tests:** ensure previously fixed bugs do not reappear. *For example:*
 
   ```python
-  def test_duplicate_email_not_allowed(self):
+  def test_registration_fails_with_duplicate_email(self):
     User.objects.create(email="a@test.com")
     with self.assertRaises(IntegrityError):
       User.objects.create(email="a@test.com")
