@@ -163,7 +163,7 @@ In simple terms, it **prevents duplicating code, logic, or data.**
 - A Django project **is a Python package containing** the database configuration used by various sub-modules (apps) and other Django-specific settings.
 - The `startproject` command of Django-admin is used to **create a new Django project.** It creates the folder of the given name (is called *project directory*), inside which there is another folder of the same name (is called *project package*) and the script `manage.py`.
 
-  ```cmd
+  ```bash
   > django-admin startproject <project_name>
   ```
   - **Project directory** is created when we create a Django project. It contains `manage.py` and *project package folder.*
@@ -172,7 +172,7 @@ In simple terms, it **prevents duplicating code, logic, or data.**
 - The `manage.py` script **has the same role as** the `django-admin` utility. It can perform everything that the `django-admin` utility does. However, using `manage.py` is **more straightforward,** especially if we are required to work on a single project.
 - The `startapp` command is used to create a new app. An app is also represented by a folder of a specific file system.
 
-  ```cmd
+  ```bash
   > python manage.py startapp <app_name>
   ```
 
@@ -180,17 +180,17 @@ In simple terms, it **prevents duplicating code, logic, or data.**
 - Django manages the database operations with the **[ORM technique](#object-relational-mapping-orm).**
 - [Migration](#migrations) refers to **generating a database table whose** structure matches the data model declared in the app.
 
-  ```cmd
+  ```bash
   > python manage.py makemigration
   ```
 - The `migrate` command **synchronizes the database state** with the currently declared models and migrations.
 
-  ```cmd
+  ```bash
   > python manage.py migrate
   ```
 - The `runserver` command **starts** Django's built-in **development server** on the local machine.
 
-  ```cmd
+  ```bash
   > python manage.py runserver
   ```
 
@@ -313,32 +313,32 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 - An app is **responsible for performing one single task** out of the many involved in the complete web application, represented by the Django project.
 - The `startapp` command option of the `manage.py` script creates a default folder structure for the app of that name.
 
-  ```cmd
+  ```bash
   > python manage.py startapp <app_name>
   ```
 - The folder structure looks like this
   ```
-  demoproject
-  │   db.sqlite3
-  │   manage.py
+  demoproject/
+  ├── db.sqlite3
+  ├── manage.py
   │
-  ├───demo_app
-  │   │   admin.py
-  │   │   apps.py
-  │   │   models.py
-  │   │   tests.py
-  │   │   views.py
-  │   │   __init__.py
+  ├── demo_app/
+  │   ├── admin.py
+  │   ├── apps.py
+  │   ├── models.py
+  │   ├── tests.py
+  │   ├── views.py
+  │   ├── __init__.py
   │   │
-  │   └───migrations
-  │           __init__.py
+  │   ├── migrations/
+  │   │   └── __init__.py
   │
-  └───demoproject
-      │   asgi.py
-      │   settings.py
-      │   urls.py
-      │   wsgi.py
-      │   __init__.py
+  └── demoproject
+      ├── asgi.py
+      ├── settings.py
+      ├── urls.py
+      ├── wsgi.py
+      └── __init__.py
   ```
 - `views.py`
 
@@ -1990,7 +1990,7 @@ Inside the `form.html` template, the **form** can **be rendered** in **different
 - Django Admin Interface, usually called **Django Admin** is a **built-in** web application that **allows for easy management** of users, groups, and permissions.
 - To **access** the Django Admin, a superuser is **required.** A **superuser** has the privileges to **add or modify** users and groups, and **can be created** using the `createsuperuser` command as follows.
 
-  ```cmd
+  ```bash
   > python manage.py createsuperuser
   ```
 - If a user's `is_staff` property is **set** to `True`, they **can log in** to the admin interface. **Non-staff users** cannot access the admin site.
@@ -2272,7 +2272,7 @@ The following steps outline how to configure Django with supported databases.
 - **Create** a **database and user,** ensuring both are ready to use.
 - **Install** the **appropriate Python driver** so Django can connect to the database. *For example:*
 
-  ```cmd
+  ```bash
   # PostgreSQL driver
   > pip install psycopg2-binary
 
@@ -2311,13 +2311,13 @@ The following steps outline how to configure Django with supported databases.
   ```
 - **Run migrations** to initialize the database schema.
 
-  ```cmd
+  ```bash
   > python manage.py makemigrations
   > python manage.py migrate
   ```
 - **Test connection** to confirm everything is working correctly.
 
-  ```cmd
+  ```bash
   > python manage.py dbshell
   ```
 
@@ -2678,16 +2678,6 @@ The following steps outline how to configure Django with supported databases.
   - create a **temporary test database,**
   - run each test **in isolation,**
   - and **delete** the test database **once** the suite completes.
-- For **small apps,** all tests **can live** in a **single** `tests.py` file. For **larger apps,** it's **best practice** to **create** a `tests/` package **and split** tests by domain. *For example:*
-
-  ```text
-  my_app/
-  └── tests/
-    ├── __init__.py
-    ├── test_models.py
-    ├── test_views.py
-    └── test_urls.py
-  ```
 
 #### Unit Test Naming Conventions
 
