@@ -26,7 +26,7 @@ To provide a quick overview of the project in action, a short demo video is avai
   - [App structure](#app-structure)
   - [Web Framework](#web-framework)
     - [Three-tier Architecture](#three-tier-architecture)
-    - [Model-View-Control (MVC) Architecture](#model-view-control-mvc-architecture)
+    - [Model-View-Controller (MVC) Architecture](#model-view-controller-mvc-architecture)
     - [Model-View-Template (MVT) Architecture](#model-view-template-mvt-architecture)
 - [Views](#views)
   - [Class-Based Views](#class-based-views)
@@ -361,9 +361,9 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - the **data tier** usually **consists of database servers** for storing and retrieving information.
   - the **application tier** is what **ties** together the other **two tiers.** It **gets data** from the presentation layer and **persists** it in the data tier.
 
-#### Model-View-Control (MVC) Architecture
+#### Model-View-Controller (MVC) Architecture
 
-- Most of the web frameworks implement the **MVC (Model-View-Control)** architecture.
+- Most of the web frameworks implement the **MVC (Model-View-Controller)** architecture.
 - The MVC design pattern separates the entire web application development process into three layers: Model, View, and Controller.
   - The **Controller** intercepts the user requests. It **coordinates** with the View and Model layers to **send the appropriate response** back to the client.
   - The **Model** is responsible for **data definitions, processing logic** and **interaction** with the backend database.
