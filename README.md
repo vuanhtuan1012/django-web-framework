@@ -317,11 +317,10 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   > python manage.py startapp <app_name>
   ```
 - The folder structure looks like this
-  ```
+  ```text
   demoproject/
   ├── db.sqlite3
   ├── manage.py
-  │
   ├── demo_app/
   │   ├── admin.py
   │   ├── apps.py
@@ -329,11 +328,9 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   │   ├── tests.py
   │   ├── views.py
   │   ├── __init__.py
-  │   │
-  │   ├── migrations/
-  │   │   └── __init__.py
-  │
-  └── demoproject
+  │   └── migrations/
+  │       └── __init__.py
+  └── demoproject/
       ├── asgi.py
       ├── settings.py
       ├── urls.py
@@ -2830,7 +2827,7 @@ The following steps outline how to configure Django with supported databases.
 
   class TestReservationForm(TestCase):
     """
-    ReservationFormTest class
+    TestReservationForm class
     """
 
     def setUp(self) -> None:

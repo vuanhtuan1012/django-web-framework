@@ -2,7 +2,7 @@
 # @Author: VU Anh Tuan
 # @Date:   2026-01-05 21:04:34
 # @Last Modified by:   VU Anh Tuan
-# @Last Modified time: 2026-01-06 05:40:32
+# @Last Modified time: 2026-01-06 14:45:52
 """
 Test Forms
 """
@@ -16,7 +16,7 @@ from restaurant.forms import ReservationForm
 
 class TestReservationForm(TestCase):
     """
-    ReservationFormTest class
+    TestReservationForm class
     """
 
     def setUp(self) -> None:
