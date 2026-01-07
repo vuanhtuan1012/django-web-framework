@@ -1849,7 +1849,7 @@ Some of the **most frequently used fields** are as follow:
 
 #### `Meta` Class
 
-- In Django `Form` and `ModelForm` classes, `Meta` class is an **inner configuration class.** It tells Django ahow the form should be constructed. For example:
+- In Django `Form` and `ModelForm` classes, `Meta` class is an **inner configuration class.** It tells Django how the form should be constructed. *For example:*
 
   ```python
   from django import forms
