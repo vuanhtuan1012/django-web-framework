@@ -72,6 +72,7 @@ To provide a quick overview of the project in action, a short demo video is avai
     - [Too many JOINs Problem](#too-many-joins-problem)
   - [Django Form](#django-form)
     - [Form Fields](#form-fields)
+    - [`Meta` Class](#meta-class)
     - [Form Rendering](#form-rendering)
     - [Reading From Contents](#reading-from-contents)
     - [Cross-Site Request Forgery (CSRF) Attack](#cross-site-request-forgery-csrf-attack)
@@ -1846,6 +1847,96 @@ Some of the **most frequently used fields** are as follow:
   forms.ChoiceField(choices=PAYMENT_CHOICES, widget=forms.RadioSelect)
   ```
 
+#### `Meta` Class
+
+- In Django `Form` and `ModelForm` classes, `Meta` class is an **inner configuration class.** It tells Django ahow the form should be constructed. For example:
+
+  ```python
+  from django import forms
+  from restaurant.models import Dish
+
+
+  class DishForm(forms.ModelForm):
+    class Meta:
+      model = Dish
+      fields = ["name", "description", "price"]
+  ```
+- The `Meta` class **instruct** Django to:
+  - read the model,
+  - auto-generate fields,
+  - reuse validators, and
+  - keeps form and model in sync.
+
+  This **reduces duplication** and helps **prevent bugs.**
+- For **non-Model forms,** `Meta` is **optional** and rarely needed. *For example:*
+
+  ```python
+  from django import forms
+
+
+  class ContactForm(forms.Form):
+    email = forms.EmailField()
+
+    class Meta:
+      fields = ["email"]
+  ```
+- **Common** `Meta` **options** include:
+  - `model`: **specifies** which model the form is based on. *For example:*
+
+    ```python
+    model = Dish
+    ```
+  - `fields`: **lists** the model fields **to include.** Prefer `fields` whenever possible (*safer and explicit*). *For example:*
+
+    ```python
+    fields = ["name", "description", "price"]
+    ```
+  - `exclude`: **lists** model fields **to exclude.** *For example:*
+
+    ```python
+    excludes = ["created_at"]
+    ```
+  - `widgets`: **customizes** HTML widgets and **controls** HTML rendering. *For example:*
+
+    ```python
+    widgets = {
+      "price": forms.NumberInput(attrs={"step": "0.1"}),
+    }
+    ```
+  - `labels`: **defines** human-readable field labels. *For example:*
+
+    ```python
+    labels = {
+      "price": "Price (€)",
+    }
+    ```
+  - `help_texts`: **provides** help text for templates. *For example:*
+
+    ```python
+    labels = {
+      "price": "Enter price in Euro",
+    }
+    ```
+  - `error_messages`: **customizes** validation error messages. *For example:*
+
+    ```python
+    error_messages = {
+      "name": {
+        "required": "Please enter a dish name.",
+        "unique": "This dish already exists."
+      },
+    }
+    ```
+- Model field validators are automatically applied **in this order:**
+
+  1. **Field-level validation:** required fields (`blank=False`), type checks (*e.g.,* `DecimalField`, `CharField`, etc.), and built-in validators (*e.g.,* `MinValueValidator`, `MaxValueValidator`, etc.).
+  2. `clean_[field]()` methods.
+  3. `clean()` for form-wide validation.
+  4. **Model-level validation:** `unique=True`, `unique_together`, `constraints`, etc.
+- We **can** still **override or extend** validation using `clean_[field]()` or `clean()` methods.
+- `Meta` is **required for** `ModelForm`, **optional** and usually ignored **for** `Form`.
+- The `Meta` should **contain configuration,** not business logic.
+
 #### Form Rendering
 
 To **render** a form object on a browser, we have to **first write** an HTML template and put the form object in `jinja2` tag. *For example,* we create the `form.html` file as follow:
@@ -2996,8 +3087,8 @@ This structure keeps the project lightweight while clearly separating static con
 ### Forms
 
 The project include a **custom form** `ReservationForm`. It inherits from `django.forms.ModelForm` and include:
-- **custom** `is_valid` method **to prevent** reservations for a past dates or times.
-- **custom** `clean` method **to strip** leading and trailing whitespace from all `CharField` and `TextField` inputs.
+- **extend** `clean_reserved_at` method **to prevent** reservations for a past dates or times.
+- **extend** `clean` method **to strip** leading and trailing whitespace from all `CharField` and `TextField` inputs.
 
 ### Views
 
