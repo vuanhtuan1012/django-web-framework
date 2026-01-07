@@ -1868,7 +1868,7 @@ Some of the **most frequently used fields** are as follow:
   - keeps form and model in sync.
 
   This **reduces duplication** and helps **prevent bugs.**
-- For **non-Model forms,** `Meta` is **optional** and rarely needed. *For example:*
+- For **non-**`Model` forms, `Meta` is **optional** and rarely needed. *For example:*
 
   ```python
   from django import forms
