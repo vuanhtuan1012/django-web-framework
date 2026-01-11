@@ -952,6 +952,7 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
       - Now, **both** browser and server **share** the same **secrete session key.**
       - They **use symmetric encryption** to **exchange data** securely.
   5. **encrypted data transfer begins.** Every request/response is encrypted: URLs (except domain), cookies, form data, API calls, headers (partially).
+  6. for **every record,** the client **includes** a cryptographic **checksum**, generated using the session key, **associated** with that data. When the serve receives the record, it **recomputes** the checksum and **compares** it to the transmitted value. If they don't match, the message is rejected. This ensures data integrity.
 
 ### Request and Response Objects
 
