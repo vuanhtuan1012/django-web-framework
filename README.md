@@ -14,7 +14,7 @@ To provide a quick overview of the project in action, a short demo video is avai
   - [Hyper Text Markup Language (HTML) vs. HTML5](#hyper-text-markup-language-html-vs-html5)
   - [Vitual Environment](#vitual-environment)
   - [Django Project Structure](#django-project-structure)
-    - [Don't Repeat Yourself (DRY) Principle](#dont-repeat-yourself-dry-principle)
+    - [DRY Principle (Don't Repeat Yourself)](#dry-principle-dont-repeat-yourself)
     - [What is a project?](#what-is-a-project)
     - [Project package](#project-package)
     - [Object-Relational Mapping (ORM)](#object-relational-mapping-orm)
@@ -22,7 +22,7 @@ To provide a quick overview of the project in action, a short demo video is avai
     - [Asynchronous Server Gateway Interface (ASGI)](#asynchronous-server-gateway-interface-asgi)
     - [Synchronous vs. Asynchronous Web Apps](#synchronous-vs-asynchronous-web-apps)
     - [Concurrency vs. Parallelism](#concurrency-vs-parallelism)
-  - [Django-admin vs. `manage.py` commands](#django-admin-vs-managepy-commands)
+  - [`django-admin` vs. `manage.py` commands](#django-admin-vs-managepy-commands)
   - [App structure](#app-structure)
   - [Web Framework](#web-framework)
     - [Three-tier Architecture](#three-tier-architecture)
@@ -114,12 +114,12 @@ To provide a quick overview of the project in action, a short demo video is avai
 - **HTML5** is the **newest version** of HTML, adding modern features for today's web.
 - **Key differences:**
   - HTML5 **introduced semantic tags** *such as* `<header>`, `<footer>`, `<nav>`, `<section>`, `<article>`, `<aside>`, so browsers and developers understand page structure better, improve code readability. Since these tags have **built-in meaning,** they tell the browser (and developers, screen renders, search engines) **what the content represents.**
-    - `<header>` $\rightarrow$ top of a page or section.
-    - `<nav>` $\rightarrow$ navigation menu.
-    - `<article>` $\rightarrow$ self-contained content (blog post, news article, post).
-    - `<section>` $\rightarrow$ logical grouping of related content.
-    - `<aside>` $\rightarrow$ sidebar or related info.
-    - `<footer>` $\rightarrow$ bottom of a page or section.
+    - `<header>` -> top of a page or section.
+    - `<nav>` -> navigation menu.
+    - `<article>` -> self-contained content (blog post, news article, post).
+    - `<section>` -> logical grouping of related content.
+    - `<aside>` -> sidebar or related info.
+    - `<footer>` -> bottom of a page or section.
   - HTML **uses mostly** `<div>` for layout. It has **no meaning** by default.
     - is just a **generic container.**
     - used mainly for grouping elements for styling or scripting.
@@ -144,11 +144,11 @@ Python's virtual environment is set-up with the help of a built-in module named 
   - **an app** is a **sub-module of a project.**
 - An **app** is typically used to implement functionality for some specific purpose.
   - **apps can be self-contained,** meaning they do not rely on other apps to function.
-  - **apps can be used or reused** in may different projects. This leads nicely to the **[DRY principle](#dont-repeat-yourself-dry-principle).**
+  - **apps can be used or reused** in may different projects. This leads nicely to the **[DRY principle](#dry-principle-dont-repeat-yourself).**
   - an **app should be feature targeted,** and it's best suited for one and only one thing.
 - In bref, **a Django web application is a project that contains many apps.**
 
-#### Don't Repeat Yourself (DRY) Principle
+#### DRY Principle (Don't Repeat Yourself)
 
 The DRY principle stands for **Don't Repeat Yourself.** It's a fundamental guideline in software development that says:
 
@@ -161,8 +161,8 @@ In simple terms, it **prevents duplicating code, logic, or data.**
 
 #### What is a project?
 
-- A Django project **is a Python package containing** the database configuration used by various sub-modules (apps) and other Django-specific settings.
-- The `startproject` command of Django-admin is used to **create a new Django project.** It creates the folder of the given name (is called *project directory*), inside which there is another folder of the same name (is called *project package*) and the script `manage.py`.
+- A Django project **is a Python package containing** the database configuration used by various sub-modules (**apps**) and other Django-specific settings.
+- The `startproject` command of `django-admin` is used to **create a new Django project.** It creates the folder of the given name (is called *project directory*), inside which there is another folder **of the same name** (is called *project package*) and the script `manage.py`.
 
   ```bash
   > django-admin startproject <project_name>
@@ -203,7 +203,7 @@ When a project is created, the inner folder with (the same project name) is a Py
 
 - `settings.py` contains **configuration settings** for the Django project, including the `INSTALLED_APPS` list where newly created apps must be added.
 - `urls.py` defines the **URL patterns** for both the project and the app, **routing requests** to the appropriate view functions. Every time the client **browser requests a URL,** the Django server looks to **match its pattern** and **routes the application to the mapped view.**
-- `asgi.py` is used by the application servers following the [ASGI](#asynchronous-server-gateway-interface-asgi) standard to **serve asynchronous web applications.**
+- `asgi.py` is used by the application servers following the **[ASGI](#asynchronous-server-gateway-interface-asgi)** standard to **serve asynchronous web applications.**
 - `wsgi.py` is the **entry point for** such **[WSGI](#web-server-gateway-interface-wsgi)-compatible servers** to serve classical web application.
 
 #### Object-Relational Mapping (ORM)
@@ -211,9 +211,9 @@ When a project is created, the inner folder with (the same project name) is a Py
 **ORM** stands for **Object-Relational Mapping.** It's a programming techinque used to **interact with a relational database** (like PostgreSQL, MySQL, or SQLite) **using objects** in a programming language **instead of writing raw SQL queries.**
 
 ORM **automatically maps:**
-- Database tables $\rightarrow$ Classes.
-- Rows $\rightarrow$ Objects.
-- Columns $\rightarrow$ Object attributes.
+- Database tables -> Classes.
+- Rows -> Objects.
+- Columns -> Object attributes.
 
 The ORM internally generates and run the SQL.
 
@@ -233,7 +233,7 @@ The ORM internally generates and run the SQL.
 
 **WSGI** stands for **Web Server Gateway Interface.** It's a Python web standard (**specification**) that **defines how** Python **web applications communicate with web servers.**
 
-**Before WSGI,** *every framework and server had its own protocol,* nothing was compatible. WSGI unified everything. It **allows any WSGI-compatible framework** (*Flask, Django <=2.1, Pyramid*) to **run on any WSGI-compatible server** (*Gunicorn, uWSGI, mod_wsgi*).
+**Before WSGI,** *every framework and server had its own protocol,* nothing was compatible. **WSGI unified everything.** It allows any WSGI-compatible framework (*Flask, Django <=2.1, Pyramid*) to **run on any WSGI-compatible server** (*Gunicorn, uWSGI, mod_wsgi*).
 
 WSGI is **synchronous** and **designed for traditional** HTTP request/response cycles: no async, no WebSockets, no long-lived connections.
 
@@ -241,6 +241,8 @@ A **WSGI server** is a program that *implements the WSGI specification* and *run
 - receiving HTTP requests from clients.
 - passing them to the Python application via the WSGI interface.
 - returning the responses to the client.
+
+![Client-Application Request-Response Cycle](./images/webserver_wsgi_server.svg)
 
 #### Asynchronous Server Gateway Interface (ASGI)
 
@@ -258,7 +260,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 
 #### Synchronous vs. Asynchronous Web Apps
 
-- A **synchronous** web app **handles one request at a time** per worker, following a simple *request $\rightarrow$ process $\rightarrow$ response* pattern. Its characteristics:
+- A **synchronous** web app **handles one request at a time** per worker, following a simple *request -> process -> response* pattern. Its characteristics:
   - **Blocking I/O:** while a request is being processed, the worker can't handle another.
   - **Thread/process based concurrency:** to handle more users, it needs to add more worker processes or threads.
   - **Straightforward code:** no `async`/`await`.
@@ -286,26 +288,26 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - **Parallelism:** multiple tasks execute **at exactly the same moment.**
     - **requires** multiple CPU cores, multiple processes, CPU parallelism.
 - **In Python:**
-  - **Concurrency** helps with **I/O-bound tasks** like web requests, database calls, file reads, sleep timers. Examples:
+  - **Concurrency** helps with **I/O-bound tasks** like web requests, database calls, file reads, sleep timers. *Examples:*
     - `asyncio` (single-thread event loop),
     - threading (even though GIL limits CPU parallelism),
     - non-blocking I/O.
-  - **Parallelism** helps with **CPU-bound tasks** like heavy computations, machine learning workloads, image processing, compression/encryption. Examples:
+  - **Parallelism** helps with **CPU-bound tasks** like heavy computations, machine learning workloads, image processing, compression/encryption. *Examples:*
     - `multiprocessing`,
     - C-extension parallel code,
     - NumPy operations (internally parallel).
 
-### Django-admin vs. `manage.py` commands
+### `django-admin` vs. `manage.py` commands
 
 - Both can be used to **perform the same tasks,** but there are **some subtle differences,** and the choice of usage will depend on how we want to work on project.
-- `django-admin` is Django's **command line utility** for administrative tasks. This utility is present **in the scripts folder** of the Django **environment directory.** Django admin utility is executed from inside the terminal.
+- `django-admin` is Django's **command line utility** for administrative tasks. This utility is present **in the scripts folder** of the Django **environment directory.** `django-admin` utility is executed from inside the terminal.
 
   *It can also be launched via the call of module* `python -m django`.
 
-- `manage.py` is a script that is the **local version** of Django admin and is located **inside the project folder.** It **sets** the Django settings module environment variable so that it **points to** our project `settings.py` file.
+- `manage.py` is a script that is the **local version** of `django-admin` and is located **inside the project folder.** It **sets** the Django settings module environment variable so that it **points to** our project `settings.py` file.
 - `manage.py` is a file that **is automatically created** each time we create a Django project, it is **specific to** the virtual environment **of the project.**
 - When working on a **single Django project,** developers tend to **use** `manage.py`.
-- However, if we need to switch between **multiple Django settings files,** use the **Django admin command** with Django settings module or the settings command line option.
+- However, if we need to switch between **multiple Django settings files,** use the `django-admin` **command** with Django settings module or the settings command line option.
 
 > `manage.py` is more convenient to use than `django-admin`. It runs inside the project folder. When using `django-admin`, you must set `--settings` variable to the required project's `settings.py` file.
 
@@ -663,8 +665,8 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 ### Function-Based Views vs. Class-Based Views
 
 - **The choice** of function-based views and class-based view **depends on** complexity, reusability, and clarity.
-  - if the view is **simple** $\rightarrow$ use function-based views.
-  - if the view is **complex or reusable** $\rightarrow$ use class-based views.
+  - if the view is **simple** -> use function-based views.
+  - if the view is **complex or reusable** -> use class-based views.
 - **Use function-based views when:**
   - **simple view:** returns a template, handles one request method, has straightforward behavior.
   - no need for inheritance, need **maximum transparency and control.**
@@ -826,7 +828,7 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
 - `HTTP/2`
   - **binary framing** layer. It means the protocol **uses structured binary data frames** (*machine-readable packages*) instead of text. It's **more compact** than text and is **faster** to parse.
   - **multiplexing:** multiple simultaneous streams over a single TCP connection.
-  - **header compression** (HPACK): smaller request $\rightarrow$ faster transfers.
+  - **header compression** (HPACK): smaller request -> faster transfers.
   - stream prioritization.
   - **faster** than HTTP/1.1 **when** network quality is good.
   - **still suffers** from TCP-level [HOL blocking](#hol-blocking):
@@ -845,7 +847,7 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
     - built-in **TLS 1.3** encryption.
     - stream-level flow control.
     - **connection migration.** Keep connection **alive when IP changes,** helpful for mobile.
-  - no TCP HOL blocking $\rightarrow$ **stream are independent.**
+  - no TCP HOL blocking -> **stream are independent.**
   - **faster connection setup:**
     - no separate TCP + TLS handshake.
     - often **0-RTT** (zero round-trip time) **startup.**
@@ -853,7 +855,7 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
   - **pros:**
     - **best** for modern mobile networks.
     - **extremely fast** in high-latency environments.
-    - **robust when switching** networks, *e.g.,* Wi-Fi $\rightarrow$ mobile data.
+    - **robust when switching** networks, *e.g.,* Wi-Fi -> mobile data.
   - **cons:**
     - **still rolling out** globally.
     - firewalls and enterprise networks sometimes **block UDP.**
@@ -884,9 +886,9 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
 - **TCP has HOL blocking** because:
   - TCP **enforces strict, in-order delivery.**
   - **treats the connection as one** continuous byte stream.
-  - if one packet is lost $\rightarrow$ whole connection halts.
+  - if one packet is lost -> whole connection halts.
 - **QUIC solves** TCP's connection-wide **HOL blocking problem:**
-  - built-on UDP $\rightarrow$ QUIC **controls** ordering + reliability **itself.**
+  - built-on UDP -> QUIC **controls** ordering + reliability **itself.**
   - multiple **independent streams** inside one connection.
   - packet loss **affects only** the stream involved.
 
@@ -921,7 +923,7 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
   - **500 Internal Server Error:** generic server failure. It means the **server encountered** an **unexpected condition** and could **not fulfill** the request.
   - **501 Not Implemented:** server doesn't support the requested method. It means the server does **NOT recognize** the method.
   - **502 Bad Gateway:** indicates a **problem between servers.** A server acting as a **gateway or proxy** received an **invalid response** from an upstream server.
-  - **503 Service Unavailable:** server overloaded or down for maintaince.
+  - **503 Service Unavailable:** server overloaded or down for maintenance.
   - **504 Gateway Timeout:** upstream server didn't respond in time.
 
 #### HTTP Secure (HTTPS)
@@ -936,11 +938,11 @@ The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3
   - **Ensures data integrity.** Information arrives unchanged.
   - **Protects** user privacy by **encrypting all transmitted data.**
 - **How HTTPS works:**
-  1. client $\rightarrow$ server: "Hello!". When we visit a HTTPS site, the browser **sends** the server a **hello message** which **contains:**
+  1. client -> server: "Hello!". When we visit a HTTPS site, the browser **sends** the server a **hello message** which **contains:**
      - **supported encryption** methods,
      - **supported TLS** versions,
      - a **random number,** used to generate keys later.
-  2. server $\rightarrow$ client: "Here's my certificate". The server **replies** with a message which **contains:**
+  2. server -> client: "Here's my certificate". The server **replies** with a message which **contains:**
      - its **SSL/TLS certificate,**
      - its **public keys,**
      - a **random number** of its own.

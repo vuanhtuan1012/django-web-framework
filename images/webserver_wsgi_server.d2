@@ -1,0 +1,28 @@
+# definition
+direction: right
+classes: {
+  endpoint: {
+    shape: circle
+    style: {
+      stroke-width: 0
+      fill: "#44C7B1"
+      shadow: true
+    }
+  }
+}
+**.style.border-radius: 5
+client.class: endpoint
+
+# workflow
+client -> webserver: HTTP request
+webserver -> wsgi_server: HTTP request
+wsgi_server -> app: request data
+app -> wsgi_server: response body
+wsgi_server -> webserver: HTTP response
+webserver -> client: HTTP response
+
+# labels
+client: Client
+webserver: Webserver\n(Nginx, Apache)
+wsgi_server: WSGI server\n(Gunicorn, uWSGI)
+app: Python\nApplication
