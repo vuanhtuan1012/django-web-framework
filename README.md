@@ -35,6 +35,7 @@ To provide a quick overview of the project in action, a short demo video is avai
     - [HTTP Request](#http-request)
     - [HTTP Response](#http-response)
     - [HTTP Methods](#http-methods)
+    - [HTTP Request-Response Cycle](#http-request-response-cycle)
     - [HTTP Versions](#http-versions)
     - [HOL Blocking](#hol-blocking)
     - [HTTP Status Codes](#http-status-codes)
@@ -811,86 +812,96 @@ A HTTP request **consists of:**
 
 > **Note** that HTTP methods are **only conventions,** not enforcement. The developer's **code determines** whether the operation is actually **idempotent.**
 
+#### HTTP Request-Response Cycle
+
+![HTTP Request-Response Cycle](./images/http_request_response_cycle.svg)
+
+- **Browser (Client) / App Layer:** Discovers resources, sends requests, parses HTML, and renders the page.
+- **HTTP Layer:** Manages **request/response.** In HTTP/2, HTTP/3 it also handles streams, frames, and multiplexing.
+- **Transport Layer:** Responsible for data transport: splits the byte stream into packets and ensures ordered, reliable delivery (no data loss).
+- **Network Layer:** Transmits packets over the Internet (routers, switches, etc.).
+
 #### HTTP Versions
 
 The three most commonly used HTTP versions are `HTTP/1.1`, `HTTP/2`, and `HTTP/3`.
 
 - `HTTP/1.1`
-  - **text-based** protocol. It means **messages** are written in **human-readable** plain text.
-  - **one request** per TCP connection (unless using `keep-alive`).
-  - if one request is **delayed,** others are blocked due to **[HOL](#hol-blocking)** (*Head-of-Line*) **blocking.** Browsers open many parallel TCP connections to compensate.
-  - **pros:**
-    - simple, widely supported.
-    - **works everywhere,** even on very old systems.
-  - **cons:**
-    - **significant latency** with many small resources (*e.g.,* 100+ assets per page).
-    - inefficient for modern web workloads.
+  - **Text-based** protocol. It means **messages** are written in **human-readable** plain text.
+  - **One request** per TCP connection (unless using `keep-alive`).
+  - If one request is **delayed,** others are blocked due to **[HOL](#hol-blocking)** (*Head-of-Line*) **blocking.**
+  - **Browser decides** whether to open one or multiple connections **based on** its connection pool (typically **up to ~6** connections per domain) to send requests in parallel.
+  - **Pros:**
+    - Simple, widely supported.
+    - **Works everywhere,** even on very old systems.
+  - **Cons:**
+    - **Significant latency** with many small resources (*e.g.,* 100+ assets per page).
+    - Inefficient for modern web workloads.
 - `HTTP/2`
-  - **binary framing** layer. It means the protocol **uses structured binary data frames** (*machine-readable packages*) instead of text. It's **more compact** than text and is **faster** to parse.
-  - **multiplexing:** multiple simultaneous streams over a single TCP connection.
-  - **header compression** (HPACK): smaller request -> faster transfers.
-  - stream prioritization.
-  - **faster** than HTTP/1.1 **when** network quality is good.
-  - **still suffers** from TCP-level [HOL blocking](#hol-blocking):
-    - if packets are lost, the **entire connection stalls.**
-    - **multiplexing doesn't help** because they share one TCP connection.
-  - **pros:**
-    - low latency.
-    - more efficient for complex sites.
-    - widespread support.
-  - **cons:**
-    - performance **drops significantly** on mobile or unstable networks.
+  - **Binary framing** layer. It means the protocol **uses structured binary data frames** (*machine-readable packages*) instead of text. It's **more compact** than text and is **faster** to parse.
+  - **Multiplexing:** multiple simultaneous streams over a **single TCP connection.**
+  - **Header compression** (HPACK): smaller request -> faster transfers.
+  - Stream prioritization.
+  - **Faster** than HTTP/1.1 **when** network quality is good.
+  - **Still suffers** from TCP-level [HOL blocking](#hol-blocking):
+    - If packets are lost, the **entire connection stalls.**
+    - **Multiplexing doesn't help** because they share one TCP connection.
+  - **Pros:**
+    - Low latency.
+    - More efficient for complex sites.
+    - Widespread support.
+  - **Cons:**
+    - Performance **drops significantly** on mobile or unstable networks.
 - `HTTP/3`
-  - **binary framing** layer.
-  - runs over **QUIC,** which is built on **UDP** instead of TCP.
+  - **Binary framing** layer.
+  - Runs over **QUIC,** which is built on **UDP** instead of TCP.
   - **QUIC** includes:
-    - built-in **TLS 1.3** encryption.
-    - stream-level flow control.
-    - **connection migration.** Keep connection **alive when IP changes,** helpful for mobile.
-  - no TCP HOL blocking -> **stream are independent.**
-  - **faster connection setup:**
-    - no separate TCP + TLS handshake.
-    - often **0-RTT** (zero round-trip time) **startup.**
-  - handles packet loss gracefully.
-  - **pros:**
-    - **best** for modern mobile networks.
-    - **extremely fast** in high-latency environments.
-    - **robust when switching** networks, *e.g.,* Wi-Fi -> mobile data.
-  - **cons:**
-    - **still rolling out** globally.
-    - firewalls and enterprise networks sometimes **block UDP.**
+    - Built-in **TLS 1.3** encryption.
+    - Stream-level flow control.
+    - **Connection migration.** Keep connection **alive when IP changes,** helpful for mobile.
+  - No TCP HOL blocking -> **stream are independent.**
+  - **Faster connection setup:**
+    - No separate TCP + TLS handshake.
+    - Often **0-RTT** (zero round-trip time) **startup.**
+  - Handles packet loss gracefully.
+  - **Pros:**
+    - **Best** for modern mobile networks.
+    - **Extremely fast** in high-latency environments.
+    - **Robust when switching** networks, *e.g.,* Wi-Fi -> mobile data.
+  - **Cons:**
+    - **Still rolling out** globally.
+    - Firewalls and enterprise networks sometimes **block UDP.**
 
 #### HOL Blocking
 
 - HOL blocking stands for **Head-Of-Line Blocking.**
 - It is **a performance problem** that occurs in network protocols when **one slow** or lost packet **blocks all the packets behind** it, even if those later packets could otherwise have been processed.
 - In `HTTP/1.1`
-  - each TCP connection handles **one request at a time.**
-  - if **one request is slow,** every request behind it in that connection **waits.**
-  - browsers open many parallel connections to reduce this problem.
+  - Each TCP connection handles **one request at a time.**
+  - If **one request is slow,** every request behind it in that connection **waits.**
+  - Browsers open many parallel connections to reduce this problem.
 - In `HTTP/2`
-  - **supports multiplexing,** multiple streams on one connection.
-  - **still uses TCP,** which has packet-level HOL blocking:
-    - if **one TCP packet is lost,** TCP must wait and retransmit it.
-    - **all HTTP/2 streams** on that connection **pause until** the packet is recovered.
+  - **Supports multiplexing,** multiple streams on one connection.
+  - **Still uses TCP,** which has packet-level HOL blocking:
+    - If **one TCP packet is lost,** TCP must wait and retransmit it.
+    - **All HTTP/2 streams** on that connection **pause until** the packet is recovered.
 - In `HTTP/3`
   - **No** TCP HOL blocking.
-  - uses **QUIC, built on UDP,** handles **streams independently.**
-  - if **one packet is lost:**
-    - only the **affected streams waits.**
-    - all **other streams continue** normally.
+  - Uses **QUIC, built on UDP,** handles **streams independently.**
+  - If **one packet is lost:**
+    - Only the **affected streams waits.**
+    - All **other streams continue** normally.
 - HOL blocking **makes website slower** because:
-  - a **single lost** packet **affects all streams,** requests behind it.
+  - A **single lost** packet **affects all streams,** requests behind it.
   - **high-latency** or mobile networks suffer more.
   - **performance degrades** for real-time or resource-heavy website.
 - **TCP has HOL blocking** because:
   - TCP **enforces strict, in-order delivery.**
-  - **treats the connection as one** continuous byte stream.
-  - if one packet is lost -> whole connection halts.
+  - **Treats the connection as one** continuous byte stream.
+  - If one packet is lost -> whole connection halts.
 - **QUIC solves** TCP's connection-wide **HOL blocking problem:**
-  - built-on UDP -> QUIC **controls** ordering + reliability **itself.**
-  - multiple **independent streams** inside one connection.
-  - packet loss **affects only** the stream involved.
+  - Built-on UDP -> QUIC **controls** ordering + reliability **itself.**
+  - Multiple **independent streams** inside one connection.
+  - Packet loss **affects only** the stream involved.
 
 #### HTTP Status Codes
 

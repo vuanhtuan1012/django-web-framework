@@ -1,0 +1,48 @@
+# definition
+classes: {
+  endpoint: {
+    # shape: circle
+    style: {
+      stroke-width: 0
+      fill: "#44C7B1"
+      shadow: true
+    }
+  }
+}
+**.style.border-radius: 5
+client.browser.class: endpoint
+server.server.class: endpoint
+
+# workflow
+client: {
+  browser -> http: request
+  http -> transport: request
+  transport -> http: response
+  http -> browser: response
+
+  # labels
+  browser: Browser (Client)\nApp Layer
+  http: HTTP Layer\n(HTTP/1.1, /2, /3)
+  transport: Transport Layer\n(TCP, UDP)
+}
+
+server {
+  transport -> http: request
+  http -> server: request
+  server -> http: response
+  http -> transport: response
+
+  # labels
+  transport: Transport Layer\n(TCP, UDP)
+  http: HTTP Layer\n(HTTP/1.1, /2, /3)
+  server: Server\nApp Layer
+}
+
+direction: right
+client.transport -> network: packets
+network -> server.transport: packets
+server.transport -> network: packets
+network -> client.transport: packets
+
+# labels
+network: Network Layer\n(Internet, Router, etc.)
