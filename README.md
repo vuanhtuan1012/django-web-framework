@@ -26,8 +26,8 @@ To provide a quick overview of the project in action, a short demo video is avai
   - [App structure](#app-structure)
   - [Web Framework](#web-framework)
     - [Three-tier Architecture](#three-tier-architecture)
-    - [Model-View-Controller (MVC) Architecture](#model-view-controller-mvc-architecture)
-    - [Model-View-Template (MVT) Architecture](#model-view-template-mvt-architecture)
+    - [MVC Architecture (Model-View-Controller)](#mvc-architecture-model-view-controller)
+    - [MVT Architecture (Model-View-Template)](#mvt-architecture-model-view-template)
 - [Views](#views)
   - [Class-Based Views](#class-based-views)
   - [Function-Based Views vs. Class-Based Views](#function-based-views-vs-class-based-views)
@@ -351,7 +351,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 ### Web Framework
 
 - Frameworks are **designed to support** the developer in building the web application.
-- **The purpose** of a web framework is to make application **development easier** and to **provide** the developer with a **clean structure** that keeps things in order and allows for changes and modifications.
+- **The purpose** of a web framework is to make application **development easier** and to **provide** the developer with a **clean structure** that keeps things in order **and allows for** changes and modifications.
 - Frameworks also allow for **code reusability** facilitated by existing code. They **provide a solid foundation** on which to build web application.
 - A web application is split into two parts:
   - **Front-end** is the part of the website that the **user interacts with** via web browser.
@@ -365,7 +365,7 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - the **data tier** usually **consists of database servers** for storing and retrieving information.
   - the **application tier** is what **ties** together the other **two tiers.** It **gets data** from the presentation layer and **persists** it in the data tier.
 
-#### Model-View-Controller (MVC) Architecture
+#### MVC Architecture (Model-View-Controller)
 
 - Most of the web frameworks implement the **MVC (Model-View-Controller)** architecture.
 - The MVC design pattern separates the entire web application development process into three layers: Model, View, and Controller.
@@ -373,9 +373,9 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
   - The **Model** is responsible for **data definitions, processing logic** and **interaction** with the backend database.
   - The **View** is the **representation layer** of the application. It **takes care** of the **placement and formatting** of the result and **sends** it to the Controller, which in turn, redirects it to the client as the application's response.
 
-#### Model-View-Template (MVT) Architecture
+#### MVT Architecture (Model-View-Template)
 
-- The Django framework adapts a **Model-View-Template (MVT)** approach, a slight variation of the MVC approach.
+- The Django framework adapts a **Model-View-Template (MVT)** approach, a slight variation of the [MVC approach](#mvc-architecture-model-view-controller).
 - A Django application consists of four following components:
   - **URL Dispatcher** is the **entry point** that decides which part of the application handles the request. The `urls.py` module acts as the dispatcher. It **defines** the **URL patterns.** Each URL pattern is **mapped with a view function.**
 
@@ -386,13 +386,13 @@ An **ASGI server** is a program that *implements the ASGI specification* and *ru
 
     *If required,* it uses this data to interact with the models to perform CRUD operations.
 
-    > Django's View layer performs the **role of Controller** in MVC architecture.
+    > Django's View layer performs the **role of Controller** in [MVC architecture](#mvc-architecture-model-view-controller).
   - A **Model** is a Python class. An app may have one or more model classes, conventionally put in the `models.py` file.
 
     Django **migrates the attributes** of the model class **to construct a database table** of a matching structure.
 
     [Django's ORM (Object Relational Mapper)](#django-orm-object-relationship-mapping) helps perform [CRUD operations](#crud-operations) in an object-oriented way instead of invoking SQL queries.
-  - A **Template** is a web page **containing a mix of** static HTML and Django Template Language code blocks. It is **equivalent to the View** in the MVC architecture.
+  - A **Template** is a web page **containing a mix of** static HTML and Django Template Language code blocks. It is **equivalent to the View** in the [MVC architecture](#mvc-architecture-model-view-controller).
 
     Django's **template processor uses** any context data from the view inserted in these blocks to **formulate** a dynamic response.
 
@@ -2454,7 +2454,7 @@ The following steps outline how to configure Django with supported databases.
 ## Templates
 
 - The **[view functions](#views) retrieve** the data from the database connected to the application, and **Django uses templates** and the **[Django Template Language (DTL)](#django-template-language-dtl) to display** this dynamic data.
-- Templates **form** the **[presentation layer](#three-tier-architecture)** in the [MVT architecture](#model-view-template-mvt-architecture).
+- Templates **form** the **[presentation layer](#three-tier-architecture)** in the [MVT architecture](#mvt-architecture-model-view-template).
 - Templates **consist** mainly two types of content:
   - **static:** the **HTML** that does not change on the web page. **It defines** the structure and layout of the page.
   - **template language:** the **syntax** that allows to insert **dynamic data.**
